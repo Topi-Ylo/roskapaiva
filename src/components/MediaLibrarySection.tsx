@@ -168,7 +168,10 @@ export default function MediaLibrarySection() {
           <div className="reveal flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
             <div>
               <p className="eyebrow text-amber">Some-yhteistyöt</p>
-              <h3 className="font-display mt-6 text-5xl text-cream md:text-6xl lg:text-7xl">
+              <h3
+                className="font-display mt-6 text-4xl text-cream sm:text-5xl md:text-6xl lg:text-7xl break-words [hyphens:auto]"
+                lang="fi"
+              >
                 Esimerkkejä sosiaalisen median yhteistyövideoistani.
               </h3>
             </div>
