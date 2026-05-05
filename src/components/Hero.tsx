@@ -1,6 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { useHeroProgress } from '../hooks/useHeroProgress';
 import { useIsCoarsePointer } from '../hooks/useIsCoarsePointer';
+import {
+  setMobileHeroRevealed,
+  useMobileHeroRevealed,
+} from '../hooks/useMobileHeroReveal';
 
 const VIDEO_URL_DESKTOP =
   'https://video.gumlet.io/689843b7ce30732b0c4db420/69f89f6bb73ee3afb29be580/download.mp4';
@@ -17,6 +21,8 @@ export default function Hero() {
   const currentTimeRef = useRef(0);
   const progress = useHeroProgress();
   const isMobile = useIsCoarsePointer();
+  const mobileRevealed = useMobileHeroRevealed();
+  const mobileTriggerRef = useRef(false);
 
   // The section is now 400vh tall. The original hero scrub plays out across the first
   // half of the section (heroProgress 0->1), and the Eino interlude takes the second.
@@ -37,21 +43,33 @@ export default function Hero() {
     if (!video) return;
 
     if (isMobile) {
-      // Mobile: play once, then freeze on the final frame (browsers automatically
-      // pause at the last frame when loop is off and the video ends).
+      // Mobile: play once, freeze on final frame, and trigger the rest of the
+      // hero animation (nav slide-in, text fade-in, dark overlay) at 3.5 s of
+      // playback. After that the user simply scrolls past the section.
       video.loop = false;
       video.muted = true;
+      const TRIGGER_AT = 3.5;
       const tryPlay = () => {
         video.play().catch(() => {
-          /* autoplay denied on this device; user gesture will kick it off */
+          /* autoplay denied; user gesture will kick it off */
         });
+      };
+      const onTime = () => {
+        if (!mobileTriggerRef.current && video.currentTime >= TRIGGER_AT) {
+          mobileTriggerRef.current = true;
+          setMobileHeroRevealed(true);
+        }
       };
       const onMeta = () => tryPlay();
       video.addEventListener('loadedmetadata', onMeta);
+      video.addEventListener('timeupdate', onTime);
       if (video.readyState >= 1) tryPlay();
       return () => {
         video.removeEventListener('loadedmetadata', onMeta);
+        video.removeEventListener('timeupdate', onTime);
         video.pause();
+        mobileTriggerRef.current = false;
+        setMobileHeroRevealed(false);
       };
     }
 
@@ -89,23 +107,29 @@ export default function Hero() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile]);
 
-  // Hero text + nav reveal between heroProgress 50% and 75%.
-  const reveal = Math.max(0, Math.min(1, (heroProgress - 0.5) / 0.25));
-  const textOpacity = reveal;
-  const textTranslateY = (1 - reveal) * 24;
-  // The big white subtitle reveals after the rest of the title settles,
-  // and finishes before the Eino panel begins sliding in (panel starts at progress 0.5
-  // = heroProgress 1.0; subtitle finishes at heroProgress 0.95 = progress 0.475).
-  // For visual variety it slides in horizontally from the left instead of fading up.
-  const subtitleReveal = Math.max(0, Math.min(1, (heroProgress - 0.75) / 0.20));
-  const subtitleSlideX = (1 - subtitleReveal) * -3;
+  // Desktop: scroll-driven curves. Mobile: binary 0/1 driven by mobileRevealed
+  // (set when the hero video crosses 3.5 s).
+  const desktopReveal = Math.max(0, Math.min(1, (heroProgress - 0.5) / 0.25));
+  const desktopSubtitleReveal = Math.max(0, Math.min(1, (heroProgress - 0.75) / 0.20));
+  const desktopOverlayReveal = Math.max(0, Math.min(1, (heroProgress - 0.7) / 0.3));
 
-  // Overlay: heroProgress 70% to 100%, peaking at 65% darkening.
-  const overlayReveal = Math.max(0, Math.min(1, (heroProgress - 0.7) / 0.3));
+  const mobileBinary = mobileRevealed ? 1 : 0;
+  const reveal = isMobile ? mobileBinary : desktopReveal;
+  const subtitleReveal = isMobile ? mobileBinary : desktopSubtitleReveal;
+  const overlayReveal = isMobile ? mobileBinary : desktopOverlayReveal;
+
+  const textOpacity = reveal;
+  const textTranslateY = isMobile ? (1 - reveal) * 16 : (1 - reveal) * 24;
+  const subtitleSlideX = (1 - subtitleReveal) * -3;
   const overlayOpacity = overlayReveal * 0.65;
 
-  // Scroll hint: fades out within the first ~12% of the hero scrub.
-  const hintOpacity = Math.max(0, 1 - heroProgress * 8);
+  // Scroll hint: hidden on mobile (no scroll required), fades out during the
+  // first ~12% of the hero scrub on desktop.
+  const hintOpacity = isMobile ? 0 : Math.max(0, 1 - heroProgress * 8);
+
+  // Mobile reveal animations need a CSS transition since the values flip from
+  // 0 to 1 instead of being lerped via scroll.
+  const mobileEase = 'opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1)';
 
   // Eino panel (second act):
   //   0     -> 0.20 : slide in from the right
@@ -117,7 +141,7 @@ export default function Hero() {
   const panelTranslateX = (1 - panelSlideIn) * 100;
 
   return (
-    <section id="hero" className="relative z-20" style={{ height: '400vh' }}>
+    <section id="hero" className="relative z-20" style={{ height: isMobile ? '100dvh' : '400vh' }}>
       <div className="sticky top-0 h-viewport w-full overflow-hidden bg-forest-night">
         <video
           ref={videoRef}
@@ -133,7 +157,7 @@ export default function Hero() {
 
         <div
           className="pointer-events-none absolute inset-0 bg-forest-night"
-          style={{ opacity: overlayOpacity, transition: 'none' }}
+          style={{ opacity: overlayOpacity, transition: isMobile ? mobileEase : 'none' }}
         />
 
         <div
@@ -141,7 +165,7 @@ export default function Hero() {
           style={{
             opacity: textOpacity,
             transform: `translate3d(0, ${textTranslateY}px, 0)`,
-            transition: 'none',
+            transition: isMobile ? mobileEase : 'none',
           }}
         >
           <div className="mx-auto w-full max-w-7xl">
@@ -154,7 +178,7 @@ export default function Hero() {
               style={{
                 opacity: subtitleReveal,
                 transform: `translate3d(${subtitleSlideX}vw, 0, 0)`,
-                transition: 'none',
+                transition: isMobile ? mobileEase : 'none',
               }}
             >
               Jos ois siistimpää.
@@ -178,7 +202,7 @@ export default function Hero() {
 
         <div
           className="absolute bottom-8 right-6 z-10 hidden text-cream/50 md:block"
-          style={{ opacity: textOpacity, transition: 'none' }}
+          style={{ opacity: textOpacity, transition: isMobile ? mobileEase : 'none' }}
         >
           <div className="flex flex-col items-center gap-3">
             <div className="h-12 w-px bg-cream/30" />
@@ -237,7 +261,7 @@ export default function Hero() {
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-forest-night via-forest-night/40 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 px-6 py-8 md:px-8 md:py-10">
+              <div className="absolute inset-x-0 bottom-0 px-6 pt-8 md:px-8 md:pt-10" style={{ paddingBottom: 'max(2rem, calc(2rem + env(safe-area-inset-bottom)))' }}>
                 <p className="font-display text-3xl leading-[1.05] text-cream md:text-4xl">
                   Moi, mä olen Eino, roskapäivän perustaja.
                 </p>
@@ -256,7 +280,7 @@ export default function Hero() {
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-forest-night via-forest-night/40 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 px-6 py-8 md:px-8 md:py-10">
+              <div className="absolute inset-x-0 bottom-0 px-6 pt-8 md:px-8 md:pt-10" style={{ paddingBottom: 'max(2rem, calc(2rem + env(safe-area-inset-bottom)))' }}>
                 <p className="font-display text-3xl leading-[1.05] text-cream md:text-4xl">
                   Mä haluan kertoa mikä on roskapäivä.
                 </p>
