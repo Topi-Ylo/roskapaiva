@@ -18,11 +18,11 @@ export default function PetitionSection() {
         backgroundPosition: 'center',
       }} />
 
-      <div className="relative mx-auto max-w-7xl px-6 py-32 md:py-40">
+      <div className="relative mx-auto max-w-7xl px-6 py-20 md:py-40">
         <div className="grid gap-16 md:grid-cols-12">
           <div className="md:col-span-5">
             <p className="reveal eyebrow text-amber">Lainsäädäntö</p>
-            <h2 className="reveal delay-1 font-display mt-6 text-5xl text-cream md:text-6xl lg:text-7xl">
+            <h2 className="reveal delay-1 font-display mt-6 text-4xl text-cream md:text-6xl lg:text-7xl">
               Aloite siistimmän<br />Suomen puolesta.
             </h2>
 
