@@ -141,7 +141,7 @@ export default function Hero() {
   const panelTranslateX = (1 - panelSlideIn) * 100;
 
   return (
-    <section id="hero" className="relative z-20" style={{ height: isMobile ? '100dvh' : '400vh' }}>
+    <section id="hero" className="relative z-20" style={{ height: isMobile ? '200dvh' : '400vh' }}>
       <div className="sticky top-0 h-viewport w-full overflow-hidden bg-forest-night">
         <video
           ref={videoRef}
@@ -161,7 +161,7 @@ export default function Hero() {
         />
 
         <div
-          className="relative z-10 flex h-full flex-col justify-end px-6 pb-[calc(6rem+10vh)] md:pb-[calc(8rem+10vh)]"
+          className="relative z-10 flex h-full flex-col justify-end px-6 pb-12 md:pb-[calc(8rem+10vh)]"
           style={{
             opacity: textOpacity,
             transform: `translate3d(0, ${textTranslateY}px, 0)`,
