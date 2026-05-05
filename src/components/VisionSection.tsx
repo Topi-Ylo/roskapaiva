@@ -125,8 +125,10 @@ export default function VisionSection() {
     };
   }, []);
 
-  // Video target follows the post-transition active progress.
-  const activeProgress = clamp((progress - 0.25) / 0.75);
+  // Video target follows scroll progress. Playhead starts advancing the
+  // moment the hero begins sliding up to reveal Vision (progress > 0), not
+  // after the hero has fully cleared.
+  const activeProgress = clamp(progress);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -139,19 +141,12 @@ export default function VisionSection() {
     if (!video) return;
 
     if (isMobile) {
-      // Mobile: autoplay on loop instead of scrubbing currentTime — same reason as Hero.
+      // Mobile: loop on autoplay instead of scrubbing currentTime — same reason
+      // as Hero. We do NOT call play() here; the progress-driven effect below
+      // kicks playback off only once the hero begins sliding up to reveal us.
       video.loop = true;
       video.muted = true;
-      const tryPlay = () => {
-        video.play().catch(() => {
-          /* autoplay denied */
-        });
-      };
-      const onMeta = () => tryPlay();
-      video.addEventListener('loadedmetadata', onMeta);
-      if (video.readyState >= 1) tryPlay();
       return () => {
-        video.removeEventListener('loadedmetadata', onMeta);
         video.pause();
       };
     }
@@ -187,6 +182,21 @@ export default function VisionSection() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile]);
+
+  // Mobile: kick off playback the first time scroll progress through this
+  // section turns positive — i.e. the moment the hero starts sliding up to
+  // reveal Vision. progress > 0 is the same trigger desktop scrubbing now
+  // uses, so both paths start the video at the same beat.
+  useEffect(() => {
+    if (!isMobile) return;
+    const video = videoRef.current;
+    if (!video) return;
+    if (progress > 0.001 && video.paused) {
+      video.play().catch(() => {
+        /* autoplay denied; user gesture will kick it off */
+      });
+    }
+  }, [isMobile, progress]);
 
   // 20% baseline so the video is already faintly visible while the Hero is exiting,
   // ramping to 100% over the same 5% scroll window after the transition.
