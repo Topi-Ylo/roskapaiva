@@ -2,8 +2,10 @@ import { useEffect, useRef } from 'react';
 import { useHeroProgress } from '../hooks/useHeroProgress';
 import { useIsCoarsePointer } from '../hooks/useIsCoarsePointer';
 
-const VIDEO_URL =
+const VIDEO_URL_DESKTOP =
   'https://video.gumlet.io/689843b7ce30732b0c4db420/69f89f6bb73ee3afb29be580/download.mp4';
+const VIDEO_URL_MOBILE =
+  'https://video.gumlet.io/689843b7ce30732b0c4db420/69f9b79165082997b52955a8/download.mp4';
 
 // Placeholder portraits — swap for real Eino photos later.
 const EINO_IMG_1 = 'https://i.imgur.com/Mf4XgjV.jpeg';
@@ -35,11 +37,13 @@ export default function Hero() {
     if (!video) return;
 
     if (isMobile) {
-      video.loop = true;
+      // Mobile: play once, then freeze on the final frame (browsers automatically
+      // pause at the last frame when loop is off and the video ends).
+      video.loop = false;
       video.muted = true;
       const tryPlay = () => {
         video.play().catch(() => {
-          /* autoplay denied; user gesture will start it */
+          /* autoplay denied on this device; user gesture will kick it off */
         });
       };
       const onMeta = () => tryPlay();
@@ -117,7 +121,7 @@ export default function Hero() {
       <div className="sticky top-0 h-viewport w-full overflow-hidden bg-forest-night">
         <video
           ref={videoRef}
-          src={VIDEO_URL}
+          src={isMobile ? VIDEO_URL_MOBILE : VIDEO_URL_DESKTOP}
           muted
           playsInline
           preload="auto"
