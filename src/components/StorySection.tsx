@@ -30,26 +30,26 @@ interface Card {
 const FALLBACK_CARDS: Card[] = [
   {
     year: '2018',
-    img: 'https://www.roskapaiva.com/wp-content/uploads/2025/12/1000131818.jpg',
+    img: 'https://i.imgur.com/EQCjiD8.jpeg',
     title: 'Ensimmäinen roska',
     desc: 'Anonyymi Instagram-tili. Roskapäivä saa nimensä.',
     large: true,
   },
   {
     year: '2020',
-    img: 'https://www.roskapaiva.com/wp-content/uploads/2025/12/1000131820.jpg',
+    img: 'https://i.imgur.com/AMjIwuH.jpeg',
     title: 'Kasvot tilille',
     desc: '',
   },
   {
     year: '2023',
-    img: 'https://www.roskapaiva.com/wp-content/uploads/2025/12/Picsart_25-12-15_12-13-14-622.jpg',
+    img: 'https://i.imgur.com/8zgfoM4.jpeg',
     title: 'Koneen säätiön apuraha',
     desc: '',
   },
   {
     year: '2024',
-    img: 'https://www.roskapaiva.com/wp-content/uploads/2025/12/Picsart_25-12-15_12-13-53-609.jpg',
+    img: 'https://i.imgur.com/toNE94p.jpeg',
     title: 'Suomen-laajuinen Roskapäivä',
     desc: '',
   },
