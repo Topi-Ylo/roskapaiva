@@ -125,10 +125,8 @@ export default function VisionSection() {
     };
   }, []);
 
-  // Video target follows scroll progress. Playhead starts advancing the
-  // moment the hero begins sliding up to reveal Vision (progress > 0), not
-  // after the hero has fully cleared.
-  const activeProgress = clamp(progress);
+  // Video target follows the post-transition active progress.
+  const activeProgress = clamp((progress - 0.25) / 0.75);
 
   useEffect(() => {
     const video = videoRef.current;
