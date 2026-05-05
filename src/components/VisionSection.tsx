@@ -82,6 +82,7 @@ export default function VisionSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const targetTimeRef = useRef(0);
   const currentTimeRef = useRef(0);
+  const primedRef = useRef(false);
   const [progress, setProgress] = useState(0);
   // Track scroll progress through this section.
   useEffect(() => {
@@ -170,6 +171,22 @@ export default function VisionSection() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // iOS Safari only paints scrubbed frames after play() has been called at
+  // least once. Prime the video the first time scroll enters this section.
+  // The raf loop above keeps overriding currentTime, so the video stays
+  // scroll-driven instead of advancing at natural 1× speed.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (primedRef.current) return;
+    if (progress > 0.001) {
+      primedRef.current = true;
+      video.play().catch(() => {
+        /* autoplay denied; first user gesture will unlock it */
+      });
+    }
+  }, [progress]);
 
   // 20% baseline so the video is already faintly visible while the Hero is exiting,
   // ramping to 100% over the same 5% scroll window after the transition.
