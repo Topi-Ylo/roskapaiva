@@ -81,7 +81,7 @@ export default function FooterSection() {
             />
             <p className="eyebrow">© 2018–2026 Roskapäivä</p>
           </div>
-          <p className="font-quote text-base italic text-cream/55">Tehty Helsingissä.</p>
+          <p className="font-quote text-base italic text-cream/55">Website Design by What if.. Hear Me Out - productions.</p>
         </div>
       </div>
     </section>
