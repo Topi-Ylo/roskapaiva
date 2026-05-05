@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 // Title typewriter is now scroll-driven; no TextType needed here.
 import './TextType.css';
-import { useIsCoarsePointer } from '../hooks/useIsCoarsePointer';
 
 const VIDEO_URL =
   'https://video.gumlet.io/689843b7ce30732b0c4db420/69f8db00b73ee3afb2a27927/download.mp4';
@@ -84,7 +83,6 @@ export default function VisionSection() {
   const targetTimeRef = useRef(0);
   const currentTimeRef = useRef(0);
   const [progress, setProgress] = useState(0);
-  const isMobile = useIsCoarsePointer();
   // Track scroll progress through this section.
   useEffect(() => {
     let ticking = false;
@@ -138,17 +136,9 @@ export default function VisionSection() {
     const video = videoRef.current;
     if (!video) return;
 
-    if (isMobile) {
-      // Mobile: loop on autoplay instead of scrubbing currentTime — same reason
-      // as Hero. We do NOT call play() here; the progress-driven effect below
-      // kicks playback off only once the hero begins sliding up to reveal us.
-      video.loop = true;
-      video.muted = true;
-      return () => {
-        video.pause();
-      };
-    }
-
+    // Both mobile and desktop drive the playhead from scroll progress (parallax
+    // scrub). The lerp loop below smooths the seek; iOS Safari handles
+    // currentTime updates fine on muted, playsInline, preloaded video.
     const onMeta = () => {
       video.pause();
       targetTimeRef.current = activeProgress * video.duration;
@@ -179,22 +169,7 @@ export default function VisionSection() {
       video.removeEventListener('loadedmetadata', onMeta);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMobile]);
-
-  // Mobile: kick off playback the first time scroll progress through this
-  // section turns positive — i.e. the moment the hero starts sliding up to
-  // reveal Vision. progress > 0 is the same trigger desktop scrubbing now
-  // uses, so both paths start the video at the same beat.
-  useEffect(() => {
-    if (!isMobile) return;
-    const video = videoRef.current;
-    if (!video) return;
-    if (progress > 0.001 && video.paused) {
-      video.play().catch(() => {
-        /* autoplay denied; user gesture will kick it off */
-      });
-    }
-  }, [isMobile, progress]);
+  }, []);
 
   // 20% baseline so the video is already faintly visible while the Hero is exiting,
   // ramping to 100% over the same 5% scroll window after the transition.
