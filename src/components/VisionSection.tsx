@@ -196,7 +196,7 @@ export default function VisionSection() {
     <section
       ref={sectionRef}
       id="visio"
-      className={`relative z-10 ${isMobile ? '' : '-mt-[100vh]'}`}
+      className="relative z-10 -mt-[100vh]"
       style={{ height: '500vh' }}
     >
       <div className="sticky top-0 h-viewport w-full overflow-hidden bg-forest-night">
