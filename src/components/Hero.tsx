@@ -27,7 +27,11 @@ export default function Hero() {
   // The section is now 400vh tall. The original hero scrub plays out across the first
   // half of the section (heroProgress 0->1), and the Eino interlude takes the second.
   const heroProgress = Math.min(1, progress * 2);
-  const panelProgress = Math.max(0, Math.min(1, (progress - 0.5) * 2));
+  // Desktop: panel is the second half of the section. Mobile: hero reveal is
+  // time-driven, so the entire scroll is dedicated to the Eino panel.
+  const panelProgress = isMobile
+    ? progress
+    : Math.max(0, Math.min(1, (progress - 0.5) * 2));
 
   // Update the target playhead from heroProgress whenever it changes.
   useEffect(() => {
@@ -136,13 +140,16 @@ export default function Hero() {
   //   0.20  -> 0.45 : beat 1 holds
   //   0.45  -> 0.65 : crossfade to beat 2
   //   0.65  -> 1.00 : beat 2 holds (then sticky releases and hero scrolls up)
-  const panelSlideIn = Math.max(0, Math.min(1, panelProgress / 0.2));
+  const panelSlideIn = Math.max(0, Math.min(1, panelProgress / (isMobile ? 0.3 : 0.2)));
   const beatCross = Math.max(0, Math.min(1, (panelProgress - 0.45) / 0.2));
   const panelTranslateX = (1 - panelSlideIn) * 100;
 
   return (
     <section id="hero" className="relative z-20" style={{ height: isMobile ? '200dvh' : '400vh' }}>
-      <div className="sticky top-0 h-viewport w-full overflow-hidden bg-forest-night">
+      <div
+        className="sticky top-0 w-full overflow-hidden bg-forest-night"
+        style={{ height: isMobile ? '100svh' : '100dvh' }}
+      >
         <video
           ref={videoRef}
           src={isMobile ? VIDEO_URL_MOBILE : VIDEO_URL_DESKTOP}
@@ -188,9 +195,25 @@ export default function Hero() {
             </p>
 
             <div className="mt-12 flex items-center gap-8">
-              <a href="#vappu" className="ghost-cta rounded-full px-7 py-3 text-xs font-semibold uppercase tracking-widest text-cream">
-                Tutustu tarinaan
-              </a>
+              <span
+                className="ghost-cta rounded-full px-7 py-3 text-xs font-semibold uppercase tracking-widest text-cream inline-flex items-center gap-3 cursor-default select-none"
+                aria-hidden="true"
+              >
+                Selaa alas
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="scroll-bounce"
+                >
+                  <path d="M7 13l5 5 5-5M7 6l5 5 5-5" />
+                </svg>
+              </span>
               <div className="flex items-center gap-2">
                 <span className="dot active" />
                 <span className="dot" />
