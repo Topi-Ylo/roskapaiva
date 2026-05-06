@@ -27,21 +27,24 @@ const FALLBACK: DisplayPartner[] = [
 ];
 
 function PartnerTile({ partner }: { partner: DisplayPartner }) {
-  const inner = partner.logo_url ? (
-    <img
-      src={partner.logo_url}
-      alt={partner.name}
-      loading="lazy"
-      className="max-h-12 max-w-full object-contain opacity-60 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0 md:max-h-14"
-    />
-  ) : (
-    <span className="text-center text-[11px] font-semibold uppercase tracking-wider leading-tight whitespace-pre-line text-cream/55 transition group-hover:text-cream">
-      {partner.name}
-    </span>
+  const inner = (
+    <>
+      {partner.logo_url && (
+        <img
+          src={partner.logo_url}
+          alt={partner.name}
+          loading="lazy"
+          className="max-h-[72px] max-w-full object-contain opacity-60 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0 md:max-h-[84px]"
+        />
+      )}
+      <span className="text-center text-[11px] font-semibold uppercase tracking-wider leading-tight whitespace-pre-line text-cream/55 transition group-hover:text-cream">
+        {partner.name}
+      </span>
+    </>
   );
 
   const tileClass =
-    'group mx-6 flex h-20 w-40 flex-shrink-0 items-center justify-center md:mx-10 md:h-24 md:w-48';
+    'group mx-6 flex h-32 w-44 flex-shrink-0 flex-col items-center justify-center gap-3 md:mx-10 md:h-36 md:w-56';
 
   if (partner.url) {
     return (
