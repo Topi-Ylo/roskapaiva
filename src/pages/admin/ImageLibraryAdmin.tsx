@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent, type ChangeEvent } from 'react';
 import { supabase } from '../../lib/supabase';
-import { uploadToStorage, deleteFromStorage } from '../../lib/storage';
+import { uploadToStorage, deleteFromStorage, compressImage } from '../../lib/storage';
 import {
   AdminPageHeader, DangerButton, Field, GhostButton, PrimaryButton, inputClass,
 } from '../../components/admin/admin-ui';
@@ -24,6 +24,7 @@ export default function ImageLibraryAdmin() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
 
   const refresh = async () => {
@@ -57,11 +58,14 @@ export default function ImageLibraryAdmin() {
     setUploading(true); setError(null);
 
     try {
-      for (const file of Array.from(files)) {
+      for (const rawFile of Array.from(files)) {
+        // Compress images before upload to keep page-load weight down.
+        // Non-image files (or already-small images) pass through unchanged.
+        const file = await compressImage(rawFile);
         const { url, path } = await uploadToStorage(file, 'library/');
         const { error: insertErr } = await supabase.from('image_library').insert({
           url,
-          label: file.name.replace(/\.[^.]+$/, ''),
+          label: rawFile.name.replace(/\.[^.]+$/, ''),
           uploaded: true,
           storage_path: path,
           size_bytes: file.size,
@@ -78,7 +82,15 @@ export default function ImageLibraryAdmin() {
   };
 
   const onCopy = async (img: LibraryImage) => {
-    try { await navigator.clipboard.writeText(img.url); } catch { /* ignore */ }
+    try {
+      await navigator.clipboard.writeText(img.url);
+      setCopiedId(img.id);
+      setTimeout(() => {
+        setCopiedId((curr) => (curr === img.id ? null : curr));
+      }, 1500);
+    } catch {
+      /* clipboard blocked; nothing to do */
+    }
   };
 
   const onDelete = async (img: LibraryImage) => {
@@ -105,7 +117,7 @@ export default function ImageLibraryAdmin() {
         <div className="rounded-lg border border-cream/10 bg-forest-deep p-6 md:p-8">
           <p className="font-display text-xl text-cream">Lataa kuva</p>
           <p className="mt-2 text-sm text-cream/65">
-            Tallennetaan suoraan Supabase-storageen. Hyväksytyt: kuvatiedostot.
+            Tallennetaan suoraan Supabase-storageen. Kuvat tiivistetään automaattisesti (max 2000 px, JPEG).
           </p>
           <input
             ref={fileInput}
@@ -156,7 +168,7 @@ export default function ImageLibraryAdmin() {
                 </div>
                 <p className="truncate text-xs text-cream/40">{img.url}</p>
                 <div className="flex gap-2">
-                  <GhostButton onClick={() => onCopy(img)}>Kopioi URL</GhostButton>
+                  <GhostButton onClick={() => onCopy(img)}>{copiedId === img.id ? 'Kopioitu' : 'Kopioi URL'}</GhostButton>
                   <DangerButton onClick={() => onDelete(img)}>Poista</DangerButton>
                 </div>
               </li>
