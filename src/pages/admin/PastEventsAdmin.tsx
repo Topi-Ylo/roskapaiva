@@ -9,6 +9,7 @@ import {
   inputClass,
   textareaClass,
 } from '../../components/admin/admin-ui';
+import ImagePickerField from '../../components/admin/ImagePickerField';
 
 interface PastEvent {
   id: string;
