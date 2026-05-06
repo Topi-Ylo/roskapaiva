@@ -4,6 +4,7 @@ import {
   AdminPageHeader, DangerButton, Field, GhostButton, PrimaryButton,
   inputClass, textareaClass,
 } from '../../components/admin/admin-ui';
+import ImagePickerField from '../../components/admin/ImagePickerField';
 
 type Category = 'tv' | 'press' | 'podcast';
 
@@ -115,11 +116,10 @@ export default function MediaPostsAdmin() {
           <div className="md:col-span-2"><Field label="Otsikko"><input required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className={inputClass} /></Field></div>
           <div className="md:col-span-2"><Field label="Kuvaus"><textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className={textareaClass} /></Field></div>
           <Field label="Artikkelin URL"><input required type="url" value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} className={inputClass} /></Field>
-          <Field label="Kuva (URL)"><input type="url" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className={inputClass} /></Field>
+          <ImagePickerField label="Kuva" value={form.image_url} onChange={(url) => setForm({ ...form, image_url: url })} />
           <Field label="Järjestys"><input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} className={inputClass} /></Field>
           <label className="flex items-center gap-3 self-end"><input type="checkbox" checked={form.published} onChange={(e) => setForm({ ...form, published: e.target.checked })} className="h-4 w-4 accent-amber" /><span className="text-sm text-cream/80">Julkaistu</span></label>
         </div>
-        {form.image_url && <div className="mt-5"><img src={form.image_url} alt="" className="h-40 w-auto rounded border border-cream/10 object-cover" /></div>}
         {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
         <div className="mt-6 flex flex-wrap gap-3">
           <PrimaryButton type="submit" disabled={busy}>{busy ? 'Tallennetaan…' : editingId ? 'Tallenna' : 'Lisää'}</PrimaryButton>
