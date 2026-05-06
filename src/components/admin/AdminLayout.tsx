@@ -39,7 +39,7 @@ export default function AdminLayout() {
   return (
     <div className="flex min-h-screen bg-forest-night text-cream">
       {/* Sidebar */}
-      <aside className="hidden w-64 shrink-0 flex-col border-r border-cream/10 bg-forest-deep md:flex">
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col self-start border-r border-cream/10 bg-forest-deep md:flex">
         <Link to="/admin" className="flex items-center gap-3 border-b border-cream/10 px-6 py-5">
           <img src="https://i.imgur.com/ORj8kKe.png" alt="" className="h-8 w-auto" />
           <span className="font-display text-lg tracking-wider">Admin</span>
