@@ -4,6 +4,7 @@ import {
   AdminPageHeader, DangerButton, Field, GhostButton, PrimaryButton,
   inputClass, textareaClass,
 } from '../../components/admin/admin-ui';
+import ImagePickerField from '../../components/admin/ImagePickerField';
 
 interface Service {
   id: string;
@@ -101,14 +102,13 @@ export default function ServicesAdmin() {
           <Field label="Numero" hint='esim. "01"'><input required value={form.num} onChange={(e) => setForm({ ...form, num: e.target.value })} className={inputClass} /></Field>
           <Field label="Otsikko" hint='Saa sisältää \n rivinvaihdolle'><input required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className={inputClass} placeholder="Tapahtumat ja\nvirkistyspäivät" /></Field>
           <div className="md:col-span-2"><Field label="Kuvaus"><textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className={textareaClass} /></Field></div>
-          <Field label="Kuva (URL)"><input type="url" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className={inputClass} /></Field>
+          <ImagePickerField label="Kuva" value={form.image_url} onChange={(url) => setForm({ ...form, image_url: url })} />
           <Field label="Järjestys"><input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} className={inputClass} /></Field>
           <Field label="CTA-teksti"><input value={form.cta_label} onChange={(e) => setForm({ ...form, cta_label: e.target.value })} className={inputClass} /></Field>
           <Field label="CTA-sähköposti"><input type="email" value={form.cta_email} onChange={(e) => setForm({ ...form, cta_email: e.target.value })} className={inputClass} /></Field>
           <div className="md:col-span-2"><Field label="CTA-aihe"><input value={form.cta_subject} onChange={(e) => setForm({ ...form, cta_subject: e.target.value })} className={inputClass} placeholder="Tapahtuma tai virkistyspäivä" /></Field></div>
           <label className="flex items-center gap-3 md:col-span-2"><input type="checkbox" checked={form.published} onChange={(e) => setForm({ ...form, published: e.target.checked })} className="h-4 w-4 accent-amber" /><span className="text-sm text-cream/80">Julkaistu</span></label>
         </div>
-        {form.image_url && <div className="mt-5"><img src={form.image_url} alt="" className="h-40 w-auto rounded border border-cream/10 object-cover" /></div>}
         {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
         <div className="mt-6 flex flex-wrap gap-3">
           <PrimaryButton type="submit" disabled={busy}>{busy ? 'Tallennetaan…' : editingId ? 'Tallenna' : 'Lisää'}</PrimaryButton>
