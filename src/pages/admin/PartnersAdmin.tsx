@@ -3,6 +3,7 @@ import { supabase } from '../../lib/supabase';
 import {
   AdminPageHeader, DangerButton, Field, GhostButton, PrimaryButton, inputClass,
 } from '../../components/admin/admin-ui';
+import ImagePickerField from '../../components/admin/ImagePickerField';
 
 interface Partner {
   id: string;
@@ -79,7 +80,7 @@ export default function PartnersAdmin() {
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           <Field label="Nimi"><input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputClass} /></Field>
           <Field label="Järjestys"><input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} className={inputClass} /></Field>
-          <Field label="Logo (URL, valinnainen)"><input type="url" value={form.logo_url} onChange={(e) => setForm({ ...form, logo_url: e.target.value })} className={inputClass} /></Field>
+          <ImagePickerField label="Logo (valinnainen)" value={form.logo_url} onChange={(url) => setForm({ ...form, logo_url: url })} />
           <Field label="Kumppanin sivu (valinnainen)"><input type="url" value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} className={inputClass} /></Field>
           <label className="flex items-center gap-3 md:col-span-2"><input type="checkbox" checked={form.published} onChange={(e) => setForm({ ...form, published: e.target.checked })} className="h-4 w-4 accent-amber" /><span className="text-sm text-cream/80">Julkaistu</span></label>
         </div>
