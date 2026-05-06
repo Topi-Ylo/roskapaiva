@@ -122,7 +122,7 @@ export default function StorySection() {
 
               <div className="reveal delay-2 mt-10 space-y-5 text-base leading-relaxed text-cream/80 md:text-lg">
                 <p>
-                  Seitsemän vuotta sitten havahduin luonnon roskaantumiseen ja mietin, että asialle on tehtävä jotain. Aloin keräämään ja kuvaamaan roskaa, ja perustin Instagramiin Roskapäivä-tilin.
+                  Kahdeksan vuotta sitten havahduin luonnon roskaantumiseen ja mietin, että asialle on tehtävä jotain. Aloin keräämään ja kuvaamaan roskaa, ja perustin Instagramiin Roskapäivä-tilin.
                 </p>
                 <p>
                   Kaikki alkoi vuonna 2018 hammasteknikon päivätyöni ohella. Ensin omaksi ilokseni, pian jo intohimosta. Vuosien varrella Roskapäivästä kasvoi tärkeä osa elämääni ja lopulta myös työni.
