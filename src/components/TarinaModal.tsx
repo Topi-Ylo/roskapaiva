@@ -49,7 +49,7 @@ export default function TarinaModal({ open, onClose }: Props) {
           </h2>
 
           <p className="mt-10 text-lg italic leading-relaxed text-cream/85 font-quote md:text-xl">
-            Seitsemän vuotta sitten havahduin luonnon roskaantumiseen ja mietin, että asialle on tehtävä jotain. Aloin keräämään ja kuvaamaan roskaa, ja perustin Instagramiin Roskapäivä-tilin. Siitä kasvoi yhteisö, joka innostaa ihmisiä toimimaan luonnon puolesta omalla tavallaan.
+            Kahdeksan vuotta sitten havahduin luonnon roskaantumiseen ja mietin, että asialle on tehtävä jotain. Aloin keräämään ja kuvaamaan roskaa, ja perustin Instagramiin Roskapäivä-tilin. Siitä kasvoi yhteisö, joka innostaa ihmisiä toimimaan luonnon puolesta omalla tavallaan.
           </p>
 
           <div className="mt-10 space-y-5 text-base leading-relaxed text-cream/80 md:text-lg">
