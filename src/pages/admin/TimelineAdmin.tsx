@@ -4,6 +4,7 @@ import {
   AdminPageHeader, DangerButton, Field, GhostButton, PrimaryButton,
   inputClass, textareaClass,
 } from '../../components/admin/admin-ui';
+import ImagePickerField from '../../components/admin/ImagePickerField';
 
 interface TimelineEntry {
   id: string;
@@ -109,7 +110,7 @@ export default function TimelineAdmin() {
           <Field label="Vuosi"><input required value={form.year} onChange={(e) => setForm({ ...form, year: e.target.value })} className={inputClass} /></Field>
           <Field label="Otsikko"><input required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className={inputClass} /></Field>
           <Field label="Järjestys"><input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} className={inputClass} /></Field>
-          <Field label="Kuva (URL)"><input type="url" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className={inputClass} /></Field>
+          <ImagePickerField label="Kuva" value={form.image_url} onChange={(url) => setForm({ ...form, image_url: url })} />
           <div className="md:col-span-2"><Field label="Kuvaus" hint="Näytetään vain kun korttia on klikattu modaalissa"><textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className={textareaClass} /></Field></div>
           <Field label="Kuvan kohdistus" hint="bento-ruudukon sisällä"><select value={form.object_position} onChange={(e) => setForm({ ...form, object_position: e.target.value })} className={inputClass}><option value="center">center</option><option value="top">top</option><option value="bottom">bottom</option></select></Field>
           <div className="space-y-2 self-end">
