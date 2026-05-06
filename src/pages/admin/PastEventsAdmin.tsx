@@ -165,15 +165,12 @@ export default function PastEventsAdmin() {
               className={inputClass}
             />
           </Field>
-          <Field label="Kuva (URL)">
-            <input
-              type="url"
-              value={form.image_url}
-              onChange={(e) => setForm({ ...form, image_url: e.target.value })}
-              className={inputClass}
-              placeholder="https://i.imgur.com/..."
-            />
-          </Field>
+          <ImagePickerField
+            label="Kuva"
+            value={form.image_url}
+            onChange={(url) => setForm({ ...form, image_url: url })}
+            placeholder="https://i.imgur.com/..."
+          />
           <div className="md:col-span-2">
             <Field label="Kuvaus" hint="Lyhyt rivi, näkyy kortin alla">
               <textarea
@@ -194,17 +191,6 @@ export default function PastEventsAdmin() {
             <span className="text-sm text-cream/80">Julkaistu (näkyvissä sivustolla)</span>
           </label>
         </div>
-
-        {form.image_url && (
-          <div className="mt-5">
-            <p className="text-xs uppercase tracking-widest text-cream/50">Esikatselu</p>
-            <img
-              src={form.image_url}
-              alt=""
-              className="mt-2 h-40 w-auto rounded border border-cream/10 object-cover"
-            />
-          </div>
-        )}
 
         {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
 
