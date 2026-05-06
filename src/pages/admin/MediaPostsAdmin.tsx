@@ -95,8 +95,9 @@ export default function MediaPostsAdmin() {
   };
 
   // Move a post up/down within its category by swapping sort_order with the
-  // adjacent peer. If two peers happened to share the same sort_order we nudge
-  // them apart so the move is visible.
+  // adjacent peer. Updates local state optimistically so the page doesn't
+  // flash through the loading state or jump back to the top — only the two
+  // affected rows re-render.
   const onMove = async (p: Post, direction: 'up' | 'down') => {
     if (!supabase) return;
     const peers = (grouped[p.category] ?? []).slice().sort((a, b) => a.sort_order - b.sort_order);
@@ -104,17 +105,31 @@ export default function MediaPostsAdmin() {
     const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
     if (idx < 0 || swapIdx < 0 || swapIdx >= peers.length) return;
     const other = peers[swapIdx];
-    const a = p.sort_order;
-    const b = other.sort_order === p.sort_order
+    const newSelf = other.sort_order === p.sort_order
       ? p.sort_order + (direction === 'up' ? -1 : 1)
       : other.sort_order;
-    const r1 = await supabase.from('media_posts').update({ sort_order: b }).eq('id', p.id);
-    const r2 = await supabase.from('media_posts').update({ sort_order: a }).eq('id', other.id);
+    const newOther = p.sort_order;
+
+    // Optimistic local swap. The list is rendered from `items` ordered by
+    // sort_order (via the `grouped` reducer + the initial query), so changing
+    // these two values is enough to flip the visual order in place.
+    setItems((prev) =>
+      prev
+        .map((item) => {
+          if (item.id === p.id) return { ...item, sort_order: newSelf };
+          if (item.id === other.id) return { ...item, sort_order: newOther };
+          return item;
+        })
+        .sort((a, b) => a.sort_order - b.sort_order),
+    );
+
+    const r1 = await supabase.from('media_posts').update({ sort_order: newSelf }).eq('id', p.id);
+    const r2 = await supabase.from('media_posts').update({ sort_order: newOther }).eq('id', other.id);
     if (r1.error || r2.error) {
       setError(r1.error?.message ?? r2.error?.message ?? 'Järjestyksen päivitys epäonnistui');
-      return;
+      // DB write failed — re-fetch to recover the truth.
+      await refresh();
     }
-    await refresh();
   };
 
   const grouped = items.reduce<Record<Category, Post[]>>((acc, p) => {
