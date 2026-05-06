@@ -7,9 +7,9 @@ import {
 } from '../hooks/useMobileHeroReveal';
 
 const VIDEO_URL_DESKTOP =
-  'https://video.gumlet.io/689843b7ce30732b0c4db420/69f89f6bb73ee3afb29be580/download.mp4';
+  'https://video.gumlet.io/689843b7ce30732b0c4db420/69fae84160e95a00ee864b32/download.mp4';
 const VIDEO_URL_MOBILE =
-  'https://video.gumlet.io/689843b7ce30732b0c4db420/69f9b79165082997b52955a8/download.mp4';
+  'https://video.gumlet.io/689843b7ce30732b0c4db420/69fae94a5c890ee77b65e6db/download.mp4';
 
 // Placeholder portraits — swap for real Eino photos later.
 const EINO_IMG_1 = 'https://i.imgur.com/Mf4XgjV.jpeg';
