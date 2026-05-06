@@ -94,6 +94,29 @@ export default function MediaPostsAdmin() {
     await refresh();
   };
 
+  // Move a post up/down within its category by swapping sort_order with the
+  // adjacent peer. If two peers happened to share the same sort_order we nudge
+  // them apart so the move is visible.
+  const onMove = async (p: Post, direction: 'up' | 'down') => {
+    if (!supabase) return;
+    const peers = (grouped[p.category] ?? []).slice().sort((a, b) => a.sort_order - b.sort_order);
+    const idx = peers.findIndex((x) => x.id === p.id);
+    const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+    if (idx < 0 || swapIdx < 0 || swapIdx >= peers.length) return;
+    const other = peers[swapIdx];
+    const a = p.sort_order;
+    const b = other.sort_order === p.sort_order
+      ? p.sort_order + (direction === 'up' ? -1 : 1)
+      : other.sort_order;
+    const r1 = await supabase.from('media_posts').update({ sort_order: b }).eq('id', p.id);
+    const r2 = await supabase.from('media_posts').update({ sort_order: a }).eq('id', other.id);
+    if (r1.error || r2.error) {
+      setError(r1.error?.message ?? r2.error?.message ?? 'Järjestyksen päivitys epäonnistui');
+      return;
+    }
+    await refresh();
+  };
+
   const grouped = items.reduce<Record<Category, Post[]>>((acc, p) => {
     (acc[p.category] = acc[p.category] || []).push(p);
     return acc;
@@ -133,23 +156,47 @@ export default function MediaPostsAdmin() {
             <p className="font-display text-xl text-cream">{CATEGORY_LABELS[cat]} ({grouped[cat].length})</p>
             {loading ? <p className="mt-3 text-cream/60">Ladataan…</p> : grouped[cat].length === 0 ? <p className="mt-3 text-cream/60">Ei vielä julkaisuja.</p> : (
               <ul className="mt-4 space-y-3">
-                {grouped[cat].map((p) => (
-                  <li key={p.id} className="flex flex-col gap-4 rounded-lg border border-cream/10 bg-forest-deep p-4 md:flex-row md:items-center">
-                    <div className="h-20 w-32 flex-shrink-0 overflow-hidden rounded bg-forest-night">
-                      {p.image_url ? <img src={p.image_url} alt="" className="h-full w-full object-cover" loading="lazy" /> : <div className="flex h-full w-full items-center justify-center text-xs text-cream/40">Ei kuvaa</div>}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="rounded-full bg-amber/15 px-2 py-0.5 text-[10px] uppercase tracking-widest text-amber">{p.source}</span>
-                        {!p.published && <span className="rounded-full bg-cream/10 px-2 py-0.5 text-[10px] uppercase tracking-widest text-cream/55">luonnos</span>}
+                {grouped[cat].map((p, i) => {
+                  const isFirst = i === 0;
+                  const isLast = i === grouped[cat].length - 1;
+                  return (
+                    <li key={p.id} className="flex flex-col gap-4 overflow-hidden rounded-lg border border-cream/10 bg-forest-deep p-4 md:flex-row md:items-center">
+                      <div className="flex flex-shrink-0 flex-col gap-1">
+                        <button
+                          type="button"
+                          onClick={() => onMove(p, 'up')}
+                          disabled={isFirst}
+                          aria-label="Siirrä ylös"
+                          className="rounded border border-cream/20 px-2 py-1 text-cream/80 transition hover:border-amber hover:text-amber disabled:cursor-not-allowed disabled:opacity-30"
+                        >
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 15l6-6 6 6" /></svg>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onMove(p, 'down')}
+                          disabled={isLast}
+                          aria-label="Siirrä alas"
+                          className="rounded border border-cream/20 px-2 py-1 text-cream/80 transition hover:border-amber hover:text-amber disabled:cursor-not-allowed disabled:opacity-30"
+                        >
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
+                        </button>
                       </div>
-                      <p className="mt-2 font-display text-lg text-cream">{p.title}</p>
-                      {p.description && <p className="mt-1 text-sm text-cream/70 line-clamp-2">{p.description}</p>}
-                      <a href={p.url} target="_blank" rel="noopener noreferrer" className="mt-1 block truncate text-xs text-amber hover:text-amber-light">{p.url}</a>
-                    </div>
-                    <div className="flex gap-2"><GhostButton onClick={() => startEdit(p)}>Muokkaa</GhostButton><DangerButton onClick={() => onDelete(p)}>Poista</DangerButton></div>
-                  </li>
-                ))}
+                      <div className="h-20 w-32 flex-shrink-0 overflow-hidden rounded bg-forest-night">
+                        {p.image_url ? <img src={p.image_url} alt="" className="h-full w-full object-cover" loading="lazy" /> : <div className="flex h-full w-full items-center justify-center text-xs text-cream/40">Ei kuvaa</div>}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="rounded-full bg-amber/15 px-2 py-0.5 text-[10px] uppercase tracking-widest text-amber">{p.source}</span>
+                          {!p.published && <span className="rounded-full bg-cream/10 px-2 py-0.5 text-[10px] uppercase tracking-widest text-cream/55">luonnos</span>}
+                        </div>
+                        <p className="mt-2 font-display text-lg text-cream break-words">{p.title}</p>
+                        {p.description && <p className="mt-1 text-sm text-cream/70 line-clamp-2">{p.description}</p>}
+                        <a href={p.url} target="_blank" rel="noopener noreferrer" className="mt-1 block truncate text-xs text-amber hover:text-amber-light">{p.url}</a>
+                      </div>
+                      <div className="flex flex-shrink-0 gap-2"><GhostButton onClick={() => startEdit(p)}>Muokkaa</GhostButton><DangerButton onClick={() => onDelete(p)}>Poista</DangerButton></div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
