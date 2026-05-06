@@ -264,7 +264,7 @@ export default function Hero() {
 
         {/* Eino interlude — right-anchored card that's 80vw on phones and a 28vw strip on desktop. */}
         <aside
-          className="absolute right-0 top-[76px] bottom-0 z-30 w-[80vw] md:w-[28vw] md:min-w-[260px] md:max-w-[440px]"
+          className="absolute right-0 top-[76px] bottom-0 z-30 w-full md:w-[28vw] md:min-w-[260px] md:max-w-[440px]"
           style={{
             transform: `translate3d(${panelTranslateX}%, 0, 0)`,
             transition: 'none',
