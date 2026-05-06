@@ -79,7 +79,7 @@ export default function StorySection() {
   const [open, setOpen] = useState(false);
   const [activeYear, setActiveYear] = useState('2018');
   const [galleryIndex, setGalleryIndex] = useState<number | null>(null);
-  const { data: rows } = useTableData<TimelineRow>('timeline_entries');
+  const { data: rows, loading } = useTableData<TimelineRow>('timeline_entries');
   const cards: Card[] = rows && rows.length > 0
     ? rows.map((r) => ({
         year: r.year,
@@ -90,6 +90,8 @@ export default function StorySection() {
         wide: r.is_wide ?? undefined,
         objectPosition: (r.object_position as 'top' | 'center' | 'bottom' | null) ?? undefined,
       }))
+    : loading
+    ? []
     : FALLBACK_CARDS;
 
   return (
