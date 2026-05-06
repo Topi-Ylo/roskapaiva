@@ -67,10 +67,12 @@ function PartnerTile({ partner }: { partner: DisplayPartner }) {
 }
 
 export default function PartnersSection() {
-  const { data } = useTableData<PartnerRow>('partners');
+  const { data, loading } = useTableData<PartnerRow>('partners');
   const partners: DisplayPartner[] =
     data && data.length > 0
       ? data.map((r) => ({ name: r.name, logo_url: r.logo_url, url: r.url }))
+      : loading
+      ? []
       : FALLBACK;
 
   // Duplicate the list so the CSS marquee can translate by -50% and land on
