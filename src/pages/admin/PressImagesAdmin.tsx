@@ -3,6 +3,7 @@ import { supabase } from '../../lib/supabase';
 import {
   AdminPageHeader, DangerButton, Field, GhostButton, PrimaryButton, inputClass,
 } from '../../components/admin/admin-ui';
+import ImagePickerField from '../../components/admin/ImagePickerField';
 
 interface PressImage {
   id: string;
@@ -75,13 +76,19 @@ export default function PressImagesAdmin() {
       <form onSubmit={onSubmit} className="rounded-lg border border-cream/10 bg-forest-deep p-6 md:p-8">
         <p className="font-display text-xl text-cream">{editingId ? 'Muokkaa kuvaa' : 'Uusi kuva'}</p>
         <div className="mt-5 grid gap-4 md:grid-cols-2">
-          <div className="md:col-span-2"><Field label="Kuva (URL)"><input required type="url" value={form.src} onChange={(e) => setForm({ ...form, src: e.target.value })} className={inputClass} /></Field></div>
+          <div className="md:col-span-2">
+            <ImagePickerField
+              label="Kuva"
+              required
+              value={form.src}
+              onChange={(url) => setForm({ ...form, src: url })}
+            />
+          </div>
           <Field label="Otsake / kuvateksti"><input required value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} className={inputClass} placeholder="Eino, kentällä" /></Field>
           <Field label="Järjestys"><input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} className={inputClass} /></Field>
           <label className="flex items-center gap-3"><input type="checkbox" checked={form.in_zip} onChange={(e) => setForm({ ...form, in_zip: e.target.checked })} className="h-4 w-4 accent-amber" /><span className="text-sm text-cream/80">Sisällytä lataus-zipiin</span></label>
           <label className="flex items-center gap-3"><input type="checkbox" checked={form.published} onChange={(e) => setForm({ ...form, published: e.target.checked })} className="h-4 w-4 accent-amber" /><span className="text-sm text-cream/80">Julkaistu (näkyy karusellissa)</span></label>
         </div>
-        {form.src && <div className="mt-5"><img src={form.src} alt="" className="h-40 w-auto rounded border border-cream/10 object-cover" /></div>}
         {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
         <div className="mt-6 flex flex-wrap gap-3">
           <PrimaryButton type="submit" disabled={busy}>{busy ? 'Tallennetaan…' : editingId ? 'Tallenna' : 'Lisää'}</PrimaryButton>
