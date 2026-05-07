@@ -44,7 +44,7 @@ function PartnerTile({ partner }: { partner: DisplayPartner }) {
   );
 
   const tileClass =
-    'group mx-6 flex h-32 w-44 flex-shrink-0 flex-col items-center justify-center gap-3 md:mx-10 md:h-36 md:w-56';
+    'group mx-2 flex h-32 w-40 flex-shrink-0 flex-col items-center justify-center gap-3 md:mx-3 md:h-36 md:w-48';
 
   if (partner.url) {
     return (
