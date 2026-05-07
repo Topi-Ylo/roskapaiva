@@ -201,16 +201,22 @@ function ArticleCard({ article }: { article: Article }) {
 }
 
 export default function MediaSection() {
-  const { data: rows } = useTableData<MediaPostRow>('media_posts');
+  const { data: rows, loading } = useTableData<MediaPostRow>('media_posts');
 
-  let tv: Article[] = FALLBACK_TV;
-  let press: Article[] = FALLBACK_PRESS;
-  let other: Article[] = FALLBACK_OTHER;
+  // While loading, render empty arrays so the FALLBACK (which has hardcoded
+  // image URLs) doesn't flash before the DB response arrives.
+  let tv: Article[] = [];
+  let press: Article[] = [];
+  let other: Article[] = [];
 
   if (rows && rows.length > 0) {
     tv = rows.filter((r) => r.category === 'tv').map(rowToArticle);
     press = rows.filter((r) => r.category === 'press').map(rowToArticle);
     other = rows.filter((r) => r.category === 'podcast').map(rowToArticle);
+  } else if (!loading) {
+    tv = FALLBACK_TV;
+    press = FALLBACK_PRESS;
+    other = FALLBACK_OTHER;
   }
 
   return (

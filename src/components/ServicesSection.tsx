@@ -48,7 +48,11 @@ const ArrowRight = () => (
 );
 
 export default function ServicesSection() {
-  const { data: rows } = useTableData<ServiceRow>('services');
+  const { data: rows, loading } = useTableData<ServiceRow>('services');
+  // While the DB is still loading, render nothing instead of the hardcoded
+  // FALLBACK — that's what was causing the old image to flicker before the
+  // freshly-saved one appeared. FALLBACK is now only used when the DB has
+  // actually returned empty (i.e. Supabase isn't configured or has no rows).
   const services = rows && rows.length > 0
     ? rows.map((r, i) => ({
         num: r.num,
@@ -59,6 +63,8 @@ export default function ServicesSection() {
         cta: r.cta_label ?? 'Ota yhteyttä',
         delay: i === 0 ? '' : `delay-${i}`,
       }))
+    : loading
+    ? []
     : FALLBACK_SERVICES;
 
   return (
