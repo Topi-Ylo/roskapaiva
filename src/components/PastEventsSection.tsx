@@ -21,9 +21,9 @@ const FALLBACK: PastEvent[] = [
 
 export default function PastEventsSection() {
   const carouselRef = useRef<HTMLDivElement>(null);
-  const { data, loading } = useTableData<PastEvent>('past_events');
+  const { data } = useTableData<PastEvent>('past_events');
 
-  const events = data && data.length > 0 ? data : loading ? [] : FALLBACK;
+  const events = data && data.length > 0 ? data : FALLBACK;
 
   const scroll = (dir: 'prev' | 'next') => {
     if (!carouselRef.current) return;

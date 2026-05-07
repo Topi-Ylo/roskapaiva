@@ -306,21 +306,3 @@ body.modal-open { overflow: hidden; }
   .media-marquee { animation: none; }
 }
 
-/* Partner logo strip — slower than the press marquee since each tile is much
-   smaller. Two copies of the row sit back-to-back; -50% lands on a seamless
-   loop point. */
-@keyframes partner-marquee {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-.partner-marquee {
-  animation: partner-marquee 50s linear infinite;
-  width: max-content;
-}
-.partner-marquee:hover {
-  animation-play-state: paused;
-}
-@media (prefers-reduced-motion: reduce) {
-  .partner-marquee { animation: none; }
-}
-

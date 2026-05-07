@@ -49,13 +49,10 @@ function CopyButton({ text }: { text: string }) {
 export default function MediaKorttiSection() {
   const [open, setOpen] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState<number | null>(null);
-  const { data: rows, loading } = useTableData<PressImageRow>('press_images');
+  const { data: rows } = useTableData<PressImageRow>('press_images');
   const settings = useSiteSettings();
-  // While loading, render empty so the FALLBACK doesn't flash stale images.
   const pressImages = rows && rows.length > 0
     ? rows.map((r) => ({ src: r.src, label: r.label }))
-    : loading
-    ? []
     : FALLBACK_PRESS_IMAGES;
 
   return (

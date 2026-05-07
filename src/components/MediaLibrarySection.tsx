@@ -158,14 +158,8 @@ const FALLBACK_ITEMS: MediaItem[] = [  {
 
 export default function MediaLibrarySection() {
   const [active, setActive] = useState<MediaItem | null>(null);
-  const { data: rows, loading } = useTableData<CollabRow>('social_media_collabs');
-  // Don't render the FALLBACK during the loading window — that flickers stale
-  // images before the DB response arrives.
-  const items: MediaItem[] = rows && rows.length > 0
-    ? rows.map(rowToItem)
-    : loading
-    ? []
-    : FALLBACK_ITEMS;
+  const { data: rows } = useTableData<CollabRow>('social_media_collabs');
+  const items: MediaItem[] = rows && rows.length > 0 ? rows.map(rowToItem) : FALLBACK_ITEMS;
 
   return (
     <>

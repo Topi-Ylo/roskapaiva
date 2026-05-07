@@ -85,29 +85,33 @@ export default function FooterSection() {
                   <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
                 </svg>
               </a>
-              <a
-                href={settings.tiktok_url ?? 'https://www.tiktok.com/@roskapaiva'}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="TikTok"
-                className="ghost-cta flex h-14 w-14 items-center justify-center rounded-full text-cream transition hover:text-amber"
-              >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.55a8.16 8.16 0 0 0 4.77 1.52V6.62a4.85 4.85 0 0 1-1.84.07Z" />
-                </svg>
-              </a>
-              <a
-                href={settings.youtube_url ?? 'https://www.youtube.com/@roskapaiva'}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="YouTube"
-                className="ghost-cta flex h-14 w-14 items-center justify-center rounded-full text-cream transition hover:text-amber"
-              >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M22 8.5a4 4 0 0 0-3-3C17 5 12 5 12 5s-5 0-7 .5a4 4 0 0 0-3 3C2 10.5 2 12 2 12s0 1.5.5 3.5a4 4 0 0 0 3 3C7.5 19 12 19 12 19s5 0 7-.5a4 4 0 0 0 3-3c.5-2 .5-3.5.5-3.5s0-1.5-.5-3.5Z" />
-                  <path d="m10 9 5 3-5 3V9Z" fill="currentColor" />
-                </svg>
-              </a>
+              {settings.tiktok_url && (
+                <a
+                  href={settings.tiktok_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="TikTok"
+                  className="ghost-cta flex h-14 w-14 items-center justify-center rounded-full text-cream transition hover:text-amber"
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.55a8.16 8.16 0 0 0 4.77 1.52V6.62a4.85 4.85 0 0 1-1.84.07Z" />
+                  </svg>
+                </a>
+              )}
+              {settings.youtube_url && (
+                <a
+                  href={settings.youtube_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                  className="ghost-cta flex h-14 w-14 items-center justify-center rounded-full text-cream transition hover:text-amber"
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M22 8.5a4 4 0 0 0-3-3C17 5 12 5 12 5s-5 0-7 .5a4 4 0 0 0-3 3C2 10.5 2 12 2 12s0 1.5.5 3.5a4 4 0 0 0 3 3C7.5 19 12 19 12 19s5 0 7-.5a4 4 0 0 0 3-3c.5-2 .5-3.5.5-3.5s0-1.5-.5-3.5Z" />
+                    <path d="m10 9 5 3-5 3V9Z" fill="currentColor" />
+                  </svg>
+                </a>
+              )}
             </div>
           </div>
         </div>
