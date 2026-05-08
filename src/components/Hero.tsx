@@ -92,7 +92,7 @@ export default function Hero() {
     <section id="hero" className="relative z-20" style={{ height: '200dvh' }}>
       <div
         className="sticky top-0 w-full overflow-hidden bg-forest-night"
-        style={{ height: '100svh' }}
+        style={{ height: isMobile ? '100svh' : '100dvh' }}
       >
         <video
           ref={videoRef}
@@ -121,11 +121,11 @@ export default function Hero() {
         >
           <div className="mx-auto w-full max-w-7xl">
             <p className="eyebrow text-amber">Helsinki · Est. 2018</p>
-            <h1 className="font-display mt-6 text-[18vw] leading-[0.92] text-cream sm:text-[15vw] md:text-[12rem] lg:text-[14rem]">
+            <h1 className="font-display mt-6 text-[clamp(4rem,16vw,15rem)] leading-[0.92] text-cream">
               Ois<br /><em className="italic font-medium text-amber-light">siistimpää,</em>
             </h1>
             <p
-              className="font-quote mt-3 text-center text-[9vw] italic leading-[0.95] text-white sm:text-[7.5vw] md:text-[6rem] lg:text-[7rem]"
+              className="font-quote mt-3 text-center text-[clamp(2.5rem,8vw,7rem)] italic leading-[0.95] text-white"
               style={{
                 opacity: subtitleReveal,
                 transform: `translate3d(${subtitleSlideX}vw, 0, 0)`,
