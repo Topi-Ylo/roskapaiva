@@ -112,7 +112,7 @@ export default function Hero() {
         />
 
         <div
-          className="relative z-10 flex h-full flex-col justify-end px-6 pb-12 md:pb-[calc(8rem+10vh)]"
+          className="relative z-10 flex h-full flex-col justify-end px-6 pt-20 pb-12 md:pt-24 md:pb-[calc(4rem+6vh)]"
           style={{
             opacity: textOpacity,
             transform: `translate3d(0, ${textTranslateY}px, 0)`,
@@ -121,11 +121,11 @@ export default function Hero() {
         >
           <div className="mx-auto w-full max-w-7xl">
             <p className="eyebrow text-amber">Helsinki · Est. 2018</p>
-            <h1 className="font-display mt-6 text-[clamp(4rem,16vw,15rem)] leading-[0.92] text-cream">
+            <h1 className="font-display mt-6 text-[clamp(3rem,min(14vw,18vh),14rem)] leading-[0.92] text-cream">
               Ois<br /><em className="italic font-medium text-amber-light">siistimpää,</em>
             </h1>
             <p
-              className="font-quote mt-3 text-center text-[clamp(2.5rem,8vw,7rem)] italic leading-[0.95] text-white"
+              className="font-quote mt-3 text-center text-[clamp(2rem,min(7vw,9vh),6rem)] italic leading-[0.95] text-white"
               style={{
                 opacity: subtitleReveal,
                 transform: `translate3d(${subtitleSlideX}vw, 0, 0)`,
