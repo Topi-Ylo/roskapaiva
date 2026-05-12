@@ -21,7 +21,7 @@ export default function EventSection() {
               <h3 className="font-display text-4xl text-cream md:text-5xl">Lauantai. Kalenteriin nyt.</h3>
               <p className="mt-6 max-w-xl text-base leading-relaxed text-cream/75 md:text-lg">
                 Kerätään yhdessä, kuullaan puheita, syödään, kuunnellaan musiikkia. Päätapahtuman lokaatio Helsingissä varmistuu lähikuukausina. Voit osallistua myös kotiseudullasi: kerää roskia oman matkasi varrelta, jaa kuva tunnisteella{' '}
-                <span className="text-amber">#Roskapäivä2026</span>.
+                <span className="text-amber">#roskapäivä2026</span>.
               </p>
             </div>
             <div className="md:col-span-5 md:flex md:justify-end">
