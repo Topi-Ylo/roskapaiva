@@ -25,7 +25,7 @@ export default function PhilosophySection() {
             </div>
 
             <p className="reveal delay-3 font-quote mt-10 border-l-2 border-amber pl-6 text-2xl italic leading-snug text-amber-light md:text-3xl">
-              Jokainen päivä voi olla roskapäivä.
+              Jokainen päivä voi olla Roskapäivä.
             </p>
           </div>
         </div>
