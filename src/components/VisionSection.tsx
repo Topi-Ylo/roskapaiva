@@ -55,7 +55,7 @@ const STEPS: Step[] = [
     variant: 'narration',
   },
   {
-    text: 'Jokainen päivä voi olla roskapäivä.',
+    text: 'Jokainen päivä voi olla Roskapäivä.',
     fadeInStart: 0.95, fadeInEnd: 0.98, fadeOutStart: 2, fadeOutEnd: 2,
     variant: 'tagline',
   },
