@@ -11,6 +11,7 @@ interface Service {
   num: string;
   title: string;
   description: string | null;
+  modal_body: string | null;
   image_url: string | null;
   cta_label: string | null;
   cta_email: string | null;
@@ -20,12 +21,12 @@ interface Service {
 }
 
 interface FormState {
-  num: string; title: string; description: string; image_url: string;
+  num: string; title: string; description: string; modal_body: string; image_url: string;
   cta_label: string; cta_email: string; cta_subject: string;
   sort_order: number; published: boolean;
 }
 const EMPTY: FormState = {
-  num: '', title: '', description: '', image_url: '',
+  num: '', title: '', description: '', modal_body: '', image_url: '',
   cta_label: 'Pyydä tarjous', cta_email: 'eino@roskapaiva.com', cta_subject: '',
   sort_order: 0, published: true,
 };
@@ -53,6 +54,7 @@ export default function ServicesAdmin() {
     setEditingId(s.id);
     setForm({
       num: s.num, title: s.title, description: s.description ?? '',
+      modal_body: s.modal_body ?? '',
       image_url: s.image_url ?? '', cta_label: s.cta_label ?? '',
       cta_email: s.cta_email ?? '', cta_subject: s.cta_subject ?? '',
       sort_order: s.sort_order, published: s.published,
@@ -67,6 +69,7 @@ export default function ServicesAdmin() {
     const payload = {
       num: form.num.trim(), title: form.title.trim(),
       description: form.description.trim() || null,
+      modal_body: form.modal_body.trim() || null,
       image_url: form.image_url.trim() || null,
       cta_label: form.cta_label.trim() || null,
       cta_email: form.cta_email.trim() || null,
@@ -101,7 +104,8 @@ export default function ServicesAdmin() {
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           <Field label="Numero" hint='esim. "01"'><input required value={form.num} onChange={(e) => setForm({ ...form, num: e.target.value })} className={inputClass} /></Field>
           <Field label="Otsikko" hint='Saa sisältää \n rivinvaihdolle'><input required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className={inputClass} placeholder="Tapahtumat ja\nvirkistyspäivät" /></Field>
-          <div className="md:col-span-2"><Field label="Kuvaus"><textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className={textareaClass} /></Field></div>
+          <div className="md:col-span-2"><Field label="Lyhyt kuvaus" hint="Näkyy palvelukortilla"><textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className={textareaClass} /></Field></div>
+          <div className="md:col-span-2"><Field label="Modaalin teksti" hint="Pitkä kuvaus, joka näkyy kun kortti avataan. Tyhjä rivi = uusi kappale."><textarea value={form.modal_body} onChange={(e) => setForm({ ...form, modal_body: e.target.value })} className={textareaClass + ' min-h-[180px]'} placeholder="Ensimmäinen kappale.\n\nToinen kappale.\n\nKolmas kappale." /></Field></div>
           <ImagePickerField label="Kuva" value={form.image_url} onChange={(url) => setForm({ ...form, image_url: url })} />
           <Field label="Järjestys"><input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} className={inputClass} /></Field>
           <Field label="CTA-teksti"><input value={form.cta_label} onChange={(e) => setForm({ ...form, cta_label: e.target.value })} className={inputClass} /></Field>
