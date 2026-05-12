@@ -31,7 +31,7 @@ const FALLBACK_SERVICES: ServiceCard[] = [
     title: 'Tapahtumat ja\nvirkistyspäivät',
     description: 'Yrityksille, kouluille ja organisaatioille: siivoustapahtumia ja virkistyspäiviä. Voi sisältää luennon, koulutuksen, roskaretken, siivoustapahtuman tai piknik-henkisen iltapäivän.',
     modalBody:
-      'Järjestän yrityksille, kouluille ja organisaatioille räätälöityjä siivoustapahtumia ja virkistyspäiviä, joissa tehdään hyvää luonnolle ja vahvistetaan samalla yhteishenkeä.\n\nTyypillinen tapahtuma voi sisältää lyhyen, innostavan luennon roskaantumisesta, ohjatun roskaretken lähimaastoon tai kaupunkiin sekä rennon yhteisen lopetuksen — esimerkiksi piknik-henkisen iltapäivän tai afterwork-tyylisen koonnin.\n\nPyydä tarjous, niin keksitään yhdessä juuri teille sopiva kokonaisuus.',
+      'Järjestän yrityksille, kouluille ja organisaatioille räätälöityjä siivoustapahtumia ja virkistyspäiviä, joissa tehdään hyvää luonnolle ja vahvistetaan samalla yhteishenkeä.\n\nTyypillinen tapahtuma voi sisältää lyhyen, innostavan luennon roskaantumisesta, ohjatun roskaretken lähimaastoon tai kaupunkiin sekä rennon yhteisen lopetuksen, esimerkiksi piknik-henkisen iltapäivän tai afterwork-tyylisen koonnin.\n\nPyydä tarjous, niin keksitään yhdessä juuri teille sopiva kokonaisuus.',
     imageUrl: 'https://i.imgur.com/zOqWc48.jpeg',
     ctaLabel: 'Pyydä tarjous',
     ctaEmail: 'eino@roskapaiva.com',
@@ -42,7 +42,7 @@ const FALLBACK_SERVICES: ServiceCard[] = [
     title: 'Luennot ja\nkoulutus',
     description: 'Luennoin luonnon roskaantumisesta, kiertotaloudesta ja muista ekoaiheista kouluilla ja yrityksissä. Räätälöin luennon sellaiseksi kuin asiakas toivoo.',
     modalBody:
-      'Pidän luentoja ja koulutuksia luonnon roskaantumisesta, kiertotaloudesta ja kestävistä elämäntavoista — kouluilla, yrityksissä ja tapahtumissa ympäri Suomen.\n\nLuennoissani yhdistyvät kahdeksan vuoden konkreettinen kokemus roskien parista, ymmärrettävät faktat ja Roskapäivän tunnistettava, rento tyyli.\n\nOta yhteyttä, niin keskustellaan teidän tarpeistanne.',
+      'Pidän luentoja ja koulutuksia luonnon roskaantumisesta, kiertotaloudesta ja kestävistä elämäntavoista. Käyn puhumassa kouluilla, yrityksissä ja tapahtumissa ympäri Suomen.\n\nLuennoissani yhdistyvät kahdeksan vuoden konkreettinen kokemus roskien parista, ymmärrettävät faktat ja Roskapäivän tunnistettava, rento tyyli.\n\nOta yhteyttä, niin keskustellaan teidän tarpeistanne.',
     imageUrl: 'https://i.imgur.com/QtoQezv.jpeg',
     ctaLabel: 'Pyydä tarjous',
     ctaEmail: 'eino@roskapaiva.com',
@@ -64,7 +64,7 @@ const FALLBACK_SERVICES: ServiceCard[] = [
     title: 'Yritysyhteistyö',
     description: 'Pitkäaikaisia kumppanuuksia ja kampanjoita yritysten kanssa. Sponsoriyhteistyöt, vastuullisuusviestintä ja yhteiset projektit ympäristön hyväksi.',
     modalBody:
-      'Yritysyhteistyö Roskapäivän kanssa on enemmän kuin kertaluonteinen tapahtuma — se on pitkäjänteinen kumppanuus ympäristöteon ympärillä.\n\nTyypillisiä yhteistyömuotoja ovat sponsoriyhteistyöt vuotuiseen Roskapäivään, työntekijöille suunnatut virkistyspäivät, vastuullisuusviestinnän tukeminen ja yhteiset kampanjat sosiaalisessa mediassa.\n\nOle rohkeasti yhteydessä — keksitään yhdessä jotain merkityksellistä.',
+      'Yritysyhteistyö Roskapäivän kanssa on enemmän kuin kertaluonteinen tapahtuma. Se on pitkäjänteinen kumppanuus ympäristöteon ympärillä.\n\nTyypillisiä yhteistyömuotoja ovat sponsoriyhteistyöt vuotuiseen Roskapäivään, työntekijöille suunnatut virkistyspäivät, vastuullisuusviestinnän tukeminen ja yhteiset kampanjat sosiaalisessa mediassa.\n\nOle rohkeasti yhteydessä, niin keksitään yhdessä jotain merkityksellistä.',
     imageUrl: null,
     ctaLabel: 'Aloitetaan keskustelu',
     ctaEmail: 'eino@roskapaiva.com',
@@ -75,7 +75,7 @@ const FALLBACK_SERVICES: ServiceCard[] = [
     title: 'Some\nyhteistyö',
     description: 'Sosiaalisen median yhteistöitä Instagramissa ja TikTokissa. Brändilähetykset, sisällöntuotanto ja kampanjat, jotka tavoittavat sitoutuneen yleisön.',
     modalBody:
-      'Roskapäivän sosiaalisen median kanavat — Instagram (@roskapaiva) ja TikTok — tavoittavat aktiivisen, ympäristötietoisen yleisön ympäri Suomen.\n\nSome-yhteistyömuotoja ovat esimerkiksi tuote-esittelyt, sponsoroidut postaukset, pitkäkestoiset brändikumppanuudet ja räätälöidyt kampanjat.\n\nPyydä mediakortti, niin lähetän tarkemmat tiedot tavoittavuudesta ja yhteistyömahdollisuuksista.',
+      'Roskapäivän sosiaalisen median kanavat (Instagram @roskapaiva ja TikTok) tavoittavat aktiivisen, ympäristötietoisen yleisön ympäri Suomen.\n\nSome-yhteistyömuotoja ovat esimerkiksi tuote-esittelyt, sponsoroidut postaukset, pitkäkestoiset brändikumppanuudet ja räätälöidyt kampanjat.\n\nPyydä mediakortti, niin lähetän tarkemmat tiedot tavoittavuudesta ja yhteistyömahdollisuuksista.',
     imageUrl: null,
     ctaLabel: 'Pyydä mediakortti',
     ctaEmail: 'eino@roskapaiva.com',
@@ -113,10 +113,10 @@ const ArrowRight = () => (
 export default function ServicesSection() {
   const { data: rows, loading } = useTableData<ServiceRow>('services');
 
-  // While the DB is still loading, render no cards instead of the FALLBACK —
-  // that's what was causing the old image to flicker before the freshly-saved
-  // one appeared. FALLBACK is only used when the DB has actually returned empty
-  // (i.e. Supabase isn't configured or has no rows).
+  // While the DB is still loading, render no cards instead of the FALLBACK.
+  // The earlier behaviour caused the old image to flicker before the
+  // freshly-saved one appeared. FALLBACK is only used when the DB has actually
+  // returned empty (i.e. Supabase isn't configured or has no rows).
   const services: ServiceCard[] = rows && rows.length > 0
     ? rows.map((r) => ({
         num: r.num,
@@ -201,8 +201,8 @@ export default function ServicesSection() {
           </p>
         </div>
 
-        {/* Carousel header — title + prev/next controls (controls hidden on mobile;
-            the row uses native swipe + scroll-snap). */}
+        {/* Carousel header: title + prev/next controls. Controls are hidden on
+            mobile, where the row uses native swipe + scroll-snap. */}
         <div className="mt-16 flex items-end justify-between gap-6">
           <p className="font-display text-2xl text-cream/80 md:text-3xl">
             <span className="text-amber">{services.length || 6}</span> tapaa tehdä yhteistyötä
