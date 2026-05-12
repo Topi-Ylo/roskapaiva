@@ -132,7 +132,7 @@ export default function Hero() {
                 transition: ease,
               }}
             >
-              Jos ois siistimpää.
+              jos ois siistimpää.
             </p>
             <p className="mt-10 max-w-md text-base font-light leading-relaxed text-cream/80 md:text-lg">
               Liike puhtaamman ympäristön puolesta.
@@ -230,7 +230,7 @@ export default function Hero() {
               <div className="absolute inset-0 bg-gradient-to-t from-forest-night via-forest-night/40 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 px-6 pt-8 md:px-8 md:pt-10" style={{ paddingBottom: 'max(2rem, calc(2rem + env(safe-area-inset-bottom)))' }}>
                 <p className="font-display text-3xl leading-[1.05] text-cream md:text-4xl">
-                  Moi, mä olen Eino, roskapäivän perustaja.
+                  Moi, mä olen Eino, Roskapäivän perustaja.
                 </p>
               </div>
             </div>
@@ -249,7 +249,7 @@ export default function Hero() {
               <div className="absolute inset-0 bg-gradient-to-t from-forest-night via-forest-night/40 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 px-6 pt-8 md:px-8 md:pt-10" style={{ paddingBottom: 'max(2rem, calc(2rem + env(safe-area-inset-bottom)))' }}>
                 <p className="font-display text-3xl leading-[1.05] text-cream md:text-4xl">
-                  Mä haluan kertoa mikä on roskapäivä.
+                  Mä haluan kertoa mikä on Roskapäivä.
                 </p>
               </div>
             </div>
