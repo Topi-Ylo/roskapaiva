@@ -57,7 +57,7 @@ export default function TarinaModal({ open, onClose }: Props) {
               Olen huomannut, että tekemällä omaa juttua voi päästä pitkälle. Kaikki alkoi vuonna 2018, kun aloin hammasteknikon päivätyöni ohella kerätä roskia. Ensin omaksi ilokseni, pian jo intohimosta. Vuosien varrella Roskapäivästä kasvoi tärkeä osa elämääni ja lopulta myös työni.
             </p>
             <p>
-              Vuonna 2023 sain Koneen Säätiöltä apurahan, jonka turvin pystyin omistautumaan roskahommille täysipäiväisesti. Järjestin siivoustapahtumia Helsingissä ja Roskapäiviä pääkaupunkiseudun kouluissa. Seuraavana vuonna perustin oman toiminimen ja aloitin urani täysipäiväisenä roska-aktivistina ja sosiaalisen median vastuullisuusvaikuttajana.
+              Vuonna 2023 sain Koneen Säätiöltä apurahan, jonka turvin pystyin omistautumaan roskahommille täysipäiväisesti. Järjestin siivoustapahtumia Helsingissä ja roskapäiviä pääkaupunkiseudun kouluissa. Seuraavana vuonna perustin oman toiminimen ja aloitin urani täysipäiväisenä roska-aktivistina ja sosiaalisen median vastuullisuusvaikuttajana.
             </p>
             <p>
               Syksyllä 2024 järjestin ensimmäisen koko Suomea koskevan Roskapäivän, johon osallistui yli 500 ihmistä sosiaalisen median kautta ja noin 100 kävijää Töölön tapahtumassa. Tapahtuma sai jatkoa ja järjestetään vuosittain aina syyskuun ensimmäisenä lauantaina. Kesällä 2025 jätin taakseni 14 vuoden urani hammasteknikkona ja ryhdyin kokoaikaiseksi Roskapäivä-ukoksi, tekemään sitä, mikä tuntuu omalta ja kaikista merkityksellisimmältä.
@@ -74,7 +74,7 @@ export default function TarinaModal({ open, onClose }: Props) {
           </div>
 
           <blockquote className="mt-12 border-l-2 border-amber pl-6 font-quote text-2xl italic text-amber-light md:text-3xl">
-            Jokainen päivä voi olla Roskapäivä.
+            Jokainen päivä voi olla roskapäivä.
           </blockquote>
 
           <p className="mt-6 text-sm text-cream/60 leading-relaxed">
