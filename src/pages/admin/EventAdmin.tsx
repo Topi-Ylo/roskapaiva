@@ -476,6 +476,267 @@ function ProgramManager() {
   );
 }
 
+// ── Credits (performers / partners / exhibitors) ─────────────────────────────
+
+type CreditCategory = 'performer' | 'partner' | 'exhibitor';
+
+const CREDIT_CATEGORIES: { value: CreditCategory; label: string }[] = [
+  { value: 'performer', label: 'Esiintyjä' },
+  { value: 'partner', label: 'Kumppani' },
+  { value: 'exhibitor', label: 'Näytteilleasettaja' },
+];
+
+const CREDIT_LABEL: Record<CreditCategory, string> = {
+  performer: 'Esiintyjä',
+  partner: 'Kumppani',
+  exhibitor: 'Näytteilleasettaja',
+};
+
+interface Credit {
+  id: string;
+  category: CreditCategory;
+  name: string;
+  year: string | null;
+  url: string | null;
+  sort_order: number;
+  published: boolean;
+}
+
+interface CreditForm {
+  category: CreditCategory;
+  name: string;
+  year: string;
+  url: string;
+  sort_order: number;
+  published: boolean;
+}
+
+const EMPTY_CREDIT: CreditForm = {
+  category: 'performer',
+  name: '',
+  year: '2025',
+  url: '',
+  sort_order: 0,
+  published: true,
+};
+
+function CreditsManager() {
+  const [items, setItems] = useState<Credit[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [form, setForm] = useState<CreditForm>(EMPTY_CREDIT);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const refresh = async () => {
+    if (!supabase) return;
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('event_credits')
+      .select('*')
+      .order('category', { ascending: true })
+      .order('sort_order', { ascending: true });
+    if (error) setError(error.message);
+    setItems((data ?? []) as Credit[]);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    refresh();
+  }, []);
+
+  const startNew = () => {
+    setEditingId(null);
+    setForm(EMPTY_CREDIT);
+    setError(null);
+  };
+
+  const startEdit = (c: Credit) => {
+    setEditingId(c.id);
+    setForm({
+      category: c.category,
+      name: c.name,
+      year: c.year ?? '',
+      url: c.url ?? '',
+      sort_order: c.sort_order,
+      published: c.published,
+    });
+    setError(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!supabase) return;
+    setBusy(true);
+    setError(null);
+
+    const payload = {
+      category: form.category,
+      name: form.name.trim(),
+      year: form.year.trim() || null,
+      url: form.url.trim() || null,
+      sort_order: Number(form.sort_order) || 0,
+      published: form.published,
+    };
+
+    const { error } = editingId
+      ? await supabase.from('event_credits').update(payload).eq('id', editingId)
+      : await supabase.from('event_credits').insert(payload);
+
+    setBusy(false);
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    setForm(EMPTY_CREDIT);
+    setEditingId(null);
+    await refresh();
+  };
+
+  const onDelete = async (c: Credit) => {
+    if (!supabase) return;
+    if (!confirm(`Poistetaanko "${c.name}"?`)) return;
+    const { error } = await supabase.from('event_credits').delete().eq('id', c.id);
+    if (error) {
+      alert(error.message);
+      return;
+    }
+    if (editingId === c.id) {
+      setEditingId(null);
+      setForm(EMPTY_CREDIT);
+    }
+    await refresh();
+  };
+
+  return (
+    <section className="mt-16">
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <p className="font-display text-2xl text-cream">Esiintyjät, kumppanit ja näyttely</p>
+          <p className="mt-1 text-sm text-cream/55">
+            Vuosittaiset nimet, jotka näkyvät tapahtumasivun ohjelma- ja kumppaniosioissa.
+          </p>
+        </div>
+        {editingId && <GhostButton onClick={startNew}>Uusi nimi</GhostButton>}
+      </div>
+
+      <form onSubmit={onSubmit} className="mt-5 rounded-lg border border-cream/10 bg-forest-deep p-6 md:p-8">
+        <p className="font-display text-xl text-cream">
+          {editingId ? 'Muokkaa nimeä' : 'Uusi nimi'}
+        </p>
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          <Field label="Tyyppi">
+            <select
+              value={form.category}
+              onChange={(e) => setForm({ ...form, category: e.target.value as CreditCategory })}
+              className={inputClass}
+            >
+              {CREDIT_CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Nimi">
+            <input
+              required
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              className={inputClass}
+              placeholder="Partioaitta"
+            />
+          </Field>
+          <Field label="Vuosi" hint="esim. 2025">
+            <input
+              value={form.year}
+              onChange={(e) => setForm({ ...form, year: e.target.value })}
+              className={inputClass}
+              placeholder="2025"
+            />
+          </Field>
+          <Field label="Järjestys" hint="Pienempi = ensin">
+            <input
+              type="number"
+              value={form.sort_order}
+              onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })}
+              className={inputClass}
+            />
+          </Field>
+          <div className="md:col-span-2">
+            <Field label="Linkki" hint="Valinnainen">
+              <input
+                type="url"
+                value={form.url}
+                onChange={(e) => setForm({ ...form, url: e.target.value })}
+                className={inputClass}
+                placeholder="https://…"
+              />
+            </Field>
+          </div>
+          <label className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={form.published}
+              onChange={(e) => setForm({ ...form, published: e.target.checked })}
+              className="h-4 w-4 accent-amber"
+            />
+            <span className="text-sm text-cream/80">Julkaistu (näkyvissä sivustolla)</span>
+          </label>
+        </div>
+
+        {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
+
+        <div className="mt-6 flex flex-wrap gap-3">
+          <PrimaryButton type="submit" disabled={busy}>
+            {busy ? 'Tallennetaan…' : editingId ? 'Tallenna muutokset' : 'Lisää nimi'}
+          </PrimaryButton>
+          {editingId && (
+            <GhostButton type="button" onClick={startNew}>
+              Peruuta
+            </GhostButton>
+          )}
+        </div>
+      </form>
+
+      <div className="mt-8">
+        {loading ? (
+          <p className="text-cream/60">Ladataan…</p>
+        ) : items.length === 0 ? (
+          <p className="text-cream/60">Ei vielä nimiä. Lisää ensimmäinen yllä.</p>
+        ) : (
+          <ul className="space-y-2">
+            {items.map((c) => (
+              <li
+                key={c.id}
+                className="flex items-center justify-between gap-4 rounded-lg border border-cream/10 bg-forest-deep px-4 py-3"
+              >
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="rounded-full bg-amber/15 px-2 py-0.5 text-[10px] uppercase tracking-widest text-amber">
+                    {CREDIT_LABEL[c.category]}
+                  </span>
+                  <span className="text-cream/85">{c.name}</span>
+                  {c.year && <span className="text-xs text-cream/40">{c.year}</span>}
+                  {!c.published && (
+                    <span className="rounded-full bg-cream/10 px-2 py-0.5 text-[10px] uppercase tracking-widest text-cream/55">
+                      Luonnos
+                    </span>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <GhostButton onClick={() => startEdit(c)}>Muokkaa</GhostButton>
+                  <DangerButton onClick={() => onDelete(c)}>Poista</DangerButton>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export default function EventAdmin() {
   return (
     <div className="mx-auto max-w-5xl">
@@ -485,6 +746,7 @@ export default function EventAdmin() {
       />
       <ScheduleManager />
       <ProgramManager />
+      <CreditsManager />
     </div>
   );
 }

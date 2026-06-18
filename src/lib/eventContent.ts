@@ -20,6 +20,17 @@ export interface EventProgramItem {
   sort_order: number;
 }
 
+export type CreditCategory = 'performer' | 'partner' | 'exhibitor';
+
+export interface EventCredit {
+  id?: string;
+  category: CreditCategory;
+  name: string;
+  year: string | null;
+  url: string | null;
+  sort_order: number;
+}
+
 export const FALLBACK_SCHEDULE: EventSlot[] = [
   {
     slot_time: '11–14',
@@ -48,4 +59,25 @@ export const FALLBACK_PROGRAM: EventProgramItem[] = [
   { label: 'Lasten ohjelmaa', sort_order: 40 },
   { label: 'Kahvila', sort_order: 50 },
   { label: 'Rentoutumisalueita', sort_order: 60 },
+];
+
+export const FALLBACK_CREDITS: EventCredit[] = [
+  // Vuoden 2025 esiintyjät
+  { category: 'performer', name: 'El Migu', year: '2025', url: null, sort_order: 10 },
+  { category: 'performer', name: 'Chebaleba', year: '2025', url: null, sort_order: 20 },
+  { category: 'performer', name: 'Eino P & Haku', year: '2025', url: null, sort_order: 30 },
+  // Vuoden 2025 kumppanit
+  { category: 'partner', name: 'Partioaitta', year: '2025', url: null, sort_order: 10 },
+  { category: 'partner', name: 'Team Agency', year: '2025', url: null, sort_order: 20 },
+  { category: 'partner', name: 'Bella Kirppis', year: '2025', url: null, sort_order: 30 },
+  { category: 'partner', name: 'ResQ Club', year: '2025', url: null, sort_order: 40 },
+  { category: 'partner', name: 'K-Supermarket Mustapekka', year: '2025', url: null, sort_order: 50 },
+  { category: 'partner', name: 'Taffel Suomi', year: '2025', url: null, sort_order: 60 },
+  { category: 'partner', name: 'The Bros Burgers', year: '2025', url: null, sort_order: 70 },
+  // Vuoden 2025 näytteilleasettajat
+  { category: 'exhibitor', name: 'Paristokierrätys / Recser Oy', year: '2025', url: null, sort_order: 10 },
+  { category: 'exhibitor', name: 'Seiffi', year: '2025', url: null, sort_order: 20 },
+  { category: 'exhibitor', name: 'Syke Research', year: '2025', url: null, sort_order: 30 },
+  { category: 'exhibitor', name: 'Helsingin kaupunkiympäristö', year: '2025', url: null, sort_order: 40 },
+  { category: 'exhibitor', name: 'Nuoture.fi', year: '2025', url: null, sort_order: 50 },
 ];
