@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useHeroProgress } from '../hooks/useHeroProgress';
-import { useIsCoarsePointer } from '../hooks/useIsCoarsePointer';
-import { useMobileHeroRevealed } from '../hooks/useMobileHeroReveal';
+import { useHeroRevealed } from '../hooks/useHeroReveal';
 
 interface NavLink {
   to: string;
@@ -18,19 +17,15 @@ const links: NavLink[] = [
 
 export default function Nav() {
   const progress = useHeroProgress();
-  const isMobile = useIsCoarsePointer();
-  const mobileRevealed = useMobileHeroRevealed();
+  const heroRevealed = useHeroRevealed();
   const { pathname } = useLocation();
   const isHome = pathname === '/';
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // On the home page: desktop scroll-drives the reveal across the hero's 50-75% slice;
-  // mobile flips between 0 and 1 when the hero video crosses 3.5 s. Off-home: always visible.
-  const heroProgress = Math.min(1, progress * 2);
-  const desktopReveal = Math.max(0, Math.min(1, (heroProgress - 0.5) / 0.25));
-  const reveal = isHome
-    ? (isMobile ? (mobileRevealed ? 1 : 0) : desktopReveal)
-    : 1;
+  // On the home page the nav reveals in step with the hero title/subtitle:
+  // both flip from 0 to 1 when the hero video crosses 3.5 s (see Hero.tsx),
+  // on desktop and mobile alike. Off-home: always visible.
+  const reveal = isHome ? (heroRevealed ? 1 : 0) : 1;
 
   // Use the opaque "scrolled" background once visible (always, off-home, and
   // also while the mobile drawer is open so the nav reads cleanly on top).
@@ -69,7 +64,7 @@ export default function Nav() {
         style={{
           transform: `translate3d(0, ${(reveal - 1) * 100}%, 0)`,
           opacity: reveal,
-          transition: isMobile && isHome
+          transition: isHome
             ? 'transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1)'
             : 'none',
         }}
