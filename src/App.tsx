@@ -18,6 +18,7 @@ import AdminLayout from './components/admin/AdminLayout';
 import LoginPage from './pages/admin/LoginPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AnalyticsAdmin from './pages/admin/AnalyticsAdmin';
+import EventAdmin from './pages/admin/EventAdmin';
 import PastEventsAdmin from './pages/admin/PastEventsAdmin';
 import TimelineAdmin from './pages/admin/TimelineAdmin';
 import SocialMediaAdmin from './pages/admin/SocialMediaAdmin';
@@ -138,6 +139,7 @@ export default function App() {
               >
                 <Route index element={<AdminDashboard />} />
                 <Route path="analytics" element={<AnalyticsAdmin />} />
+                <Route path="event" element={<EventAdmin />} />
                 <Route path="past-events" element={<PastEventsAdmin />} />
                 <Route path="timeline" element={<TimelineAdmin />} />
                 <Route path="social-media" element={<SocialMediaAdmin />} />
