@@ -174,7 +174,7 @@ function ArticleCard({ article }: { article: Article }) {
       href={article.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="reveal photo-card group flex w-[85vw] max-w-sm flex-shrink-0 snap-start flex-col overflow-hidden border border-cream/10 bg-forest-deep/40 transition hover:border-amber/40 md:w-auto md:max-w-none md:flex-shrink"
+      className="reveal photo-card group flex w-[78vw] max-w-sm flex-shrink-0 snap-start flex-col overflow-hidden border border-cream/10 bg-forest-deep/40 transition hover:border-amber/40 md:w-auto md:max-w-none md:flex-shrink"
     >
       <div className="relative aspect-video overflow-hidden">
         <img
@@ -201,20 +201,26 @@ function ArticleCard({ article }: { article: Article }) {
 }
 
 export default function MediaSection() {
-  const { data: rows } = useTableData<MediaPostRow>('media_posts');
+  const { data: rows, loading } = useTableData<MediaPostRow>('media_posts');
 
-  let tv: Article[] = FALLBACK_TV;
-  let press: Article[] = FALLBACK_PRESS;
-  let other: Article[] = FALLBACK_OTHER;
+  // While loading, render empty arrays so the FALLBACK (which has hardcoded
+  // image URLs) doesn't flash before the DB response arrives.
+  let tv: Article[] = [];
+  let press: Article[] = [];
+  let other: Article[] = [];
 
   if (rows && rows.length > 0) {
     tv = rows.filter((r) => r.category === 'tv').map(rowToArticle);
     press = rows.filter((r) => r.category === 'press').map(rowToArticle);
     other = rows.filter((r) => r.category === 'podcast').map(rowToArticle);
+  } else if (!loading) {
+    tv = FALLBACK_TV;
+    press = FALLBACK_PRESS;
+    other = FALLBACK_OTHER;
   }
 
   return (
-    <section id="media" className="relative overflow-hidden bg-forest-night py-32 md:py-40">
+    <section id="media" className="relative overflow-hidden bg-forest-night py-20 md:py-40">
       <div className="absolute inset-0 opacity-15" style={{
         backgroundImage: "url('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=2400&q=80')",
         backgroundSize: 'cover',
@@ -225,7 +231,7 @@ export default function MediaSection() {
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="reveal text-center">
           <p className="eyebrow text-amber">Mediassa</p>
-          <h2 className="font-display mt-6 text-5xl text-cream md:text-6xl lg:text-7xl">Missä Roskapäivä on<br />ollut esillä.</h2>
+          <h2 className="font-display mt-6 text-4xl text-cream md:text-6xl lg:text-7xl">Missä Roskapäivä on<br />ollut esillä.</h2>
         </div>
 
         <div className="mt-20 md:mt-24">

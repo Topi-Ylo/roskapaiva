@@ -158,8 +158,14 @@ const FALLBACK_ITEMS: MediaItem[] = [  {
 
 export default function MediaLibrarySection() {
   const [active, setActive] = useState<MediaItem | null>(null);
-  const { data: rows } = useTableData<CollabRow>('social_media_collabs');
-  const items: MediaItem[] = rows && rows.length > 0 ? rows.map(rowToItem) : FALLBACK_ITEMS;
+  const { data: rows, loading } = useTableData<CollabRow>('social_media_collabs');
+  // Don't render the FALLBACK during the loading window — that flickers stale
+  // images before the DB response arrives.
+  const items: MediaItem[] = rows && rows.length > 0
+    ? rows.map(rowToItem)
+    : loading
+    ? []
+    : FALLBACK_ITEMS;
 
   return (
     <>
@@ -168,7 +174,10 @@ export default function MediaLibrarySection() {
           <div className="reveal flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
             <div>
               <p className="eyebrow text-amber">Some-yhteistyöt</p>
-              <h3 className="font-display mt-6 text-5xl text-cream md:text-6xl lg:text-7xl">
+              <h3
+                className="font-display mt-6 text-4xl text-cream sm:text-5xl md:text-6xl lg:text-7xl break-words [hyphens:auto]"
+                lang="fi"
+              >
                 Esimerkkejä sosiaalisen median yhteistyövideoistani.
               </h3>
             </div>

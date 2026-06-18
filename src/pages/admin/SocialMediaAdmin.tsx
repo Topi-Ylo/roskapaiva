@@ -4,6 +4,7 @@ import {
   AdminPageHeader, DangerButton, Field, GhostButton, PrimaryButton,
   inputClass, textareaClass,
 } from '../../components/admin/admin-ui';
+import ImagePickerField from '../../components/admin/ImagePickerField';
 
 interface Item {
   id: string;
@@ -120,14 +121,16 @@ export default function SocialMediaAdmin() {
           ) : (
             <Field label="MP4 URL"><input type="url" value={form.video_url} onChange={(e) => setForm({ ...form, video_url: e.target.value })} className={inputClass} /></Field>
           )}
-          <Field label="Pikkukuva (URL)" hint="Vimeo: vumbnail.com/<id>.jpg, YouTube: img.youtube.com/vi/<id>/maxresdefault.jpg">
-            <input type="url" value={form.thumbnail_url} onChange={(e) => setForm({ ...form, thumbnail_url: e.target.value })} className={inputClass} />
-          </Field>
+          <ImagePickerField
+            label="Pikkukuva"
+            hint="Vimeo: vumbnail.com/<id>.jpg, YouTube: img.youtube.com/vi/<id>/maxresdefault.jpg"
+            value={form.thumbnail_url}
+            onChange={(url) => setForm({ ...form, thumbnail_url: url })}
+          />
           <Field label="Järjestys"><input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} className={inputClass} /></Field>
           <div className="md:col-span-2"><Field label="Kuvaus"><textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className={textareaClass} placeholder="Yhteistyö Nissan Suomen kanssa." /></Field></div>
           <label className="flex items-center gap-3 md:col-span-2"><input type="checkbox" checked={form.published} onChange={(e) => setForm({ ...form, published: e.target.checked })} className="h-4 w-4 accent-amber" /><span className="text-sm text-cream/80">Julkaistu</span></label>
         </div>
-        {form.thumbnail_url && <div className="mt-5"><img src={form.thumbnail_url} alt="" className="h-40 w-auto rounded border border-cream/10 object-cover" /></div>}
         {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
         <div className="mt-6 flex flex-wrap gap-3">
           <PrimaryButton type="submit" disabled={busy}>{busy ? 'Tallennetaan…' : editingId ? 'Tallenna' : 'Lisää'}</PrimaryButton>

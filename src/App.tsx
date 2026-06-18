@@ -53,12 +53,31 @@ function RevealObserver() {
       },
       { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
     );
-    const id = window.requestAnimationFrame(() => {
-      const els = document.querySelectorAll('.reveal');
-      els.forEach((el) => observer.observe(el));
-    });
+
+    // Track which elements we have already observed so the mutation pass
+    // below doesn't re-observe them on every DOM tick.
+    const seen = new WeakSet<Element>();
+    const observeAll = () => {
+      document.querySelectorAll('.reveal').forEach((el) => {
+        if (seen.has(el)) return;
+        seen.add(el);
+        observer.observe(el);
+      });
+    };
+
+    const rafId = window.requestAnimationFrame(observeAll);
+
+    // Sections that load their content from Supabase (Services, MediaLibrary,
+    // Media, MediaKortti, etc.) mount their `.reveal` cards AFTER the initial
+    // raf scan. Without this MutationObserver those cards never get observed,
+    // never get the `is-visible` class, and stay at opacity: 0 forever — so
+    // images load over the network but nothing appears on screen.
+    const mutationObserver = new MutationObserver(() => observeAll());
+    mutationObserver.observe(document.body, { childList: true, subtree: true });
+
     return () => {
-      window.cancelAnimationFrame(id);
+      window.cancelAnimationFrame(rafId);
+      mutationObserver.disconnect();
       observer.disconnect();
     };
   }, [pathname]);

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useHeroProgress } from '../hooks/useHeroProgress';
+import { useHeroRevealed } from '../hooks/useHeroReveal';
 
 interface NavLink {
   to: string;
@@ -16,14 +17,15 @@ const links: NavLink[] = [
 
 export default function Nav() {
   const progress = useHeroProgress();
+  const revealed = useHeroRevealed();
   const { pathname } = useLocation();
   const isHome = pathname === '/';
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // On the home page, the nav rides the hero's 50% to 75% reveal slice.
-  // On every other page, it's always fully visible.
-  const heroProgress = Math.min(1, progress * 2);
-  const reveal = isHome ? Math.max(0, Math.min(1, (heroProgress - 0.5) / 0.25)) : 1;
+  // On the home page the hero plays its video once and flips `revealed` to
+  // true at 3.5 s of playback (set by Hero) — same trigger on desktop and
+  // mobile now. Off-home: nav is always visible.
+  const reveal = isHome ? (revealed ? 1 : 0) : 1;
 
   // Use the opaque "scrolled" background once visible (always, off-home, and
   // also while the mobile drawer is open so the nav reads cleanly on top).
@@ -62,7 +64,9 @@ export default function Nav() {
         style={{
           transform: `translate3d(0, ${(reveal - 1) * 100}%, 0)`,
           opacity: reveal,
-          transition: 'none',
+          transition: isHome
+            ? 'transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1)'
+            : 'none',
         }}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">

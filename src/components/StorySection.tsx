@@ -30,26 +30,26 @@ interface Card {
 const FALLBACK_CARDS: Card[] = [
   {
     year: '2018',
-    img: 'https://www.roskapaiva.com/wp-content/uploads/2025/12/1000131818.jpg',
+    img: 'https://i.imgur.com/EQCjiD8.jpeg',
     title: 'Ensimmäinen roska',
     desc: 'Anonyymi Instagram-tili. Roskapäivä saa nimensä.',
     large: true,
   },
   {
     year: '2020',
-    img: 'https://www.roskapaiva.com/wp-content/uploads/2025/12/1000131820.jpg',
+    img: 'https://i.imgur.com/AMjIwuH.jpeg',
     title: 'Kasvot tilille',
     desc: '',
   },
   {
     year: '2023',
-    img: 'https://www.roskapaiva.com/wp-content/uploads/2025/12/Picsart_25-12-15_12-13-14-622.jpg',
+    img: 'https://i.imgur.com/8zgfoM4.jpeg',
     title: 'Koneen säätiön apuraha',
     desc: '',
   },
   {
     year: '2024',
-    img: 'https://www.roskapaiva.com/wp-content/uploads/2025/12/Picsart_25-12-15_12-13-53-609.jpg',
+    img: 'https://i.imgur.com/toNE94p.jpeg',
     title: 'Suomen-laajuinen Roskapäivä',
     desc: '',
   },
@@ -79,7 +79,7 @@ export default function StorySection() {
   const [open, setOpen] = useState(false);
   const [activeYear, setActiveYear] = useState('2018');
   const [galleryIndex, setGalleryIndex] = useState<number | null>(null);
-  const { data: rows } = useTableData<TimelineRow>('timeline_entries');
+  const { data: rows, loading } = useTableData<TimelineRow>('timeline_entries');
   const cards: Card[] = rows && rows.length > 0
     ? rows.map((r) => ({
         year: r.year,
@@ -90,6 +90,8 @@ export default function StorySection() {
         wide: r.is_wide ?? undefined,
         objectPosition: (r.object_position as 'top' | 'center' | 'bottom' | null) ?? undefined,
       }))
+    : loading
+    ? []
     : FALLBACK_CARDS;
 
   return (
@@ -122,7 +124,7 @@ export default function StorySection() {
 
               <div className="reveal delay-2 mt-10 space-y-5 text-base leading-relaxed text-cream/80 md:text-lg">
                 <p>
-                  Seitsemän vuotta sitten havahduin luonnon roskaantumiseen ja mietin, että asialle on tehtävä jotain. Aloin keräämään ja kuvaamaan roskaa, ja perustin Instagramiin Roskapäivä-tilin.
+                  Kahdeksan vuotta sitten havahduin luonnon roskaantumiseen ja mietin, että asialle on tehtävä jotain. Aloin keräämään ja kuvaamaan roskaa, ja perustin Instagramiin Roskapäivä-tilin.
                 </p>
                 <p>
                   Kaikki alkoi vuonna 2018 hammasteknikon päivätyöni ohella. Ensin omaksi ilokseni, pian jo intohimosta. Vuosien varrella Roskapäivästä kasvoi tärkeä osa elämääni ja lopulta myös työni.

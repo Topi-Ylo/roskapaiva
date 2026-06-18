@@ -6,7 +6,7 @@
 insert into public.past_events (year, title, description, image_url, sort_order)
 values
   ('2024', 'Töölö',     'Ensimmäinen Suomen-laajuinen', 'https://i.imgur.com/DdJYyxb.jpeg', 10),
-  ('2025', 'Kallio',    'Kohde Helsinki',                'https://www.roskapaiva.com/wp-content/uploads/2025/12/Picsart_25-12-15_12-13-53-609.jpg', 20),
+  ('2025', 'Kallio',    'Kohde Helsinki',                'https://i.imgur.com/toNE94p.jpeg', 20),
   ('2025', 'Vallisaari','Saariston siivous',             'https://i.imgur.com/yjZzydi.jpeg', 30),
   ('2024', 'Tukes',     'Zombiakkukampanja',             'https://i.imgur.com/Yj6YwV7.jpeg', 40),
   ('2026', 'Suvilahti', 'Vappu-reel',                    'https://i.imgur.com/izbXPaq.jpeg', 50)
@@ -15,10 +15,10 @@ on conflict do nothing;
 -- Timeline entries (StorySection bento)
 insert into public.timeline_entries (year, title, description, image_url, is_large, is_wide, object_position, sort_order)
 values
-  ('2018', 'Ensimmäinen roska',           'Anonyymi Instagram-tili. Roskapäivä saa nimensä.', 'https://www.roskapaiva.com/wp-content/uploads/2025/12/1000131818.jpg', true,  false, 'center', 10),
-  ('2020', 'Kasvot tilille',              null,                                                'https://www.roskapaiva.com/wp-content/uploads/2025/12/1000131820.jpg', false, false, 'center', 20),
-  ('2023', 'Koneen säätiön apuraha',      null,                                                'https://www.roskapaiva.com/wp-content/uploads/2025/12/Picsart_25-12-15_12-13-14-622.jpg', false, false, 'center', 30),
-  ('2024', 'Suomen-laajuinen Roskapäivä', null,                                                'https://www.roskapaiva.com/wp-content/uploads/2025/12/Picsart_25-12-15_12-13-53-609.jpg', false, false, 'center', 40),
+  ('2018', 'Ensimmäinen roska',           'Anonyymi Instagram-tili. Roskapäivä saa nimensä.', 'https://i.imgur.com/EQCjiD8.jpeg', true,  false, 'center', 10),
+  ('2020', 'Kasvot tilille',              null,                                                'https://i.imgur.com/AMjIwuH.jpeg', false, false, 'center', 20),
+  ('2023', 'Koneen säätiön apuraha',      null,                                                'https://i.imgur.com/8zgfoM4.jpeg', false, false, 'center', 30),
+  ('2024', 'Suomen-laajuinen Roskapäivä', null,                                                'https://i.imgur.com/toNE94p.jpeg', false, false, 'center', 40),
   ('2025', 'Roskapäivä-ukko',             null,                                                'https://www.mustankorkea.fi/wp-content/uploads/2024/09/roskapaiva-3-1024x766.jpg', false, false, 'center', 50),
   ('2026', '1,7 miljoonaa katsojaa',      'Vappu-reel. MTV3, Huomenta Suomi. Liike on isompi kuin koskaan.', 'https://i.imgur.com/VeVdKTN.png', false, true, 'top', 60),
   ('2027', 'Tulossa',                     'Seuraava Roskapäivä 2.5.2027.',                     'https://www.mustankorkea.fi/wp-content/uploads/2024/09/roskapaiva-4.jpg', false, false, 'center', 70)
@@ -36,7 +36,7 @@ values
   ('Roskapäivä-tapahtuma',         'https://www.mustankorkea.fi/wp-content/uploads/2024/09/roskapaiva-4.jpg', true, 70),
   ('Tukes · zombiakkukampanja',    'https://i.imgur.com/Yj6YwV7.jpeg', true, 80),
   ('Eino, lähikuva',               'https://i.imgur.com/FSNLVUN.jpeg', true, 90),
-  ('Suomen-laajuinen Roskapäivä',  'https://www.roskapaiva.com/wp-content/uploads/2025/12/Picsart_25-12-15_12-13-53-609.jpg', true, 100)
+  ('Suomen-laajuinen Roskapäivä',  'https://i.imgur.com/toNE94p.jpeg', true, 100)
 on conflict do nothing;
 
 -- Partners

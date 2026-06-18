@@ -21,3 +21,9 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Vite build temp files
+vite.config.ts.timestamp-*.mjs
+
+# Claude Code session files
+.claude/
