@@ -11,6 +11,7 @@ interface NavLink {
 const links: NavLink[] = [
   { to: '/', label: 'Tarina' },
   { to: '/5-9-2026', label: "Roskapäivä '26" },
+  { to: '/tapahtumat', label: 'Tapahtumat' },
   { to: '/palvelut', label: 'Palvelut' },
   { to: '/medialle', label: 'Medialle' },
 ];
