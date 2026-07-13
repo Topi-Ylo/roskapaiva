@@ -20,6 +20,14 @@ export interface EventProgramItem {
   sort_order: number;
 }
 
+export interface EventSponsor {
+  id?: string;
+  name: string;
+  logo_url: string | null;
+  url: string | null;
+  sort_order: number;
+}
+
 export type CreditCategory = 'performer' | 'partner' | 'exhibitor';
 
 export interface EventCredit {
@@ -59,6 +67,17 @@ export const FALLBACK_PROGRAM: EventProgramItem[] = [
   { label: 'Lasten ohjelmaa', sort_order: 40 },
   { label: 'Kahvila', sort_order: 50 },
   { label: 'Rentoutumisalueita', sort_order: 60 },
+];
+
+// 2026 sponsors shown in the Roskapäivä '26 hero "Yhteistyössä" band. Managed
+// via the event_sponsors table; separate from the site-wide `partners` marquee.
+export const FALLBACK_SPONSORS: EventSponsor[] = [
+  {
+    name: 'Cleaning Angels',
+    logo_url: 'https://logo.clearbit.com/cleaningangels.fi',
+    url: 'https://www.cleaningangels.fi/',
+    sort_order: 10,
+  },
 ];
 
 export const FALLBACK_CREDITS: EventCredit[] = [

@@ -737,6 +737,234 @@ function CreditsManager() {
   );
 }
 
+// ── Sponsors (hero "Yhteistyössä" band) ──────────────────────────────────────
+
+interface Sponsor {
+  id: string;
+  name: string;
+  logo_url: string | null;
+  url: string | null;
+  sort_order: number;
+  published: boolean;
+}
+
+interface SponsorForm {
+  name: string;
+  logo_url: string;
+  url: string;
+  sort_order: number;
+  published: boolean;
+}
+
+const EMPTY_SPONSOR: SponsorForm = {
+  name: '',
+  logo_url: '',
+  url: '',
+  sort_order: 0,
+  published: true,
+};
+
+function SponsorsManager() {
+  const [items, setItems] = useState<Sponsor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [form, setForm] = useState<SponsorForm>(EMPTY_SPONSOR);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const refresh = async () => {
+    if (!supabase) return;
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('event_sponsors')
+      .select('*')
+      .order('sort_order', { ascending: true });
+    if (error) setError(error.message);
+    setItems((data ?? []) as Sponsor[]);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    refresh();
+  }, []);
+
+  const startNew = () => {
+    setEditingId(null);
+    setForm(EMPTY_SPONSOR);
+    setError(null);
+  };
+
+  const startEdit = (s: Sponsor) => {
+    setEditingId(s.id);
+    setForm({
+      name: s.name,
+      logo_url: s.logo_url ?? '',
+      url: s.url ?? '',
+      sort_order: s.sort_order,
+      published: s.published,
+    });
+    setError(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!supabase) return;
+    setBusy(true);
+    setError(null);
+
+    const payload = {
+      name: form.name.trim(),
+      logo_url: form.logo_url.trim() || null,
+      url: form.url.trim() || null,
+      sort_order: Number(form.sort_order) || 0,
+      published: form.published,
+    };
+
+    const { error } = editingId
+      ? await supabase.from('event_sponsors').update(payload).eq('id', editingId)
+      : await supabase.from('event_sponsors').insert(payload);
+
+    setBusy(false);
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    setForm(EMPTY_SPONSOR);
+    setEditingId(null);
+    await refresh();
+  };
+
+  const onDelete = async (s: Sponsor) => {
+    if (!supabase) return;
+    if (!confirm(`Poistetaanko sponsori "${s.name}"?`)) return;
+    const { error } = await supabase.from('event_sponsors').delete().eq('id', s.id);
+    if (error) {
+      alert(error.message);
+      return;
+    }
+    if (editingId === s.id) {
+      setEditingId(null);
+      setForm(EMPTY_SPONSOR);
+    }
+    await refresh();
+  };
+
+  return (
+    <section className="mt-16">
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <p className="font-display text-2xl text-cream">Yhteistyössä (sponsorit)</p>
+          <p className="mt-1 text-sm text-cream/55">
+            Näkyvät hero-osion alalaidassa. Eri lista kuin Palvelut-sivun kumppanit.
+          </p>
+        </div>
+        {editingId && <GhostButton onClick={startNew}>Uusi sponsori</GhostButton>}
+      </div>
+
+      <form onSubmit={onSubmit} className="mt-5 rounded-lg border border-cream/10 bg-forest-deep p-6 md:p-8">
+        <p className="font-display text-xl text-cream">
+          {editingId ? 'Muokkaa sponsoria' : 'Uusi sponsori'}
+        </p>
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          <Field label="Nimi">
+            <input
+              required
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              className={inputClass}
+              placeholder="Cleaning Angels"
+            />
+          </Field>
+          <Field label="Linkki" hint="Valinnainen">
+            <input
+              type="url"
+              value={form.url}
+              onChange={(e) => setForm({ ...form, url: e.target.value })}
+              className={inputClass}
+              placeholder="https://www.cleaningangels.fi/"
+            />
+          </Field>
+          <ImagePickerField
+            label="Logo"
+            value={form.logo_url}
+            onChange={(url) => setForm({ ...form, logo_url: url })}
+            placeholder="https://logo.clearbit.com/..."
+          />
+          <Field label="Järjestys" hint="Pienempi = ensin">
+            <input
+              type="number"
+              value={form.sort_order}
+              onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })}
+              className={inputClass}
+            />
+          </Field>
+          <label className="flex items-center gap-3 md:col-span-2">
+            <input
+              type="checkbox"
+              checked={form.published}
+              onChange={(e) => setForm({ ...form, published: e.target.checked })}
+              className="h-4 w-4 accent-amber"
+            />
+            <span className="text-sm text-cream/80">Julkaistu (näkyvissä sivustolla)</span>
+          </label>
+        </div>
+
+        {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
+
+        <div className="mt-6 flex flex-wrap gap-3">
+          <PrimaryButton type="submit" disabled={busy}>
+            {busy ? 'Tallennetaan…' : editingId ? 'Tallenna muutokset' : 'Lisää sponsori'}
+          </PrimaryButton>
+          {editingId && (
+            <GhostButton type="button" onClick={startNew}>
+              Peruuta
+            </GhostButton>
+          )}
+        </div>
+      </form>
+
+      <div className="mt-8">
+        {loading ? (
+          <p className="text-cream/60">Ladataan…</p>
+        ) : items.length === 0 ? (
+          <p className="text-cream/60">Ei vielä sponsoreita. Lisää ensimmäinen yllä.</p>
+        ) : (
+          <ul className="space-y-2">
+            {items.map((s) => (
+              <li
+                key={s.id}
+                className="flex items-center justify-between gap-4 rounded-lg border border-cream/10 bg-forest-deep px-4 py-3"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded bg-cream">
+                    {s.logo_url ? (
+                      <img src={s.logo_url} alt="" className="h-full w-full object-contain p-1" loading="lazy" />
+                    ) : (
+                      <span className="text-[9px] text-forest-night/50">Ei logoa</span>
+                    )}
+                  </span>
+                  <span className="text-cream/85">{s.name}</span>
+                  {!s.published && (
+                    <span className="rounded-full bg-cream/10 px-2 py-0.5 text-[10px] uppercase tracking-widest text-cream/55">
+                      Luonnos
+                    </span>
+                  )}
+                  <span className="text-xs text-cream/40">#{s.sort_order}</span>
+                </div>
+                <div className="flex gap-2">
+                  <GhostButton onClick={() => startEdit(s)}>Muokkaa</GhostButton>
+                  <DangerButton onClick={() => onDelete(s)}>Poista</DangerButton>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export default function EventAdmin() {
   return (
     <div className="mx-auto max-w-5xl">
@@ -747,6 +975,7 @@ export default function EventAdmin() {
       <ScheduleManager />
       <ProgramManager />
       <CreditsManager />
+      <SponsorsManager />
     </div>
   );
 }
