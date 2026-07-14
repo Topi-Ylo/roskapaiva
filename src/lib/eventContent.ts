@@ -74,7 +74,9 @@ export const FALLBACK_PROGRAM: EventProgramItem[] = [
 export const FALLBACK_SPONSORS: EventSponsor[] = [
   {
     name: 'Cleaning Angels',
-    logo_url: 'https://logo.clearbit.com/cleaningangels.fi',
+    // White monogram; place the file at public/cleaning-angels.png. For the
+    // live site upload it via admin (Yhteistyössä / sponsorit → Logo).
+    logo_url: '/cleaning-angels.png',
     url: 'https://www.cleaningangels.fi/',
     sort_order: 10,
   },
