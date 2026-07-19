@@ -969,12 +969,14 @@ function SponsorsManager() {
 
 interface TextsForm {
   event_hero_body: string;
+  event_headliner: string;
   event_program_title: string;
   event_program_body: string;
 }
 
 const EMPTY_TEXTS: TextsForm = {
   event_hero_body: '',
+  event_headliner: '',
   event_program_title: '',
   event_program_body: '',
 };
@@ -990,7 +992,7 @@ function TextsManager() {
     if (!supabase) return;
     supabase
       .from('site_settings')
-      .select('event_hero_body, event_program_title, event_program_body')
+      .select('event_hero_body, event_headliner, event_program_title, event_program_body')
       .eq('id', 1)
       .maybeSingle()
       .then(({ data, error }) => {
@@ -998,6 +1000,7 @@ function TextsManager() {
         if (data) {
           setForm({
             event_hero_body: data.event_hero_body ?? '',
+            event_headliner: data.event_headliner ?? '',
             event_program_title: data.event_program_title ?? '',
             event_program_body: data.event_program_body ?? '',
           });
@@ -1017,6 +1020,7 @@ function TextsManager() {
       .from('site_settings')
       .update({
         event_hero_body: form.event_hero_body.trim() || null,
+        event_headliner: form.event_headliner.trim() || null,
         event_program_title: form.event_program_title.trim() || null,
         event_program_body: form.event_program_body.trim() || null,
       })
@@ -1049,6 +1053,14 @@ function TextsManager() {
                 value={form.event_hero_body}
                 onChange={(e) => setForm({ ...form, event_hero_body: e.target.value })}
                 className={`${textareaClass} min-h-[200px]`}
+              />
+            </Field>
+            <Field label="Pääesiintyjä" hint="Näkyy hero-kuvan yläpuolella. Tyhjä = piilotettu.">
+              <input
+                value={form.event_headliner}
+                onChange={(e) => setForm({ ...form, event_headliner: e.target.value })}
+                className={inputClass}
+                placeholder="Jaakko Kulta"
               />
             </Field>
             <Field label="Ohjelmassa — otsikko">

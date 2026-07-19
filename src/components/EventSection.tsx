@@ -104,6 +104,14 @@ export default function EventSection() {
             </div>
 
             <div className="flex flex-col gap-5 md:col-span-5 md:items-end">
+              {settings.event_headliner && (
+                <div className="flex w-full max-w-sm items-baseline gap-2.5">
+                  <span className="eyebrow shrink-0 text-amber">Pääesiintyjä:</span>
+                  <span className="font-display text-xl text-cream md:text-2xl">
+                    {settings.event_headliner}
+                  </span>
+                </div>
+              )}
               <div className="hidden w-full max-w-sm overflow-hidden border border-cream/15 md:block">
                 <img
                   src={HERO_IMAGE}

@@ -17,6 +17,8 @@ export interface SiteSettings {
   event_hero_body: string | null;
   event_program_title: string | null;
   event_program_body: string | null;
+  /** Headline act shown above the hero image. */
+  event_headliner: string | null;
 }
 
 export const EVENT_HERO_BODY_FALLBACK = `Kerätään yhdessä, juhlitaan tehtyä työtä ja tehdään Helsingistä vähän siistimpi. Voit osallistua myös kotiseudullasi: kerää roskia oman matkasi varrelta ja jaa kuva tunnisteella #roskapäivä2026
@@ -39,6 +41,7 @@ const FALLBACK: SiteSettings = {
   event_program_title: 'Enemmän kuin siivous.',
   event_program_body:
     'Ulkona tapahtuvan siivouksen lomassa nautitaan inspiroivista puheista, livemusiikista, yritysten pop-up-näyttelystä, lasten aktiviteeteista, kahvilasta ja rentoutumisalueesta. Roskapäivä on juhla puhtaamman ympäristön puolesta.',
+  event_headliner: 'Jaakko Kulta',
 };
 
 export function useSiteSettings(): SiteSettings {
