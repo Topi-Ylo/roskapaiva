@@ -114,8 +114,12 @@ export default function EventSection() {
               )}
               <div className="hidden w-full max-w-sm overflow-hidden border border-cream/15 md:block">
                 <img
-                  src={HERO_IMAGE}
-                  alt="Roskapäivä-tapahtuma"
+                  src={settings.event_headliner_image || HERO_IMAGE}
+                  alt={
+                    settings.event_headliner
+                      ? `Pääesiintyjä ${settings.event_headliner}`
+                      : 'Roskapäivä-tapahtuma'
+                  }
                   loading="lazy"
                   className="aspect-video w-full object-cover"
                 />

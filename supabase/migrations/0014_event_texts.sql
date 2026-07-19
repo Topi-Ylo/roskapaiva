@@ -8,7 +8,8 @@ alter table public.site_settings
   add column if not exists event_hero_body     text,
   add column if not exists event_program_title text,
   add column if not exists event_program_body  text,
-  add column if not exists event_headliner     text;
+  add column if not exists event_headliner     text,
+  add column if not exists event_headliner_image text;
 
 update public.site_settings
 set
@@ -17,5 +18,6 @@ set
 Roskapäivä-tapahtumaa järjestävät vuosittain Roskapäivän Eino sekä Sergio Cleaning Angelsilta. Tapahtuman tavoitteena on tuoda ihmiset yhteen tekemään konkreettisia ympäristötekoja rennossa ja yhteisöllisessä hengessä. Jokainen kerätty roska on askel kohti puhtaampaa ympäristöä – ja samalla mahdollisuus inspiroida yhä useampia pitämään yhdessä huolta luonnostamme.$$),
   event_program_title = coalesce(event_program_title, 'Enemmän kuin siivous.'),
   event_program_body = coalesce(event_program_body, $$Ulkona tapahtuvan siivouksen lomassa nautitaan inspiroivista puheista, livemusiikista, yritysten pop-up-näyttelystä, lasten aktiviteeteista, kahvilasta ja rentoutumisalueesta. Roskapäivä on juhla puhtaamman ympäristön puolesta.$$),
-  event_headliner = coalesce(event_headliner, 'Jaakko Kulta')
+  event_headliner = coalesce(event_headliner, 'Jaakko Kulta'),
+  event_headliner_image = coalesce(event_headliner_image, 'https://i.imgur.com/If6GHtz.jpeg')
 where id = 1;

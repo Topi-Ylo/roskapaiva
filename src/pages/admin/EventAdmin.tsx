@@ -970,6 +970,7 @@ function SponsorsManager() {
 interface TextsForm {
   event_hero_body: string;
   event_headliner: string;
+  event_headliner_image: string;
   event_program_title: string;
   event_program_body: string;
 }
@@ -977,6 +978,7 @@ interface TextsForm {
 const EMPTY_TEXTS: TextsForm = {
   event_hero_body: '',
   event_headliner: '',
+  event_headliner_image: '',
   event_program_title: '',
   event_program_body: '',
 };
@@ -992,7 +994,9 @@ function TextsManager() {
     if (!supabase) return;
     supabase
       .from('site_settings')
-      .select('event_hero_body, event_headliner, event_program_title, event_program_body')
+      .select(
+        'event_hero_body, event_headliner, event_headliner_image, event_program_title, event_program_body'
+      )
       .eq('id', 1)
       .maybeSingle()
       .then(({ data, error }) => {
@@ -1001,6 +1005,7 @@ function TextsManager() {
           setForm({
             event_hero_body: data.event_hero_body ?? '',
             event_headliner: data.event_headliner ?? '',
+            event_headliner_image: data.event_headliner_image ?? '',
             event_program_title: data.event_program_title ?? '',
             event_program_body: data.event_program_body ?? '',
           });
@@ -1021,6 +1026,7 @@ function TextsManager() {
       .update({
         event_hero_body: form.event_hero_body.trim() || null,
         event_headliner: form.event_headliner.trim() || null,
+        event_headliner_image: form.event_headliner_image.trim() || null,
         event_program_title: form.event_program_title.trim() || null,
         event_program_body: form.event_program_body.trim() || null,
       })
@@ -1063,6 +1069,12 @@ function TextsManager() {
                 placeholder="Jaakko Kulta"
               />
             </Field>
+            <ImagePickerField
+              label="Pääesiintyjän kuva"
+              value={form.event_headliner_image}
+              onChange={(url) => setForm({ ...form, event_headliner_image: url })}
+              placeholder="https://…"
+            />
             <Field label="Ohjelmassa — otsikko">
               <input
                 value={form.event_program_title}
