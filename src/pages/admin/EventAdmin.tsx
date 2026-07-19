@@ -140,7 +140,7 @@ function ScheduleManager() {
   };
 
   return (
-    <section>
+    <section className="mt-16">
       <div className="flex items-end justify-between gap-4">
         <div>
           <p className="font-display text-2xl text-cream">Aikataulu</p>
@@ -965,6 +965,123 @@ function SponsorsManager() {
   );
 }
 
+// ── Texts (hero body + Ohjelmassa lead, stored on site_settings) ────────────
+
+interface TextsForm {
+  event_hero_body: string;
+  event_program_title: string;
+  event_program_body: string;
+}
+
+const EMPTY_TEXTS: TextsForm = {
+  event_hero_body: '',
+  event_program_title: '',
+  event_program_body: '',
+};
+
+function TextsManager() {
+  const [form, setForm] = useState<TextsForm>(EMPTY_TEXTS);
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!supabase) return;
+    supabase
+      .from('site_settings')
+      .select('event_hero_body, event_program_title, event_program_body')
+      .eq('id', 1)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (error) setError(error.message);
+        if (data) {
+          setForm({
+            event_hero_body: data.event_hero_body ?? '',
+            event_program_title: data.event_program_title ?? '',
+            event_program_body: data.event_program_body ?? '',
+          });
+        }
+        setLoading(false);
+      });
+  }, []);
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!supabase) return;
+    setBusy(true);
+    setError(null);
+    setInfo(null);
+
+    const { error } = await supabase
+      .from('site_settings')
+      .update({
+        event_hero_body: form.event_hero_body.trim() || null,
+        event_program_title: form.event_program_title.trim() || null,
+        event_program_body: form.event_program_body.trim() || null,
+      })
+      .eq('id', 1);
+
+    setBusy(false);
+    if (error) setError(error.message);
+    else setInfo('Tallennettu.');
+  };
+
+  return (
+    <section>
+      <div>
+        <p className="font-display text-2xl text-cream">Tekstit</p>
+        <p className="mt-1 text-sm text-cream/55">
+          Hero-osion leipäteksti ja Ohjelmassa-osion esittely. Tyhjä rivi aloittaa uuden kappaleen.
+        </p>
+      </div>
+
+      <form onSubmit={onSubmit} className="mt-5 rounded-lg border border-cream/10 bg-forest-deep p-6 md:p-8">
+        {loading ? (
+          <p className="text-cream/60">Ladataan…</p>
+        ) : (
+          <div className="grid gap-4">
+            <Field
+              label="Hero — leipäteksti"
+              hint="Näkyy 5.9.2026-otsikon alla. Tunnisteet (#roskapäivä2026) korostuvat automaattisesti."
+            >
+              <textarea
+                value={form.event_hero_body}
+                onChange={(e) => setForm({ ...form, event_hero_body: e.target.value })}
+                className={`${textareaClass} min-h-[200px]`}
+              />
+            </Field>
+            <Field label="Ohjelmassa — otsikko">
+              <input
+                value={form.event_program_title}
+                onChange={(e) => setForm({ ...form, event_program_title: e.target.value })}
+                className={inputClass}
+                placeholder="Enemmän kuin siivous."
+              />
+            </Field>
+            <Field label="Ohjelmassa — esittelyteksti">
+              <textarea
+                value={form.event_program_body}
+                onChange={(e) => setForm({ ...form, event_program_body: e.target.value })}
+                className={`${textareaClass} min-h-[120px]`}
+              />
+            </Field>
+          </div>
+        )}
+
+        {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
+        {info && <p className="mt-4 text-sm text-amber-light">{info}</p>}
+
+        <div className="mt-6">
+          <PrimaryButton type="submit" disabled={busy || loading}>
+            {busy ? 'Tallennetaan…' : 'Tallenna tekstit'}
+          </PrimaryButton>
+        </div>
+      </form>
+    </section>
+  );
+}
+
 export default function EventAdmin() {
   return (
     <div className="mx-auto max-w-5xl">
@@ -972,6 +1089,7 @@ export default function EventAdmin() {
         eyebrow="Sisältö"
         title="Tapahtuma 5.9."
       />
+      <TextsManager />
       <ScheduleManager />
       <ProgramManager />
       <CreditsManager />

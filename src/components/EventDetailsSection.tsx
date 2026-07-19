@@ -1,5 +1,6 @@
 import { useTableData } from '../hooks/useTableData';
 import { useCounter } from '../hooks/useCounter';
+import { useSiteSettings } from '../hooks/useSiteSettings';
 import {
   FALLBACK_CREDITS,
   FALLBACK_PROGRAM,
@@ -33,8 +34,13 @@ export default function EventDetailsSection() {
   const program = programData && programData.length > 0 ? programData : FALLBACK_PROGRAM;
   const credits = creditsData && creditsData.length > 0 ? creditsData : FALLBACK_CREDITS;
 
+  const settings = useSiteSettings();
+
   const byCategory = (cat: CreditCategory) => credits.filter((c) => c.category === cat);
   const performers = byCategory('performer');
+  // The "Lavalla <year>" label follows the performers' own year field, so the
+  // admin controls it from the credits list rather than it being hardcoded.
+  const performerYear = performers.find((p) => p.year)?.year ?? null;
   const partners = byCategory('partner');
   const exhibitors = byCategory('exhibitor');
 
@@ -111,12 +117,11 @@ export default function EventDetailsSection() {
             <div className="md:col-span-5">
               <p className="reveal eyebrow text-amber">Ohjelmassa</p>
               <h3 className="reveal delay-1 font-display mt-6 text-4xl text-cream md:text-5xl">
-                Enemmän kuin siivous.
+                {settings.event_program_title || 'Enemmän kuin siivous.'}
               </h3>
               <p className="reveal delay-2 mt-6 max-w-md text-base leading-relaxed text-cream/75">
-                Ulkona tapahtuvan siivouksen lomassa nautitaan inspiroivista puheista,
-                livemusiikista, yritysten pop-up-näyttelystä, lasten aktiviteeteista, kahvilasta ja
-                rentoutumisalueesta. Roskapäivä on juhla puhtaamman ympäristön puolesta.
+                {settings.event_program_body ||
+                  'Ulkona tapahtuvan siivouksen lomassa nautitaan inspiroivista puheista, livemusiikista, yritysten pop-up-näyttelystä, lasten aktiviteeteista, kahvilasta ja rentoutumisalueesta. Roskapäivä on juhla puhtaamman ympäristön puolesta.'}
               </p>
             </div>
             <div className="md:col-span-7">
@@ -136,7 +141,9 @@ export default function EventDetailsSection() {
 
           {performers.length > 0 && (
             <div className="reveal mt-12 flex flex-col gap-5 border-t border-cream/10 pt-10 md:mt-16 md:flex-row md:items-center md:gap-10">
-              <p className="eyebrow shrink-0 text-cream/50">Lavalla 2025</p>
+              <p className="eyebrow shrink-0 text-cream/50">
+                {performerYear ? `Lavalla ${performerYear}` : 'Lavalla'}
+              </p>
               <div className="flex flex-wrap items-baseline gap-x-8 gap-y-2">
                 {performers.map((p) => (
                   <span key={p.id ?? p.name} className="font-display text-2xl text-cream md:text-3xl">

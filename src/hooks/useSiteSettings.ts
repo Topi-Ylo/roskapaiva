@@ -13,7 +13,15 @@ export interface SiteSettings {
   petition_open: boolean;
   mediakortti_pdf_url: string | null;
   press_zip_url: string | null;
+  /** Roskapäivä '26 page copy. Paragraphs separated by a blank line. */
+  event_hero_body: string | null;
+  event_program_title: string | null;
+  event_program_body: string | null;
 }
+
+export const EVENT_HERO_BODY_FALLBACK = `Kerätään yhdessä, juhlitaan tehtyä työtä ja tehdään Helsingistä vähän siistimpi. Voit osallistua myös kotiseudullasi: kerää roskia oman matkasi varrelta ja jaa kuva tunnisteella #roskapäivä2026
+
+Roskapäivä-tapahtumaa järjestävät vuosittain Roskapäivän Eino sekä Sergio Cleaning Angelsilta. Tapahtuman tavoitteena on tuoda ihmiset yhteen tekemään konkreettisia ympäristötekoja rennossa ja yhteisöllisessä hengessä. Jokainen kerätty roska on askel kohti puhtaampaa ympäristöä – ja samalla mahdollisuus inspiroida yhä useampia pitämään yhdessä huolta luonnostamme.`;
 
 const FALLBACK: SiteSettings = {
   contact_email: 'eino@roskapaiva.com',
@@ -27,6 +35,10 @@ const FALLBACK: SiteSettings = {
   petition_open: false,
   mediakortti_pdf_url: null,
   press_zip_url: null,
+  event_hero_body: EVENT_HERO_BODY_FALLBACK,
+  event_program_title: 'Enemmän kuin siivous.',
+  event_program_body:
+    'Ulkona tapahtuvan siivouksen lomassa nautitaan inspiroivista puheista, livemusiikista, yritysten pop-up-näyttelystä, lasten aktiviteeteista, kahvilasta ja rentoutumisalueesta. Roskapäivä on juhla puhtaamman ympäristön puolesta.',
 };
 
 export function useSiteSettings(): SiteSettings {
