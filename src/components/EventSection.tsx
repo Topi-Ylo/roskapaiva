@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useTableData } from '../hooks/useTableData';
 import { EVENT_HERO_BODY_FALLBACK, useSiteSettings } from '../hooks/useSiteSettings';
 import {
@@ -25,6 +25,48 @@ function withHashtags(text: string): ReactNode[] {
     );
 }
 
+/**
+ * Main partner: logo only, shown large. The mark is dark and the hero is dark,
+ * so a soft white halo lifts it off the background. Falls back to the name if
+ * there is no logo or it fails to load.
+ */
+function MainSponsorLogo({ sponsor }: { sponsor: EventSponsor }) {
+  const [failed, setFailed] = useState(false);
+  const showLogo = Boolean(sponsor.logo_url) && !failed;
+
+  const content = showLogo ? (
+    <img
+      src={sponsor.logo_url as string}
+      alt={sponsor.name}
+      loading="lazy"
+      onError={() => setFailed(true)}
+      className="h-16 w-auto max-w-[220px] object-contain object-left transition md:h-20"
+      style={{
+        filter:
+          'drop-shadow(0 0 6px rgba(244, 241, 232, 0.45)) drop-shadow(0 0 16px rgba(244, 241, 232, 0.22))',
+      }}
+    />
+  ) : (
+    <span className="font-semibold uppercase tracking-[0.15em] text-cream md:text-lg">
+      {sponsor.name}
+    </span>
+  );
+
+  return sponsor.url ? (
+    <a
+      href={sponsor.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={sponsor.name}
+      className="inline-flex"
+    >
+      {content}
+    </a>
+  ) : (
+    <div className="inline-flex">{content}</div>
+  );
+}
+
 export default function EventSection() {
   const { data } = useTableData<EventSlot>('event_schedule');
   const schedule = data && data.length > 0 ? data : FALLBACK_SCHEDULE;
@@ -34,6 +76,8 @@ export default function EventSection() {
   // the band entirely.
   const { data: sponsorData } = useTableData<EventSponsor>('event_sponsors');
   const sponsors = sponsorData ?? FALLBACK_SPONSORS;
+  // First by sort_order is the main partner; the rest are support sponsors.
+  const [mainSponsor, ...supportSponsors] = sponsors;
 
   const settings = useSiteSettings();
   const bodyParagraphs = (settings.event_hero_body || EVENT_HERO_BODY_FALLBACK)
@@ -148,61 +192,59 @@ export default function EventSection() {
           </div>
         </div>
 
-        {/* Yhteistyössä — sponsor band anchored to the bottom of the hero. */}
+        {/* Sponsors — main partner on its own line, support sponsors below. */}
         {sponsors.length > 0 && (
           <div className="reveal delay-3 pb-8 md:pb-10">
-            <div className="mx-auto flex w-full max-w-7xl flex-col gap-5 border-t border-cream/15 pt-6 sm:flex-row sm:items-center sm:gap-12">
-              <p className="eyebrow shrink-0 text-cream/50">Yhteistyössä</p>
-              <div className="flex flex-wrap items-center gap-x-10 gap-y-4">
-                {sponsors.map((s, i) => {
-                  // The first sponsor (lowest sort_order) is the main sponsor and
-                  // gets a larger logo. Logos render on their own with no plate
-                  // or padding, so the full mark shows edge to edge.
-                  const main = i === 0;
-                  const inner = (
-                    <>
-                      {s.logo_url && (
-                        <img
-                          src={s.logo_url}
-                          alt={s.name}
-                          loading="lazy"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                          className={`w-auto shrink-0 object-contain object-left ${
-                            main ? 'h-12 max-w-[140px] md:h-14' : 'h-9 max-w-[100px] md:h-10'
-                          }`}
-                        />
-                      )}
-                      <span
-                        className={`font-semibold uppercase transition ${
-                          main
-                            ? 'text-sm tracking-[0.15em] text-cream group-hover:text-amber-light md:text-base'
-                            : 'text-xs tracking-wider text-cream/70 group-hover:text-cream'
-                        }`}
-                      >
-                        {s.name}
-                      </span>
-                    </>
-                  );
-                  const cls = `group flex items-center ${main ? 'gap-4' : 'gap-2.5'}`;
-                  return s.url ? (
-                    <a
-                      key={s.id ?? s.name}
-                      href={s.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={cls}
-                    >
-                      {inner}
-                    </a>
-                  ) : (
-                    <div key={s.id ?? s.name} className={cls}>
-                      {inner}
-                    </div>
-                  );
-                })}
-              </div>
+            <div className="mx-auto w-full max-w-7xl border-t border-cream/15 pt-6">
+              {mainSponsor && (
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-10">
+                  <p className="eyebrow shrink-0 text-amber sm:w-56">Pääyhteistyökumppani</p>
+                  <MainSponsorLogo sponsor={mainSponsor} />
+                </div>
+              )}
+
+              {supportSponsors.length > 0 && (
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-10 md:mt-6">
+                  <p className="eyebrow shrink-0 text-cream/50 sm:w-56">Tukisponsorit</p>
+                  <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+                    {supportSponsors.map((s) => {
+                      const inner = (
+                        <>
+                          {s.logo_url && (
+                            <img
+                              src={s.logo_url}
+                              alt=""
+                              loading="lazy"
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                              }}
+                              className="h-9 w-auto max-w-[100px] shrink-0 object-contain object-left md:h-10"
+                            />
+                          )}
+                          <span className="text-xs font-semibold uppercase tracking-wider text-cream/70 transition group-hover:text-cream">
+                            {s.name}
+                          </span>
+                        </>
+                      );
+                      return s.url ? (
+                        <a
+                          key={s.id ?? s.name}
+                          href={s.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group flex items-center gap-2.5"
+                        >
+                          {inner}
+                        </a>
+                      ) : (
+                        <div key={s.id ?? s.name} className="group flex items-center gap-2.5">
+                          {inner}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
