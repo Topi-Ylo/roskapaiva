@@ -27,8 +27,8 @@ function withHashtags(text: string): ReactNode[] {
 
 /**
  * Main partner: logo only, shown large. The mark is dark and the hero is dark,
- * so a soft white halo lifts it off the background. Falls back to the name if
- * there is no logo or it fails to load.
+ * so it is inverted to render white, with a soft green halo to lift it off the
+ * background. Falls back to the name if there is no logo or it fails to load.
  */
 function MainSponsorLogo({ sponsor }: { sponsor: EventSponsor }) {
   const [failed, setFailed] = useState(false);
@@ -42,8 +42,12 @@ function MainSponsorLogo({ sponsor }: { sponsor: EventSponsor }) {
       onError={() => setFailed(true)}
       className="h-16 w-auto max-w-[220px] object-contain object-left transition md:h-20"
       style={{
+        // brightness(0) flattens the mark to black (alpha is kept), then
+        // invert(1) turns it pure white — this renders any logo colour white,
+        // whereas a bare invert() would just flip the hue (green -> pink).
+        // The green glow goes last so it is not inverted itself.
         filter:
-          'drop-shadow(0 0 6px rgba(244, 241, 232, 0.45)) drop-shadow(0 0 16px rgba(244, 241, 232, 0.22))',
+          'brightness(0) invert(1) drop-shadow(0 0 6px rgba(127, 212, 163, 0.55)) drop-shadow(0 0 18px rgba(127, 212, 163, 0.3))',
       }}
     />
   ) : (
