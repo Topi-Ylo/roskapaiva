@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { supabase } from '../../lib/supabase';
 import {
   AdminPageHeader,
@@ -54,6 +54,7 @@ function ScheduleManager() {
   const [form, setForm] = useState<SlotForm>(EMPTY_SLOT);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const refresh = async () => {
     if (!supabase) return;
@@ -90,7 +91,7 @@ function ScheduleManager() {
       published: s.published,
     });
     setError(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -151,7 +152,11 @@ function ScheduleManager() {
         {editingId && <GhostButton onClick={startNew}>Uusi rivi</GhostButton>}
       </div>
 
-      <form onSubmit={onSubmit} className="mt-5 rounded-lg border border-cream/10 bg-forest-deep p-6 md:p-8">
+      <form
+        ref={formRef}
+        onSubmit={onSubmit}
+        className="mt-5 scroll-mt-24 rounded-lg border border-cream/10 bg-forest-deep p-6 md:p-8"
+      >
         <p className="font-display text-xl text-cream">
           {editingId ? 'Muokkaa aikatauluriviä' : 'Uusi aikataulurivi'}
         </p>
@@ -314,6 +319,7 @@ function ProgramManager() {
   const [form, setForm] = useState<ProgramForm>(EMPTY_PROGRAM);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const refresh = async () => {
     if (!supabase) return;
@@ -341,6 +347,7 @@ function ProgramManager() {
     setEditingId(p.id);
     setForm({ label: p.label, sort_order: p.sort_order, published: p.published });
     setError(null);
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -394,7 +401,11 @@ function ProgramManager() {
         {editingId && <GhostButton onClick={startNew}>Uusi kohta</GhostButton>}
       </div>
 
-      <form onSubmit={onSubmit} className="mt-5 rounded-lg border border-cream/10 bg-forest-deep p-6 md:p-8">
+      <form
+        ref={formRef}
+        onSubmit={onSubmit}
+        className="mt-5 scroll-mt-24 rounded-lg border border-cream/10 bg-forest-deep p-6 md:p-8"
+      >
         <p className="font-display text-xl text-cream">
           {editingId ? 'Muokkaa ohjelmakohtaa' : 'Uusi ohjelmakohta'}
         </p>
@@ -527,6 +538,7 @@ function CreditsManager() {
   const [form, setForm] = useState<CreditForm>(EMPTY_CREDIT);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const refresh = async () => {
     if (!supabase) return;
@@ -562,7 +574,7 @@ function CreditsManager() {
       published: c.published,
     });
     setError(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -621,7 +633,11 @@ function CreditsManager() {
         {editingId && <GhostButton onClick={startNew}>Uusi nimi</GhostButton>}
       </div>
 
-      <form onSubmit={onSubmit} className="mt-5 rounded-lg border border-cream/10 bg-forest-deep p-6 md:p-8">
+      <form
+        ref={formRef}
+        onSubmit={onSubmit}
+        className="mt-5 scroll-mt-24 rounded-lg border border-cream/10 bg-forest-deep p-6 md:p-8"
+      >
         <p className="font-display text-xl text-cream">
           {editingId ? 'Muokkaa nimeä' : 'Uusi nimi'}
         </p>
@@ -771,6 +787,7 @@ function SponsorsManager() {
   const [form, setForm] = useState<SponsorForm>(EMPTY_SPONSOR);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const refresh = async () => {
     if (!supabase) return;
@@ -804,7 +821,7 @@ function SponsorsManager() {
       published: s.published,
     });
     setError(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -862,7 +879,11 @@ function SponsorsManager() {
         {editingId && <GhostButton onClick={startNew}>Uusi sponsori</GhostButton>}
       </div>
 
-      <form onSubmit={onSubmit} className="mt-5 rounded-lg border border-cream/10 bg-forest-deep p-6 md:p-8">
+      <form
+        ref={formRef}
+        onSubmit={onSubmit}
+        className="mt-5 scroll-mt-24 rounded-lg border border-cream/10 bg-forest-deep p-6 md:p-8"
+      >
         <p className="font-display text-xl text-cream">
           {editingId ? 'Muokkaa sponsoria' : 'Uusi sponsori'}
         </p>
