@@ -71,6 +71,42 @@ function MainSponsorLogo({ sponsor }: { sponsor: EventSponsor }) {
   );
 }
 
+/** Support sponsor / exhibitor: regular-size logo plus name. */
+function SmallSponsor({ sponsor }: { sponsor: EventSponsor }) {
+  const inner = (
+    <>
+      {sponsor.logo_url && (
+        <img
+          src={sponsor.logo_url}
+          alt=""
+          loading="lazy"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+          }}
+          style={sponsor.invert_logo ? { filter: 'invert(1)' } : undefined}
+          className="h-9 w-auto max-w-[100px] shrink-0 object-contain object-left md:h-10"
+        />
+      )}
+      <span className="text-xs font-semibold uppercase tracking-wider text-cream/70 transition group-hover:text-cream">
+        {sponsor.name}
+      </span>
+    </>
+  );
+
+  return sponsor.url ? (
+    <a
+      href={sponsor.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group flex items-center gap-2.5 py-1"
+    >
+      {inner}
+    </a>
+  ) : (
+    <div className="group flex items-center gap-2.5 py-1">{inner}</div>
+  );
+}
+
 export default function EventSection() {
   const { data } = useTableData<EventSlot>('event_schedule');
   const schedule = data && data.length > 0 ? data : FALLBACK_SCHEDULE;
@@ -80,8 +116,12 @@ export default function EventSection() {
   // the band entirely.
   const { data: sponsorData } = useTableData<EventSponsor>('event_sponsors');
   const sponsors = sponsorData ?? FALLBACK_SPONSORS;
-  // First by sort_order is the main partner; the rest are support sponsors.
-  const [mainSponsor, ...supportSponsors] = sponsors;
+  // Group by tier. Rows saved before tiers existed have no value, so they fall
+  // back to the old behaviour: first by sort_order is the main partner.
+  const tierOf = (s: EventSponsor) => s.tier ?? 'support';
+  const mainSponsor = sponsors.find((s) => tierOf(s) === 'main') ?? sponsors[0];
+  const supportSponsors = sponsors.filter((s) => s !== mainSponsor && tierOf(s) === 'support');
+  const exhibitors = sponsors.filter((s) => tierOf(s) === 'exhibitor');
 
   const settings = useSiteSettings();
   const bodyParagraphs = (settings.event_hero_body || EVENT_HERO_BODY_FALLBACK)
@@ -217,41 +257,20 @@ export default function EventSection() {
                 <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-10 md:mt-6">
                   <p className="eyebrow shrink-0 text-cream/50 sm:w-56">Tukisponsorit</p>
                   <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
-                    {supportSponsors.map((s) => {
-                      const inner = (
-                        <>
-                          {s.logo_url && (
-                            <img
-                              src={s.logo_url}
-                              alt=""
-                              loading="lazy"
-                              onError={(e) => {
-                                e.currentTarget.style.display = 'none';
-                              }}
-                              className="h-9 w-auto max-w-[100px] shrink-0 object-contain object-left md:h-10"
-                            />
-                          )}
-                          <span className="text-xs font-semibold uppercase tracking-wider text-cream/70 transition group-hover:text-cream">
-                            {s.name}
-                          </span>
-                        </>
-                      );
-                      return s.url ? (
-                        <a
-                          key={s.id ?? s.name}
-                          href={s.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2.5 py-1"
-                        >
-                          {inner}
-                        </a>
-                      ) : (
-                        <div key={s.id ?? s.name} className="group flex items-center gap-2.5">
-                          {inner}
-                        </div>
-                      );
-                    })}
+                    {supportSponsors.map((s) => (
+                      <SmallSponsor key={s.id ?? s.name} sponsor={s} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {exhibitors.length > 0 && (
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-10 md:mt-6">
+                  <p className="eyebrow shrink-0 text-cream/50 sm:w-56">Näytteilleasettajat</p>
+                  <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+                    {exhibitors.map((s) => (
+                      <SmallSponsor key={s.id ?? s.name} sponsor={s} />
+                    ))}
                   </div>
                 </div>
               )}

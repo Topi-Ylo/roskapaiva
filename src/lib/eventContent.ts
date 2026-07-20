@@ -20,12 +20,18 @@ export interface EventProgramItem {
   sort_order: number;
 }
 
+export type SponsorTier = 'main' | 'support' | 'exhibitor';
+
 export interface EventSponsor {
   id?: string;
   name: string;
   logo_url: string | null;
   url: string | null;
   sort_order: number;
+  /** Which line of the hero band this sponsor sits on. */
+  tier?: SponsorTier;
+  /** Flip the logo's colours when it is too dark to read on the hero. */
+  invert_logo?: boolean;
 }
 
 export type CreditCategory = 'performer' | 'partner' | 'exhibitor';
@@ -79,6 +85,8 @@ export const FALLBACK_SPONSORS: EventSponsor[] = [
     logo_url: '/cleaning-angels.png',
     url: 'https://www.cleaningangels.fi/',
     sort_order: 10,
+    tier: 'main',
+    invert_logo: false,
   },
 ];
 

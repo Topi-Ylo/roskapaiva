@@ -755,11 +755,27 @@ function CreditsManager() {
 
 // ── Sponsors (hero "Yhteistyössä" band) ──────────────────────────────────────
 
+type SponsorTier = 'main' | 'support' | 'exhibitor';
+
+const SPONSOR_TIERS: { value: SponsorTier; label: string }[] = [
+  { value: 'main', label: 'Pääyhteistyökumppani' },
+  { value: 'support', label: 'Tukisponsori' },
+  { value: 'exhibitor', label: 'Näytteilleasettaja' },
+];
+
+const TIER_LABEL: Record<SponsorTier, string> = {
+  main: 'Pääyhteistyökumppani',
+  support: 'Tukisponsori',
+  exhibitor: 'Näytteilleasettaja',
+};
+
 interface Sponsor {
   id: string;
   name: string;
   logo_url: string | null;
   url: string | null;
+  tier: SponsorTier;
+  invert_logo: boolean;
   sort_order: number;
   published: boolean;
 }
@@ -768,6 +784,8 @@ interface SponsorForm {
   name: string;
   logo_url: string;
   url: string;
+  tier: SponsorTier;
+  invert_logo: boolean;
   sort_order: number;
   published: boolean;
 }
@@ -776,6 +794,8 @@ const EMPTY_SPONSOR: SponsorForm = {
   name: '',
   logo_url: '',
   url: '',
+  tier: 'support',
+  invert_logo: false,
   sort_order: 0,
   published: true,
 };
@@ -817,6 +837,8 @@ function SponsorsManager() {
       name: s.name,
       logo_url: s.logo_url ?? '',
       url: s.url ?? '',
+      tier: s.tier ?? 'support',
+      invert_logo: s.invert_logo ?? false,
       sort_order: s.sort_order,
       published: s.published,
     });
@@ -834,6 +856,8 @@ function SponsorsManager() {
       name: form.name.trim(),
       logo_url: form.logo_url.trim() || null,
       url: form.url.trim() || null,
+      tier: form.tier,
+      invert_logo: form.invert_logo,
       sort_order: Number(form.sort_order) || 0,
       published: form.published,
     };
@@ -897,6 +921,19 @@ function SponsorsManager() {
               placeholder="Cleaning Angels"
             />
           </Field>
+          <Field label="Taso" hint="Määrää millä rivillä logo näkyy">
+            <select
+              value={form.tier}
+              onChange={(e) => setForm({ ...form, tier: e.target.value as SponsorTier })}
+              className={inputClass}
+            >
+              {SPONSOR_TIERS.map((t) => (
+                <option key={t.value} value={t.value}>
+                  {t.label}
+                </option>
+              ))}
+            </select>
+          </Field>
           <Field label="Linkki" hint="Valinnainen">
             <input
               type="url"
@@ -920,6 +957,17 @@ function SponsorsManager() {
               className={inputClass}
             />
           </Field>
+          <label className="flex items-center gap-3 md:col-span-2">
+            <input
+              type="checkbox"
+              checked={form.invert_logo}
+              onChange={(e) => setForm({ ...form, invert_logo: e.target.checked })}
+              className="h-4 w-4 accent-amber"
+            />
+            <span className="text-sm text-cream/80">
+              Käännä logon värit (tummalle taustalle)
+            </span>
+          </label>
           <label className="flex items-center gap-3 md:col-span-2">
             <input
               type="checkbox"
@@ -966,6 +1014,9 @@ function SponsorsManager() {
                     )}
                   </span>
                   <span className="text-cream/85">{s.name}</span>
+                  <span className="rounded-full bg-amber/15 px-2 py-0.5 text-[10px] uppercase tracking-widest text-amber">
+                    {TIER_LABEL[s.tier ?? 'support']}
+                  </span>
                   {!s.published && (
                     <span className="rounded-full bg-cream/10 px-2 py-0.5 text-[10px] uppercase tracking-widest text-cream/55">
                       Luonnos
