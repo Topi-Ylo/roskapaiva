@@ -2,19 +2,40 @@
 <html lang="fi">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="https://i.imgur.com/ORj8kKe.png" />
-    <link rel="apple-touch-icon" href="https://i.imgur.com/ORj8kKe.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#0B160F" />
+
+    <!-- Favicons are bundled with the site rather than hotlinked -->
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <title>Roskapäivä | Ois siistimpää, jos ois siistimpää</title>
     <meta name="description" content="Roskapäivä on liike puhtaamman ympäristön puolesta. Perustettu 2018 Helsingissä. Vuotuinen Roskapäivä 5.9.2026." />
-    <title>Roskapäivä</title>
+    <link rel="canonical" href="https://roskapaiva.fi/" />
+
+    <!-- Open Graph (WhatsApp, Facebook, LinkedIn) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Roskapäivä" />
+    <meta property="og:locale" content="fi_FI" />
+    <meta property="og:url" content="https://roskapaiva.fi/" />
+    <meta property="og:title" content="Roskapäivä | Ois siistimpää, jos ois siistimpää" />
+    <meta property="og:description" content="Roskapäivä on liike puhtaamman ympäristön puolesta. Perustettu 2018 Helsingissä. Vuotuinen Roskapäivä 5.9.2026." />
+    <meta property="og:image" content="https://roskapaiva.fi/og-image.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Roskapäivä 5.9.2026, Helsinki" />
+
+    <!-- Twitter/X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Roskapäivä | Ois siistimpää, jos ois siistimpää" />
+    <meta name="twitter:description" content="Roskapäivä on liike puhtaamman ympäristön puolesta. Perustettu 2018 Helsingissä. Vuotuinen Roskapäivä 5.9.2026." />
+    <meta name="twitter:image" content="https://roskapaiva.fi/og-image.jpg" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
-    <meta property="og:image" content="https://bolt.new/static/og_default.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
-</head>
+  </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>

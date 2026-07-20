@@ -48,7 +48,7 @@ export default function LoginPage() {
           <div className="rounded-lg border border-amber/40 bg-amber/5 p-6 text-sm leading-relaxed text-cream/85">
             <p className="font-display text-base text-amber">Supabase ei ole vielä konfiguroitu</p>
             <p className="mt-3">
-              Liitä Supabase-projekti bolt.new:n integraation kautta ja varmista että ympäristömuuttujat
+              Liitä Supabase-projekti ja varmista että ympäristömuuttujat
               <code className="mx-1 text-cream">VITE_SUPABASE_URL</code> ja
               <code className="mx-1 text-cream">VITE_SUPABASE_ANON_KEY</code>
               ovat asetettu. Katso lisätiedot tiedostosta <code className="text-cream">.env.example</code>.
