@@ -85,8 +85,14 @@ export default function EventSection() {
     .map((p) => p.trim())
     .filter(Boolean);
 
+  // The hero fills at least one viewport but is free to grow when the copy and
+  // sponsor band need more room — on phones, and on short laptop screens too.
+  // A fixed height here silently clipped the sponsor band.
   return (
-    <section id="tapahtuma" className="relative h-[100vh] min-h-[760px] w-full overflow-hidden">
+    <section
+      id="tapahtuma"
+      className="relative min-h-[100svh] w-full overflow-hidden md:min-h-[100vh]"
+    >
       {/* Background image, brightened 25%, sitting under the legibility gradient. */}
       <div
         className="absolute inset-0"
@@ -102,8 +108,8 @@ export default function EventSection() {
         style={{ background: 'linear-gradient(rgba(11, 22, 15, 0.78), rgba(11, 22, 15, 0.95))' }}
       />
 
-      <div className="relative z-10 flex h-full flex-col px-6">
-        <div className="flex flex-1 items-center pt-24 md:pt-28">
+      <div className="relative z-10 flex min-h-[100svh] flex-col px-6 md:min-h-[100vh]">
+        <div className="flex flex-1 items-center pb-10 pt-24 md:pb-0 md:pt-28">
           {/* Two columns: all copy on the left, image + note vertically centred
               against it on the right. */}
           <div className="mx-auto grid w-full max-w-7xl gap-10 md:grid-cols-12 md:items-center md:gap-12">
@@ -180,7 +186,7 @@ export default function EventSection() {
                   href="https://instagram.com/roskapaiva"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-amber transition hover:text-amber-light"
+                  className="inline-flex items-center gap-2 py-2 text-xs font-semibold uppercase tracking-widest text-amber transition hover:text-amber-light"
                 >
                   Seuraa @roskapaiva
                   <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
@@ -232,7 +238,7 @@ export default function EventSection() {
                           href={s.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group flex items-center gap-2.5"
+                          className="group flex items-center gap-2.5 py-1"
                         >
                           {inner}
                         </a>

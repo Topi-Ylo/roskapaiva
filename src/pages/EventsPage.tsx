@@ -195,7 +195,7 @@ export default function EventsPage() {
               <span className="h-px w-12 bg-amber" />
               <span className="eyebrow text-amber">Tapahtumakalenteri</span>
             </div>
-            <h1 className="font-display mt-6 text-6xl text-cream sm:text-7xl md:text-8xl">
+            <h1 className="font-display mt-6 text-5xl text-cream sm:text-7xl md:text-8xl">
               Tapahtumat
             </h1>
 
@@ -217,7 +217,7 @@ export default function EventsPage() {
             </div>
           </header>
 
-          <div className="mt-16 grid grid-cols-1 gap-x-10 gap-y-16 md:grid-cols-2">
+          <div className="mt-10 grid grid-cols-1 gap-x-10 gap-y-12 md:mt-16 md:gap-y-16 md:grid-cols-2">
             {loading && (
               <div className="col-span-full py-24 text-center text-cream/40">Ladataan tapahtumia…</div>
             )}

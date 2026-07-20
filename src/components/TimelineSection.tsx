@@ -65,7 +65,7 @@ export default function TimelineSection() {
           {years.map((year) => (
             <button
               key={year}
-              className={`tab font-display text-2xl ${activeYear === year ? 'active' : ''}`}
+              className={`tab font-display pt-3 text-2xl ${activeYear === year ? 'active' : ''}`}
               onClick={() => setActiveYear(year)}
             >
               {year}

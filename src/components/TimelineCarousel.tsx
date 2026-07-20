@@ -81,8 +81,9 @@ export default function TimelineCarousel({ cards, onCardClick, intervalMs = 4000
         ))}
       </div>
 
-      {/* Dots indicator */}
-      <div className="mt-5 flex flex-wrap justify-center gap-2">
+      {/* Dots indicator — the dot stays small, but the button around it is a
+          full 44px touch target so it is tappable on phones. */}
+      <div className="mt-2 flex flex-wrap items-center justify-center">
         {cards.map((_, i) => (
           <button
             key={i}
@@ -92,11 +93,15 @@ export default function TimelineCarousel({ cards, onCardClick, intervalMs = 4000
               setPaused(true);
               window.setTimeout(() => setPaused(false), 4000);
             }}
-            className={`h-2 rounded-full transition-all ${
-              i === index ? 'w-6 bg-amber' : 'w-2 bg-cream/30'
-            }`}
+            className="flex h-11 items-center justify-center px-1.5"
             aria-label={`Aikajanan kuva ${i + 1}`}
-          />
+          >
+            <span
+              className={`block h-2 rounded-full transition-all ${
+                i === index ? 'w-6 bg-amber' : 'w-2 bg-cream/30'
+              }`}
+            />
+          </button>
         ))}
       </div>
     </div>
