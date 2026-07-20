@@ -166,7 +166,7 @@ export default function EventSection() {
                   </span>
                 </div>
               )}
-              <div className="hidden w-full max-w-sm overflow-hidden border border-cream/15 md:block">
+              <div className="w-full max-w-sm overflow-hidden border border-cream/15">
                 <img
                   src={settings.event_headliner_image || HERO_IMAGE}
                   alt={
