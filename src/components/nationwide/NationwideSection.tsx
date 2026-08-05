@@ -80,7 +80,11 @@ export default function NationwideSection() {
   });
 
   const events = useMemo<CommunityEvent[]>(
-    () => (data && data.length > 0 ? data : loading ? [] : FALLBACK_COMMUNITY_EVENTS),
+    // `null` means Supabase is not configured, so the demo rows keep the
+    // section alive in local preview. An empty array is real data: the table
+    // exists and simply has no approved events yet, which has to render as the
+    // empty state rather than as fictional events.
+    () => (loading ? [] : (data ?? FALLBACK_COMMUNITY_EVENTS)),
     [data, loading]
   );
 

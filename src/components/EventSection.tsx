@@ -201,7 +201,7 @@ export default function EventSection() {
         {/* Järjestäjät, kumppanit ja näytteilleasettajat */}
         {rows.length > 0 && (
           <div className="reveal delay-3 pb-8 md:pb-10">
-            <div className="mx-auto w-full max-w-7xl space-y-5 border-t border-cream/15 pt-6 md:space-y-6">
+            <div className="mx-auto w-full max-w-7xl space-y-5 pt-6 md:space-y-6">
               {rows.map((row) => (
                 <div
                   key={row.tier}
