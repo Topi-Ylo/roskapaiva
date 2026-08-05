@@ -6,30 +6,39 @@ export interface UploadResult {
 }
 
 /**
- * Upload a single file to the public 'media' bucket. Returns the file's public
- * URL plus the storage path (so the row in image_library can track it).
+ * Upload a single file to a public bucket. Returns the file's public URL plus
+ * the storage path (so the row in image_library can track it). Defaults to
+ * `media`; public sign-up photos go to COMMUNITY_BUCKET, which carries a much
+ * tighter size limit.
  */
-export async function uploadToStorage(file: File, prefix = ''): Promise<UploadResult> {
+export async function uploadToStorage(
+  file: File,
+  prefix = '',
+  bucket = 'media',
+): Promise<UploadResult> {
   if (!supabase) throw new Error('Supabase ei ole konfiguroitu.');
   const ext = (file.name.split('.').pop() ?? 'bin').toLowerCase();
   const safePrefix = prefix.replace(/[^a-z0-9/_-]/gi, '');
   const id = Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
   const path = `${safePrefix}${id}.${ext}`;
 
-  const { error } = await supabase.storage.from('media').upload(path, file, {
+  const { error } = await supabase.storage.from(bucket).upload(path, file, {
     upsert: false,
     contentType: file.type || undefined,
   });
   if (error) throw error;
 
-  const { data } = supabase.storage.from('media').getPublicUrl(path);
+  const { data } = supabase.storage.from(bucket).getPublicUrl(path);
   return { url: data.publicUrl, path };
 }
 
-export async function deleteFromStorage(path: string): Promise<void> {
+export async function deleteFromStorage(path: string, bucket = 'media'): Promise<void> {
   if (!supabase) return;
-  await supabase.storage.from('media').remove([path]);
+  await supabase.storage.from(bucket).remove([path]);
 }
+
+/** Bucket for photos attached to public sign-ups. */
+export const COMMUNITY_BUCKET = 'community';
 
 /** Largest file we will even attempt to decode, before any resizing. */
 export const MAX_RAW_UPLOAD_BYTES = 25 * 1024 * 1024; // 25 MB
@@ -53,6 +62,11 @@ const MB = (n: number) => `${(n / 1024 / 1024).toFixed(1)} Mt`;
 export async function prepareCommunityImage(file: File): Promise<File> {
   if (!file.type.startsWith('image/')) {
     throw new Error('Vain kuvatiedostot kelpaavat.');
+  }
+  // compressImage passes SVG through untouched, and these files are served
+  // publicly, so refuse a format that can carry script.
+  if (file.type === 'image/svg+xml') {
+    throw new Error('SVG-kuvat eivät kelpaa. Käytä JPG- tai PNG-kuvaa.');
   }
   if (file.size > MAX_RAW_UPLOAD_BYTES) {
     throw new Error(

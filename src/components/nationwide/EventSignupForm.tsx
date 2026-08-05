@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { supabase, SUPABASE_CONFIGURED } from '../../lib/supabase';
-import { prepareCommunityImage, uploadToStorage } from '../../lib/storage';
+import { COMMUNITY_BUCKET, prepareCommunityImage, uploadToStorage } from '../../lib/storage';
 import {
   DESCRIPTION_MAX,
   DURATION_OPTIONS,
@@ -53,7 +53,7 @@ export default function EventSignupForm() {
       // Validate and shrink first: this form is public, and a phone photo is
       // several megabytes straight off the camera.
       const prepared = await prepareCommunityImage(file);
-      const { url } = await uploadToStorage(prepared, 'community/');
+      const { url } = await uploadToStorage(prepared, '', COMMUNITY_BUCKET);
       set('image_url', url);
     } catch (err) {
       setError(
