@@ -20,7 +20,7 @@ export interface EventProgramItem {
   sort_order: number;
 }
 
-export type SponsorTier = 'main' | 'support' | 'exhibitor';
+export type SponsorTier = 'organizer' | 'main' | 'support' | 'exhibitor';
 
 export interface EventSponsor {
   id?: string;
@@ -79,11 +79,27 @@ export const FALLBACK_PROGRAM: EventProgramItem[] = [
 // via the event_sponsors table; separate from the site-wide `partners` marquee.
 export const FALLBACK_SPONSORS: EventSponsor[] = [
   {
+    name: 'Roskapäivä',
+    logo_url: 'https://i.imgur.com/ORj8kKe.png',
+    url: 'https://roskapaiva.fi/',
+    sort_order: 10,
+    tier: 'organizer',
+    invert_logo: false,
+  },
+  {
     name: 'Cleaning Angels',
     // White monogram; place the file at public/cleaning-angels.png. For the
     // live site upload it via admin (Yhteistyössä / sponsorit → Logo).
     logo_url: '/cleaning-angels.png',
     url: 'https://www.cleaningangels.fi/',
+    sort_order: 20,
+    tier: 'organizer',
+    invert_logo: false,
+  },
+  {
+    name: 'Partioaitta',
+    logo_url: 'https://logo.clearbit.com/partioaitta.fi',
+    url: 'https://www.partioaitta.fi/',
     sort_order: 10,
     tier: 'main',
     invert_logo: false,

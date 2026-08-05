@@ -21,6 +21,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AnalyticsAdmin from './pages/admin/AnalyticsAdmin';
 import EventAdmin from './pages/admin/EventAdmin';
 import EventsAdmin from './pages/admin/EventsAdmin';
+import CommunityEventsAdmin from './pages/admin/CommunityEventsAdmin';
 import PastEventsAdmin from './pages/admin/PastEventsAdmin';
 import TimelineAdmin from './pages/admin/TimelineAdmin';
 import SocialMediaAdmin from './pages/admin/SocialMediaAdmin';
@@ -144,6 +145,7 @@ export default function App() {
                 <Route path="analytics" element={<AnalyticsAdmin />} />
                 <Route path="event" element={<EventAdmin />} />
                 <Route path="events" element={<EventsAdmin />} />
+                <Route path="community-events" element={<CommunityEventsAdmin />} />
                 <Route path="past-events" element={<PastEventsAdmin />} />
                 <Route path="timeline" element={<TimelineAdmin />} />
                 <Route path="social-media" element={<SocialMediaAdmin />} />

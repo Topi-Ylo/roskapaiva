@@ -1,14 +1,17 @@
 import EventSection from '../components/EventSection';
-import EventDetailsSection from '../components/EventDetailsSection';
-import PastEventsSection from '../components/PastEventsSection';
+import MainEventSection from '../components/MainEventSection';
+import NationwideSection from '../components/nationwide/NationwideSection';
+import ClosingSection from '../components/ClosingSection';
 import FooterSection from '../components/FooterSection';
 
 export default function EventPage() {
   return (
     <>
+      {/* Valtakunnallinen päivä edellä, päätapahtuma toisena */}
       <EventSection />
-      <EventDetailsSection />
-      <PastEventsSection />
+      <MainEventSection />
+      <NationwideSection />
+      <ClosingSection />
       <FooterSection />
     </>
   );
