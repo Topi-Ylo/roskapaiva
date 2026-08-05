@@ -25,8 +25,8 @@ export default function ClosingSection() {
             <div className="md:col-span-7">
               <p className="reveal eyebrow text-amber">Järjestäjät</p>
               <h2 className="reveal delay-1 font-display mt-6 max-w-2xl text-3xl leading-snug text-cream md:text-4xl">
-                Roskapäivän perusti Eino Oinio. Vuonna 2024 mukaan tuli Sergio Carrera, Cleaning
-                Angelsin perustaja ja Kohde Helsingin isäntä.
+                Roskapäivän perusti Eino Oinio. Vuonna 2024 päätapahtuman järjestäjäksi mukaan
+                tuli Sergio Carrera, Cleaning Angelsin perustaja ja Kohde Helsingin isäntä.
               </h2>
               <p className="reveal delay-2 mt-6 max-w-xl text-base leading-relaxed text-cream/75">
                 Yhteinen into siivoamiseen synnytti tapahtuman, joka kasvaa vuosi vuodelta.
