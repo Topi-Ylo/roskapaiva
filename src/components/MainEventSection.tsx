@@ -10,6 +10,9 @@ import {
 /** Photograph from the Kallio event, previously used behind the hero. */
 const EVENT_IMAGE = 'https://i.imgur.com/If6GHtz.jpeg';
 
+/** Co-host of the main event. Handle taken from cleaningangels.fi. */
+const CLEANING_ANGELS_INSTAGRAM = 'https://www.instagram.com/cleaningangelsfinland';
+
 /**
  * The Kallio main event, laid out like a festival poster: a framed bill with
  * the headliner on top, the two venues as "stages" and the programme as a
@@ -132,14 +135,24 @@ export default function MainEventSection() {
               Koko perheen tapahtuma. Hanskat ja säkit löytyvät paikan päältä, sinä tuot vain hyvän
               mielen. Tapahtuma on osallistujille ilmainen, kiitos kumppaneiden.
             </p>
-            <a
-              href="https://instagram.com/roskapaiva"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="ghost-cta rounded-full px-7 py-3 text-xs font-semibold uppercase tracking-widest text-cream"
-            >
-              Seuraa @roskapaiva
-            </a>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <a
+                href={settings.instagram_url ?? 'https://instagram.com/roskapaiva'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ghost-cta rounded-full px-7 py-3 text-xs font-semibold uppercase tracking-widest text-cream"
+              >
+                Seuraa @roskapaiva
+              </a>
+              <a
+                href={CLEANING_ANGELS_INSTAGRAM}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ghost-cta rounded-full px-7 py-3 text-xs font-semibold uppercase tracking-widest text-cream"
+              >
+                Seuraa @cleaningangelsfinland
+              </a>
+            </div>
           </div>
         </div>
       </div>
