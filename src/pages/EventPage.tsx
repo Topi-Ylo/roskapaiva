@@ -1,15 +1,28 @@
+import { useState } from 'react';
 import EventSection from '../components/EventSection';
-import EventDetailsSection from '../components/EventDetailsSection';
-import PastEventsSection from '../components/PastEventsSection';
+import CommunityQuoteSection from '../components/CommunityQuoteSection';
+import MainEventSection from '../components/MainEventSection';
+import NationwideSection from '../components/nationwide/NationwideSection';
+import SignupModal from '../components/nationwide/SignupModal';
+import ClosingSection from '../components/ClosingSection';
 import FooterSection from '../components/FooterSection';
 
 export default function EventPage() {
+  // The sign-up form is an overlay, opened from the hero and from the map
+  // section, so the page state lives here rather than in either section.
+  const [signupOpen, setSignupOpen] = useState(false);
+  const openSignup = () => setSignupOpen(true);
+
   return (
     <>
-      <EventSection />
-      <EventDetailsSection />
-      <PastEventsSection />
+      {/* Valtakunnallinen päivä edellä, päätapahtuma toisena */}
+      <EventSection onSignup={openSignup} />
+      <CommunityQuoteSection />
+      <MainEventSection />
+      <NationwideSection onSignup={openSignup} />
+      <ClosingSection />
       <FooterSection />
+      <SignupModal open={signupOpen} onClose={() => setSignupOpen(false)} />
     </>
   );
 }

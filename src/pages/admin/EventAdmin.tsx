@@ -755,15 +755,17 @@ function CreditsManager() {
 
 // ── Sponsors (hero "Yhteistyössä" band) ──────────────────────────────────────
 
-type SponsorTier = 'main' | 'support' | 'exhibitor';
+type SponsorTier = 'organizer' | 'main' | 'support' | 'exhibitor';
 
 const SPONSOR_TIERS: { value: SponsorTier; label: string }[] = [
+  { value: 'organizer', label: 'Järjestäjä' },
   { value: 'main', label: 'Pääyhteistyökumppani' },
   { value: 'support', label: 'Tukisponsori' },
   { value: 'exhibitor', label: 'Näytteilleasettaja' },
 ];
 
 const TIER_LABEL: Record<SponsorTier, string> = {
+  organizer: 'Järjestäjä',
   main: 'Pääyhteistyökumppani',
   support: 'Tukisponsori',
   exhibitor: 'Näytteilleasettaja',
