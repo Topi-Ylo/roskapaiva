@@ -7,6 +7,9 @@ import {
   type EventSlot,
 } from '../lib/eventContent';
 
+/** Photograph from the Kallio event, previously used behind the hero. */
+const EVENT_IMAGE = 'https://i.imgur.com/If6GHtz.jpeg';
+
 /**
  * The Kallio main event, laid out like a festival poster: a framed bill with
  * the headliner on top, the two venues as "stages" and the programme as a
@@ -22,13 +25,32 @@ export default function MainEventSection() {
 
   return (
     <section id="paatapahtuma" className="relative overflow-hidden bg-forest-deep py-24 md:py-32">
-      {/* Faint oversized word behind the poster, festival-print style */}
-      <span
+      {/* The photo that used to sit behind the hero now belongs to the event
+          it actually shows. Heavily dimmed so the poster stays legible. */}
+      <div
         aria-hidden="true"
-        className="font-display pointer-events-none absolute -top-6 left-1/2 -translate-x-1/2 select-none whitespace-nowrap text-[26vw] leading-none text-cream/[0.03]"
+        className="absolute inset-0"
+        style={{
+          backgroundImage: `url('${EVENT_IMAGE}')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{ background: 'linear-gradient(rgba(19, 36, 26, 0.88), rgba(19, 36, 26, 0.94))' }}
+      />
+
+      {/* Faint oversized place name behind the poster, festival-print style.
+          HELSINKI is set smaller so both lines read at the same width. */}
+      <div
+        aria-hidden="true"
+        className="font-display pointer-events-none absolute inset-x-0 -top-6 flex select-none flex-col items-center leading-[0.78] text-cream/[0.05]"
       >
-        KALLIO
-      </span>
+        <span className="text-[26vw]">KALLIO</span>
+        <span className="text-[19vw]">HELSINKI</span>
+      </div>
 
       <div className="relative mx-auto max-w-5xl px-6">
         <div className="reveal border-2 border-amber/70 bg-forest-night/60 p-6 shadow-[0_0_60px_rgba(0,0,0,0.45)] sm:p-10 md:p-14">

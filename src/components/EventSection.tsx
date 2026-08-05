@@ -1,12 +1,21 @@
 import { useState } from 'react';
 import { useTableData } from '../hooks/useTableData';
 import { useSiteSettings } from '../hooks/useSiteSettings';
+import { useIsMobileViewport } from '../hooks/useIsMobileViewport';
 import {
   FALLBACK_SPONSORS,
   type EventSponsor,
   type SponsorTier,
 } from '../lib/eventContent';
 
+// Same footage as the front page hero, so the two pages open alike. It loops
+// here rather than freezing on the last frame the way the front page does.
+const HERO_VIDEO_DESKTOP =
+  'https://video.gumlet.io/689843b7ce30732b0c4db420/69fae84160e95a00ee864b32/download.mp4';
+const HERO_VIDEO_MOBILE =
+  'https://video.gumlet.io/689843b7ce30732b0c4db420/69fae94a5c890ee77b65e6db/download.mp4';
+
+/** Still used as the fallback for the headliner portrait. */
 const HERO_IMAGE = 'https://i.imgur.com/If6GHtz.jpeg';
 
 /** Rows of the sponsor band, in the order they appear under the hero. */
@@ -71,6 +80,7 @@ export default function EventSection() {
   const { data: sponsorData } = useTableData<EventSponsor>('event_sponsors');
   const sponsors = sponsorData ?? FALLBACK_SPONSORS;
   const settings = useSiteSettings();
+  const isMobile = useIsMobileViewport();
 
   const tierOf = (s: EventSponsor) => s.tier ?? 'support';
   const rows = SPONSOR_ROWS.map((row) => ({
@@ -83,14 +93,17 @@ export default function EventSection() {
       id="tapahtuma"
       className="relative min-h-[100svh] w-full overflow-hidden md:min-h-[100vh]"
     >
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `url('${HERO_IMAGE}')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          filter: 'brightness(1.25)',
-        }}
+      <video
+        key={isMobile ? 'm' : 'd'}
+        src={isMobile ? HERO_VIDEO_MOBILE : HERO_VIDEO_DESKTOP}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        aria-hidden="true"
+        className="absolute inset-0 h-full w-full object-cover"
+        style={{ filter: 'brightness(1.25)' }}
       />
       <div
         className="absolute inset-0"
