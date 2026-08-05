@@ -28,9 +28,37 @@ function newId(): string {
   });
 }
 
+// An explicit height rather than vertical padding, because browsers give
+// <select> its own intrinsic height and largely ignore padding on it. Without
+// this the two dropdowns sit shorter than the text fields beside them.
+const FIELD_H = 'h-12';
+
 const inputCls =
-  'w-full rounded border border-cream/20 bg-forest-night/60 px-4 py-3 text-sm text-cream ' +
+  `w-full ${FIELD_H} rounded border border-cream/20 bg-forest-night/60 px-4 text-sm text-cream ` +
   'placeholder:text-cream/35 focus:border-amber focus:outline-none';
+
+// appearance-none drops the platform chevron along with the platform sizing,
+// so the arrow below is drawn back in.
+const selectCls = `${inputCls} cursor-pointer appearance-none pr-10`;
+
+/** Wraps a <select> so it can carry its own chevron. */
+function SelectField({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="relative block">
+      {children}
+      <svg
+        aria-hidden="true"
+        width="12"
+        height="12"
+        viewBox="0 0 16 16"
+        fill="none"
+        className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-cream/50"
+      >
+        <path d="M3 6l5 5 5-5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </span>
+  );
+}
 
 function Label({ children, hint }: { children: string; hint?: string }) {
   return (
@@ -185,21 +213,23 @@ export default function EventSignupForm() {
 
         <label className="block">
           <Label>Paikkakunta</Label>
-          <select
-            required
-            value={form.city}
-            onChange={(e) => set('city', e.target.value)}
-            className={inputCls}
-          >
-            <option value="" disabled>
-              Valitse paikkakunta
-            </option>
-            {FINNISH_CITIES.map((c) => (
-              <option key={c.name} value={c.name}>
-                {c.name}
+          <SelectField>
+            <select
+              required
+              value={form.city}
+              onChange={(e) => set('city', e.target.value)}
+              className={selectCls}
+            >
+              <option value="" disabled>
+                Valitse paikkakunta
               </option>
-            ))}
-          </select>
+              {FINNISH_CITIES.map((c) => (
+                <option key={c.name} value={c.name}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </SelectField>
         </label>
 
         <label className="block">
@@ -226,17 +256,19 @@ export default function EventSignupForm() {
 
         <label className="block">
           <Label>Kesto</Label>
-          <select
-            value={form.duration_minutes}
-            onChange={(e) => set('duration_minutes', Number(e.target.value))}
-            className={inputCls}
-          >
-            {DURATION_OPTIONS.map((d) => (
-              <option key={d.value} value={d.value}>
-                {d.label}
-              </option>
-            ))}
-          </select>
+          <SelectField>
+            <select
+              value={form.duration_minutes}
+              onChange={(e) => set('duration_minutes', Number(e.target.value))}
+              className={selectCls}
+            >
+              {DURATION_OPTIONS.map((d) => (
+                <option key={d.value} value={d.value}>
+                  {d.label}
+                </option>
+              ))}
+            </select>
+          </SelectField>
         </label>
 
         <label className="block sm:col-span-2">
