@@ -1,10 +1,20 @@
+import { useTableData } from '../hooks/useTableData';
+import { FALLBACK_SPONSORS, type EventSponsor } from '../lib/eventContent';
+
 /** The pair on stage, cropped from the photograph behind the main event. */
 const ORGANIZERS_IMAGE = '/jarjestajat.jpg';
 
-/** The two hosts, using the bundled marks so this needs no database read. */
-const ORGANIZERS = [
-  { name: 'Roskapäivä', logo: '/favicon.png', url: 'https://roskapaiva.fi/' },
-  { name: 'Cleaning Angels', logo: '/cleaning-angels.png', url: 'https://www.cleaningangels.fi/' },
+/** Used only when Supabase is unreachable; normally the hosts come from the
+ *  organiser tier of event_sponsors, so these marks stay in step with the
+ *  hero band and remain editable from the admin. */
+const FALLBACK_ORGANIZERS: EventSponsor[] = [
+  { name: 'Roskapäivä', logo_url: '/favicon.png', url: 'https://roskapaiva.fi/', sort_order: 10 },
+  {
+    name: 'Cleaning Angels',
+    logo_url: '/cleaning-angels.png',
+    url: 'https://www.cleaningangels.fi/',
+    sort_order: 20,
+  },
 ];
 
 /**
@@ -12,6 +22,11 @@ const ORGANIZERS = [
  * thank-you. The community quote moved up to sit right after the hero.
  */
 export default function ClosingSection() {
+  const { data } = useTableData<EventSponsor>('event_sponsors');
+  const sponsors = data ?? FALLBACK_SPONSORS;
+  const organizers = sponsors.filter((s) => s.tier === 'organizer');
+  const hosts = organizers.length > 0 ? organizers : FALLBACK_ORGANIZERS;
+
   return (
     <>
       <section id="jarjestajat" className="relative bg-forest-deep py-24 md:py-32">
@@ -46,20 +61,22 @@ export default function ClosingSection() {
               </p>
 
               <div className="reveal delay-3 mt-9 flex flex-wrap items-center gap-x-10 gap-y-5 border-t border-cream/10 pt-7">
-                {ORGANIZERS.map((o) => (
+                {hosts.map((o) => (
                   <a
-                    key={o.name}
-                    href={o.url}
+                    key={o.id ?? o.name}
+                    href={o.url ?? undefined}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-3"
                   >
-                    <img
-                      src={o.logo}
-                      alt={o.name}
-                      loading="lazy"
-                      className="h-14 w-auto max-w-[150px] shrink-0 object-contain object-left"
-                    />
+                    {o.logo_url && (
+                      <img
+                        src={o.logo_url}
+                        alt={o.name}
+                        loading="lazy"
+                        className="h-10 w-auto max-w-[280px] shrink-0 object-contain object-left md:h-12 md:max-w-[340px]"
+                      />
+                    )}
                     <span className="text-xs font-semibold uppercase tracking-wider text-cream/70 transition group-hover:text-cream">
                       {o.name}
                     </span>
