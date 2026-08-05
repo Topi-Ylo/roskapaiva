@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { useTableData } from '../../hooks/useTableData';
 import { useCounter } from '../../hooks/useCounter';
 import FinlandMap from './FinlandMap';
-import EventSignupForm from './EventSignupForm';
 import {
   FALLBACK_COMMUNITY_EVENTS,
   calcStats,
@@ -73,7 +72,7 @@ function EventRow({
   );
 }
 
-export default function NationwideSection() {
+export default function NationwideSection({ onSignup }: { onSignup: () => void }) {
   const { data, loading } = useTableData<CommunityEvent>('community_events_public', {
     orderBy: 'event_date',
     publishedOnly: false,
@@ -122,6 +121,13 @@ export default function NationwideSection() {
                 lähipuistosi. Ilmoita tapahtumasi, niin se näkyy kartalla ja innostaa muitakin
                 lähtemään mukaan.
               </p>
+              <button
+                type="button"
+                onClick={onSignup}
+                className="reveal delay-3 mt-6 rounded-full bg-amber px-7 py-3 text-xs font-semibold uppercase tracking-widest text-forest-night transition hover:bg-amber-light"
+              >
+                Ilmoita oma tapahtumasi
+              </button>
             </div>
           </div>
 
@@ -169,7 +175,7 @@ export default function NationwideSection() {
                 )}
                 {!loading && filtered.length === 0 && (
                   <p className="p-8 text-center text-sm text-cream/40">
-                    Ei tapahtumia hakuehdoilla. Ilmoita omasi alta.
+                    Ei tapahtumia hakuehdoilla.
                   </p>
                 )}
                 {filtered.map((e, i) => (
@@ -202,25 +208,6 @@ export default function NationwideSection() {
         </div>
       </section>
 
-      {/* Ilmoittautuminen */}
-      <section id="ilmoita" className="relative bg-forest-deep py-24 md:py-32">
-        <div className="mx-auto max-w-3xl px-6">
-          <div className="text-center">
-            <p className="reveal eyebrow text-amber">Ilmoita tapahtumasi</p>
-            <h2 className="reveal delay-1 font-display mt-6 text-4xl text-cream md:text-5xl">
-              Järjestätkö omasi?
-            </h2>
-            <p className="reveal delay-2 mx-auto mt-6 max-w-xl text-base leading-relaxed text-cream/75">
-              Kerro lyhyesti mitä olet suunnitellut, niin lisäämme tapahtumasi kartalle. Kaikenkokoiset
-              tapahtumat ovat tervetulleita, kahden hengen roskaretkestä koko kylän talkoisiin.
-            </p>
-          </div>
-
-          <div className="mt-12">
-            <EventSignupForm />
-          </div>
-        </div>
-      </section>
     </>
   );
 }

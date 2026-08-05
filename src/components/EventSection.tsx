@@ -7,10 +7,7 @@ import {
   type SponsorTier,
 } from '../lib/eventContent';
 
-// The forest scene the front page hero settles on behind "Ois siistimpää,
-// jos ois siistimpää", pulled out of that video as a still so this page opens
-// on the same image without loading the clip.
-const HERO_IMAGE = '/hero-forest.jpg';
+const HERO_IMAGE = '/sunset-rp.jpg';
 
 /** Fallback for the headliner portrait. */
 const EVENT_PHOTO = 'https://i.imgur.com/If6GHtz.jpeg';
@@ -73,7 +70,7 @@ function SponsorLogo({ sponsor, big }: { sponsor: EventSponsor; big?: boolean })
   );
 }
 
-export default function EventSection() {
+export default function EventSection({ onSignup }: { onSignup: () => void }) {
   const { data: sponsorData } = useTableData<EventSponsor>('event_sponsors');
   const sponsors = sponsorData ?? FALLBACK_SPONSORS;
   const settings = useSiteSettings();
@@ -96,12 +93,19 @@ export default function EventSection() {
           backgroundImage: `url('${HERO_IMAGE}')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          filter: 'brightness(1.25)',
         }}
       />
+      {/* Two washes: a vertical one for overall legibility, and a left-hand one
+          because the copy sits over the brightest part of the sky. Together
+          they keep the sunset readable as an image while the text stays crisp. */}
       <div
+        aria-hidden="true"
         className="absolute inset-0"
-        style={{ background: 'linear-gradient(rgba(11, 22, 15, 0.62), rgba(11, 22, 15, 0.92))' }}
+        style={{
+          background:
+            'linear-gradient(to right, rgba(11, 22, 15, 0.42), rgba(11, 22, 15, 0) 62%),' +
+            'linear-gradient(rgba(11, 22, 15, 0.55), rgba(11, 22, 15, 0.9))',
+        }}
       />
 
       <div className="relative z-10 flex min-h-[100svh] flex-col px-6 md:min-h-[100vh]">
@@ -134,12 +138,13 @@ export default function EventSection() {
               </p>
 
               <div className="reveal delay-3 mt-8 flex flex-wrap items-center gap-4">
-                <a
-                  href="#ilmoita"
+                <button
+                  type="button"
+                  onClick={onSignup}
                   className="rounded-full bg-amber px-7 py-3 text-xs font-semibold uppercase tracking-widest text-forest-night transition hover:bg-amber-light"
                 >
                   Ilmoita oma tapahtumasi
-                </a>
+                </button>
                 <a
                   href="#kartta"
                   className="ghost-cta rounded-full px-7 py-3 text-xs font-semibold uppercase tracking-widest text-cream"

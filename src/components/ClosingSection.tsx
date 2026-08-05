@@ -59,17 +59,10 @@ export default function ClosingSection() {
       <section id="kiitos" className="relative bg-forest-night py-24 md:py-32">
         <div className="mx-auto max-w-3xl px-6 text-center">
           <h2 className="reveal font-display text-6xl text-amber md:text-7xl">Kiitos.</h2>
+          {/* The contact line lives in Järjestäjät just above, and again in the
+              footer, so this closes on the sign-off alone. */}
           <p className="reveal delay-1 mt-8 text-lg leading-relaxed text-cream/80 md:text-xl">
             Jos luit tänne asti, kiitos mielenkiinnosta. Nähdään 5.9.2026, missä ikinä oletkin.
-          </p>
-          <p className="reveal delay-2 mt-6 text-base leading-relaxed text-cream/60">
-            Kysyttävää tapahtumasta tai yhteistyöstä?{' '}
-            <a
-              href="mailto:eino@roskapaiva.com"
-              className="text-amber transition hover:text-amber-light"
-            >
-              eino@roskapaiva.com
-            </a>
           </p>
         </div>
       </section>

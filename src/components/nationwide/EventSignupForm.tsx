@@ -121,7 +121,7 @@ export default function EventSignupForm() {
 
   if (done) {
     return (
-      <div className="reveal border border-amber/40 bg-forest-night/60 p-8 text-center md:p-12">
+      <div className="border border-amber/40 bg-forest-night/40 p-8 text-center">
         <p className="font-display text-3xl text-amber md:text-4xl">Kiitos ilmoituksesta.</p>
         <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-cream/80">
           Tapahtumasi on nyt matkalla Einolle. Kun se on hyväksytty, se ilmestyy kartalle ja
@@ -141,7 +141,6 @@ export default function EventSignupForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="reveal border border-cream/15 bg-forest-night/50 p-6 sm:p-8 md:p-10"
     >
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="block">
