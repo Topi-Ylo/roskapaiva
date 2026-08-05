@@ -192,7 +192,7 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
             {/* Kartta pysyy paikallaan kun listaa selataan */}
             <div className="lg:col-span-7">
               <div className="lg:sticky lg:top-24">
-                <div className="h-[420px] overflow-hidden border border-cream/15 bg-forest-deep lg:h-[625px]">
+                <div className="h-[420px] overflow-hidden border border-cream/15 bg-cream-soft lg:h-[625px]">
                   <FinlandMap
                     events={events}
                     activeCity={activeCity}

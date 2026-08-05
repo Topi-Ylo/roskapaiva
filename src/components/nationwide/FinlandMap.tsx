@@ -28,8 +28,8 @@ function markerIcon(count: number, active: boolean): L.DivIcon {
       background:${active ? '#E5BC3A' : '#C9A227'};
       color:#0B160F;
       font-family:Inter,system-ui,sans-serif;font-size:${count > 1 ? 14 : 11}px;font-weight:700;
-      border:2px solid ${active ? '#F4F1E8' : 'rgba(244,241,232,0.65)'};
-      box-shadow:0 0 0 ${active ? 8 : 4}px rgba(201,162,39,0.22), 0 2px 10px rgba(0,0,0,0.5);
+      border:2px solid ${active ? '#0B160F' : 'rgba(11,22,15,0.55)'};
+      box-shadow:0 0 0 ${active ? 8 : 4}px rgba(201,162,39,0.3), 0 2px 8px rgba(11,22,15,0.35);
       transition:all .2s;
     ">${count > 1 ? count : ''}</span>`,
     iconSize: [size, size],
@@ -65,7 +65,7 @@ export default function FinlandMap({ events, activeCity, onSelectCity }: Props) 
       scrollWheelZoom: false, // page scroll wins; the +/- control still zooms
       attributionControl: true,
     });
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
       subdomains: 'abcd',
