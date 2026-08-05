@@ -17,21 +17,31 @@ interface CityGroup {
   count: number;
 }
 
-/** Amber pin, sized by how many events the city has. */
+/** The Roskapäivä mark as the pin. Cities with several events carry a count. */
+const PIN_IMAGE = '/favicon.png';
+
 function markerIcon(count: number, active: boolean): L.DivIcon {
-  const size = count > 1 ? 40 : 30;
+  const size = active ? 46 : 36;
   return L.divIcon({
     className: 'rp-marker',
-    html: `<span style="
-      display:flex;align-items:center;justify-content:center;
-      width:${size}px;height:${size}px;border-radius:9999px;
-      background:${active ? '#E5BC3A' : '#C9A227'};
-      color:#0B160F;
-      font-family:Inter,system-ui,sans-serif;font-size:${count > 1 ? 14 : 11}px;font-weight:700;
-      border:2px solid ${active ? '#0B160F' : 'rgba(11,22,15,0.55)'};
-      box-shadow:0 0 0 ${active ? 8 : 4}px rgba(201,162,39,0.3), 0 2px 8px rgba(11,22,15,0.35);
-      transition:all .2s;
-    ">${count > 1 ? count : ''}</span>`,
+    html: `<span style="position:relative;display:block;width:${size}px;height:${size}px;">
+      <img src="${PIN_IMAGE}" alt="" style="
+        display:block;width:100%;height:100%;border-radius:9999px;background:#0B160F;
+        border:2px solid ${active ? '#C9A227' : 'rgba(11,22,15,0.5)'};
+        box-shadow:0 2px 8px rgba(11,22,15,0.45)${
+          active ? ',0 0 0 7px rgba(201,162,39,0.28)' : ''
+        };
+        transition:all .2s;">
+      ${
+        count > 1
+          ? `<span style="
+              position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;padding:0 4px;
+              box-sizing:border-box;border-radius:9999px;background:#C9A227;color:#0B160F;
+              border:2px solid #F4F1E8;font-family:Inter,system-ui,sans-serif;
+              font-size:11px;font-weight:700;line-height:15px;text-align:center;">${count}</span>`
+          : ''
+      }
+    </span>`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
   });
