@@ -125,17 +125,17 @@ export default function EventSignupForm() {
   if (done) {
     return (
       <div className="border border-amber/40 bg-forest-night/40 p-8 text-center">
-        <p className="font-display text-3xl text-amber md:text-4xl">Kiitos ilmoituksesta.</p>
+        <p className="font-display text-3xl text-amber md:text-4xl">Kiitos, että olet mukana.</p>
         <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-cream/80">
-          Tapahtumasi on nyt matkalla Einolle. Kun se on hyväksytty, se ilmestyy kartalle ja
-          tapahtumalistalle. Saat vahvistuksen sähköpostiisi.
+          Ilmoituksesi on nyt matkalla Einolle. Kun se on hyväksytty, osallistumisesi näkyy
+          kartalla ja listalla. Saat vahvistuksen sähköpostiisi.
         </p>
         <button
           type="button"
           onClick={() => setDone(false)}
           className="ghost-cta mt-8 rounded-full px-7 py-3 text-xs font-semibold uppercase tracking-widest text-cream"
         >
-          Ilmoita toinen tapahtuma
+          Tee uusi ilmoitus
         </button>
       </div>
     );
@@ -282,7 +282,7 @@ export default function EventSignupForm() {
           {busy ? 'Lähetetään…' : 'Lähetä ilmoitus'}
         </button>
         <p className="text-xs leading-relaxed text-cream/45">
-          Ilmoitus ei sido mihinkään. Eino käy tapahtumat läpi ennen julkaisua.
+          Ilmoitus ei sido mihinkään. Eino käy ilmoitukset läpi ennen julkaisua.
         </p>
       </div>
     </form>

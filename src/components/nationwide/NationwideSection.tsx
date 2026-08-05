@@ -133,7 +133,7 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
             <div className="md:col-span-5">
               <p className="reveal delay-2 text-base leading-relaxed text-cream/75">
                 Järjestä oma siivoustalkoo, lähde roskaretkelle kaverin kanssa tai siivoa oma
-                lähipuistosi. Ilmoita tapahtumasi, niin se näkyy kartalla ja innostaa muitakin
+                lähipuistosi. Ilmoita osallistumisesi, niin se näkyy kartalla ja innostaa muitakin
                 lähtemään mukaan.
               </p>
               <button

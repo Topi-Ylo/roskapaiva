@@ -42,12 +42,14 @@ export default function SignupModal({ open, onClose }: Props) {
         </button>
 
         <div className="p-8 md:p-12">
-          <p className="eyebrow text-amber">Ilmoita tapahtumasi</p>
-          <h2 className="font-display mt-5 text-3xl text-cream md:text-4xl">Järjestätkö omasi?</h2>
+          <p className="eyebrow text-amber">Ilmoita osallistumisesi</p>
+          <h2 className="font-display mt-5 text-3xl text-cream md:text-4xl">
+            Miten sinä osallistut?
+          </h2>
           <p className="mt-5 text-base leading-relaxed text-cream/75">
-            Kerro lyhyesti mitä olet suunnitellut, niin lisäämme tapahtumasi kartalle.
-            Kaikenkokoiset tapahtumat ovat tervetulleita, kahden hengen roskaretkestä koko kylän
-            talkoisiin.
+            Järjestätkö omat talkoot vai lähdetkö roskaretkelle kaverin kanssa? Kerro lyhyesti mitä
+            olet suunnitellut, niin osallistumisesi näkyy kartalla. Kaikki tavat ovat yhtä hyviä,
+            kahden hengen retkestä koko kylän talkoisiin.
           </p>
 
           <div className="mt-8">
