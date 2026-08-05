@@ -78,6 +78,16 @@ export default function MainEventSection() {
               <p className="font-display mt-3 text-4xl text-amber sm:text-5xl md:text-6xl">
                 {settings.event_headliner}
               </p>
+              {settings.event_headliner_image && (
+                <div className="mx-auto mt-7 max-w-md overflow-hidden border border-cream/15">
+                  <img
+                    src={settings.event_headliner_image}
+                    alt={settings.event_headliner}
+                    loading="lazy"
+                    className="aspect-[3/2] w-full object-cover"
+                  />
+                </div>
+              )}
             </div>
           )}
 
