@@ -1,22 +1,19 @@
 import { useState } from 'react';
 import { useTableData } from '../hooks/useTableData';
 import { useSiteSettings } from '../hooks/useSiteSettings';
-import { useIsMobileViewport } from '../hooks/useIsMobileViewport';
 import {
   FALLBACK_SPONSORS,
   type EventSponsor,
   type SponsorTier,
 } from '../lib/eventContent';
 
-// Same footage as the front page hero, so the two pages open alike. It loops
-// here rather than freezing on the last frame the way the front page does.
-const HERO_VIDEO_DESKTOP =
-  'https://video.gumlet.io/689843b7ce30732b0c4db420/69fae84160e95a00ee864b32/download.mp4';
-const HERO_VIDEO_MOBILE =
-  'https://video.gumlet.io/689843b7ce30732b0c4db420/69fae94a5c890ee77b65e6db/download.mp4';
+// The forest scene the front page hero settles on behind "Ois siistimpää,
+// jos ois siistimpää", pulled out of that video as a still so this page opens
+// on the same image without loading the clip.
+const HERO_IMAGE = '/hero-forest.jpg';
 
-/** Still used as the fallback for the headliner portrait. */
-const HERO_IMAGE = 'https://i.imgur.com/If6GHtz.jpeg';
+/** Fallback for the headliner portrait. */
+const EVENT_PHOTO = 'https://i.imgur.com/If6GHtz.jpeg';
 
 /** Rows of the sponsor band, in the order they appear under the hero. */
 const SPONSOR_ROWS: { tier: SponsorTier; label: string }[] = [
@@ -80,7 +77,6 @@ export default function EventSection() {
   const { data: sponsorData } = useTableData<EventSponsor>('event_sponsors');
   const sponsors = sponsorData ?? FALLBACK_SPONSORS;
   const settings = useSiteSettings();
-  const isMobile = useIsMobileViewport();
 
   const tierOf = (s: EventSponsor) => s.tier ?? 'support';
   const rows = SPONSOR_ROWS.map((row) => ({
@@ -93,21 +89,19 @@ export default function EventSection() {
       id="tapahtuma"
       className="relative min-h-[100svh] w-full overflow-hidden md:min-h-[100vh]"
     >
-      <video
-        key={isMobile ? 'm' : 'd'}
-        src={isMobile ? HERO_VIDEO_MOBILE : HERO_VIDEO_DESKTOP}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
+      <div
         aria-hidden="true"
-        className="absolute inset-0 h-full w-full object-cover"
-        style={{ filter: 'brightness(1.25)' }}
+        className="absolute inset-0"
+        style={{
+          backgroundImage: `url('${HERO_IMAGE}')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'brightness(1.25)',
+        }}
       />
       <div
         className="absolute inset-0"
-        style={{ background: 'linear-gradient(rgba(11, 22, 15, 0.8), rgba(11, 22, 15, 0.96))' }}
+        style={{ background: 'linear-gradient(rgba(11, 22, 15, 0.62), rgba(11, 22, 15, 0.92))' }}
       />
 
       <div className="relative z-10 flex min-h-[100svh] flex-col px-6 md:min-h-[100vh]">
@@ -160,7 +154,7 @@ export default function EventSection() {
               <div className="w-full max-w-sm border border-cream/15 bg-forest-night/50 backdrop-blur-sm">
                 <div className="relative aspect-video w-full overflow-hidden bg-forest-night">
                   <img
-                    src={settings.event_headliner_image || HERO_IMAGE}
+                    src={settings.event_headliner_image || EVENT_PHOTO}
                     alt={
                       settings.event_headliner
                         ? `Esiintyjä ${settings.event_headliner}`
