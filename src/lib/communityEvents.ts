@@ -13,6 +13,8 @@ export interface CommunityEvent {
   image_url: string | null;
   participants: number | null;
   waste_kg: number | null;
+  /** The Kallio main event, pinned to the top of the list. */
+  featured?: boolean;
 }
 
 export const DESCRIPTION_MAX = 50;
@@ -153,7 +155,7 @@ export const FALLBACK_COMMUNITY_EVENTS: CommunityEvent[] = [
     id: 'demo-1', city: 'Helsinki', lat: 60.1699, lng: 24.9384,
     event_date: '2026-09-05', start_time: '11:00:00', duration_minutes: 180,
     description: 'Kallion päätapahtuma ja koko korttelin siivous',
-    image_url: null, participants: 150, waste_kg: 240,
+    image_url: null, participants: 150, waste_kg: 240, featured: true,
   },
   {
     id: 'demo-2', city: 'Tampere', lat: 61.4978, lng: 23.761,

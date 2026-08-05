@@ -59,6 +59,11 @@ function EventRow({
       <span className="min-w-0 flex-1">
         <span className="flex flex-wrap items-baseline gap-x-3">
           <span className="font-display text-lg text-cream">{event.city}</span>
+          {event.featured && (
+            <span className="rounded-full bg-amber px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-forest-night">
+              Päätapahtuma
+            </span>
+          )}
           <span className="text-xs text-cream/45">{formatEventDate(event.event_date)}</span>
         </span>
         <span className="mt-1 block text-sm leading-snug text-cream/75">{event.description}</span>
@@ -83,7 +88,17 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
     // section alive in local preview. An empty array is real data: the table
     // exists and simply has no approved events yet, which has to render as the
     // empty state rather than as fictional events.
-    () => (loading ? [] : (data ?? FALLBACK_COMMUNITY_EVENTS)),
+    () => {
+      const list = loading ? [] : (data ?? FALLBACK_COMMUNITY_EVENTS);
+      // Every event falls on the same date, so without an explicit order the
+      // rows come back in whatever order Postgres chooses.
+      return [...list].sort(
+        (a, b) =>
+          Number(b.featured ?? false) - Number(a.featured ?? false) ||
+          a.event_date.localeCompare(b.event_date) ||
+          (a.start_time ?? '').localeCompare(b.start_time ?? '')
+      );
+    },
     [data, loading]
   );
 
