@@ -70,9 +70,6 @@ export default function Hero() {
   const subtitleSlideX = (1 - subtitleReveal) * -3;
   const overlayOpacity = overlayReveal * 0.65;
 
-  // Scroll hint: hidden on mobile (no scroll required); on desktop fades out
-  // shortly after the reveal, since the cue's job is done.
-  const hintOpacity = isMobile ? 0 : (revealed ? 0 : 1);
 
   // Time-based reveals lerp via CSS transitions instead of scroll progress.
   const ease =
@@ -175,35 +172,6 @@ export default function Hero() {
             <div className="h-12 w-px bg-cream/30" />
             <span className="eyebrow" style={{ writingMode: 'vertical-rl' }}>Scroll</span>
           </div>
-        </div>
-
-        <div
-          className="pointer-events-none absolute bottom-10 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-6 md:bottom-14 md:gap-8"
-          style={{ opacity: hintOpacity, transition: ease }}
-        >
-          <svg
-            className="scroll-bounce"
-            width="64"
-            height="64"
-            viewBox="0 0 48 48"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path
-              d="M12 18l12 12 12-12"
-              stroke="#000"
-              strokeWidth="11"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M12 18l12 12 12-12"
-              stroke="#fff"
-              strokeWidth="6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
         </div>
 
         {/* Eino interlude — right-anchored card. Full viewport on mobile, 28vw side strip on desktop. */}
