@@ -27,12 +27,11 @@ const SPONSOR_ROWS: { tier: SponsorTier; label: string }[] = [
  */
 const LOGO_SIZE: Record<SponsorTier, string> = {
   main: 'h-12 max-w-[190px] md:h-16',
-  // Järjestäjät and näytteilleasettajat are given a width cap wide enough that
-  // HEIGHT decides the size. With a tight cap the widest mark ends up the
-  // shortest: Cleaning Angels is 6.4:1 and Seiffi 4.35:1, so at max-w-150 they
-  // rendered 23 px and 34 px tall respectively. Now they match.
-  organizer: 'h-10 max-w-[280px] md:h-12 md:max-w-[340px]',
-  exhibitor: 'h-10 max-w-[280px] md:h-12 md:max-w-[340px]',
+  // Järjestäjät: the cap is wide enough that HEIGHT decides the size, so the
+  // 6.4:1 Cleaning Angels mark is not squashed by a width limit the way it was
+  // at max-w-150, where it came out 23 px against Seiffi's 34 px.
+  organizer: 'h-9 max-w-[240px]',
+  exhibitor: 'h-[3.375rem] max-w-[150px] md:h-[3.75rem]',
   support: 'h-9 max-w-[100px] md:h-10',
 };
 

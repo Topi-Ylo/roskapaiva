@@ -74,7 +74,7 @@ export default function ClosingSection() {
                         src={o.logo_url}
                         alt={o.name}
                         loading="lazy"
-                        className="h-10 w-auto max-w-[280px] shrink-0 object-contain object-left md:h-12 md:max-w-[340px]"
+                        className="h-9 w-auto max-w-[240px] shrink-0 object-contain object-left"
                       />
                     )}
                     <span className="text-xs font-semibold uppercase tracking-wider text-cream/70 transition group-hover:text-cream">
