@@ -19,6 +19,15 @@ const EMPTY = {
   image_url: '',
 };
 
+/** crypto.randomUUID needs a secure context; fall back for older browsers. */
+function newId(): string {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+  });
+}
+
 const inputCls =
   'w-full rounded border border-cream/20 bg-forest-night/60 px-4 py-3 text-sm text-cream ' +
   'placeholder:text-cream/35 focus:border-amber focus:outline-none';
@@ -78,7 +87,13 @@ export default function EventSignupForm() {
 
     setBusy(true);
     const coords = cityCoords(form.city);
+    // The id is generated here rather than read back after the insert. Asking
+    // Postgres to return the new row requires a SELECT policy that matches it,
+    // and the only public one covers approved rows; a freshly inserted pending
+    // row is invisible, which PostgREST reports as an RLS violation on insert.
+    const id = newId();
     const payload = {
+      id,
       organizer_name: form.organizer_name.trim(),
       organizer_email: form.organizer_email.trim(),
       city: form.city,
@@ -92,11 +107,7 @@ export default function EventSignupForm() {
       status: 'pending' as const,
     };
 
-    const { data, error: insertError } = await supabase
-      .from('community_events')
-      .insert(payload)
-      .select('id')
-      .single();
+    const { error: insertError } = await supabase.from('community_events').insert(payload);
 
     if (insertError) {
       setBusy(false);
@@ -111,7 +122,7 @@ export default function EventSignupForm() {
       await fetch('/.netlify/functions/notify-event', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: data.id }),
+        body: JSON.stringify({ id }),
       });
     } catch (err) {
       console.warn('Sähköposti-ilmoitusta ei voitu lähettää', err);
