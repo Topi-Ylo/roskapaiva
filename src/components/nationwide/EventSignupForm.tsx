@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { supabase, SUPABASE_CONFIGURED } from '../../lib/supabase';
-import { uploadToStorage } from '../../lib/storage';
+import { prepareCommunityImage, uploadToStorage } from '../../lib/storage';
 import {
   DESCRIPTION_MAX,
   DURATION_OPTIONS,
@@ -50,7 +50,10 @@ export default function EventSignupForm() {
     setUploading(true);
     setError(null);
     try {
-      const { url } = await uploadToStorage(file, 'community/');
+      // Validate and shrink first: this form is public, and a phone photo is
+      // several megabytes straight off the camera.
+      const prepared = await prepareCommunityImage(file);
+      const { url } = await uploadToStorage(prepared, 'community/');
       set('image_url', url);
     } catch (err) {
       setError(
@@ -240,7 +243,7 @@ export default function EventSignupForm() {
         </label>
 
         <div className="sm:col-span-2">
-          <Label hint="vapaaehtoinen">Kuva</Label>
+          <Label hint="vapaaehtoinen, enintään 25 Mt">Kuva</Label>
           <div className="flex flex-wrap items-center gap-4">
             <label className="inline-flex cursor-pointer items-center">
               <input type="file" accept="image/*" onChange={onUpload} className="hidden" />

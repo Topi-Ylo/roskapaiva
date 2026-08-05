@@ -65,7 +65,12 @@ export const handler: Handler = async (event) => {
          ${detailsTable(ev)}
          ${
            ev.image_url
-             ? `<img src="${esc(ev.image_url)}" alt="" style="width:100%;max-width:496px;border:1px solid rgba(244,241,232,0.12);margin:0 0 20px;">`
+             ? // width/height as attributes, not just CSS: Outlook ignores CSS
+               // sizing on images. alt carries the description so the thumbnail
+               // still says something in clients that block remote images.
+               `<p style="margin:0 0 20px;"><img src="${esc(ev.image_url)}" alt="${esc(
+                 ev.description
+               )}" width="240" height="160" style="width:240px;height:160px;object-fit:cover;border:1px solid rgba(244,241,232,0.12);display:block;"></p>`
              : ''
          }
          <p style="margin:0 0 16px;">Hyväksy tapahtuma julkaistavaksi kartalle, tai avaa se hallinnassa muokataksesi tietoja ennen julkaisua.</p>

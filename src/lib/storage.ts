@@ -31,6 +31,46 @@ export async function deleteFromStorage(path: string): Promise<void> {
   await supabase.storage.from('media').remove([path]);
 }
 
+/** Largest file we will even attempt to decode, before any resizing. */
+export const MAX_RAW_UPLOAD_BYTES = 25 * 1024 * 1024; // 25 MB
+/** Largest file we will store once resized. */
+export const MAX_STORED_UPLOAD_BYTES = 2 * 1024 * 1024; // 2 MB
+
+const MB = (n: number) => `${(n / 1024 / 1024).toFixed(1)} Mt`;
+
+/**
+ * Validate and shrink an image chosen by a member of the public before it is
+ * uploaded. Unlike the admin paths, this one is reachable by anyone, so it
+ * refuses anything that is not an image, refuses very large files outright
+ * rather than trying to decode them, and enforces a ceiling on what actually
+ * reaches storage.
+ *
+ * Throws with a message meant to be shown to the visitor.
+ *
+ * Note this is a convenience, not a security boundary: a crafted request could
+ * skip it. The bucket's own file size limit in Supabase is the real backstop.
+ */
+export async function prepareCommunityImage(file: File): Promise<File> {
+  if (!file.type.startsWith('image/')) {
+    throw new Error('Vain kuvatiedostot kelpaavat.');
+  }
+  if (file.size > MAX_RAW_UPLOAD_BYTES) {
+    throw new Error(
+      `Kuva on liian suuri (${MB(file.size)}). Suurin koko on ${MB(MAX_RAW_UPLOAD_BYTES)}.`
+    );
+  }
+
+  // A map thumbnail never needs more than this, so shrink hard.
+  let out = await compressImage(file, 1600, 0.8);
+  if (out.size > MAX_STORED_UPLOAD_BYTES) {
+    out = await compressImage(out, 1200, 0.7);
+  }
+  if (out.size > MAX_STORED_UPLOAD_BYTES) {
+    throw new Error('Kuvaa ei saatu pienennettyä riittävästi. Kokeile toista kuvaa.');
+  }
+  return out;
+}
+
 /**
  * Best-effort client-side compression of an image File before upload.
  * Resizes to a long-edge cap and re-encodes as JPEG at the given quality.
