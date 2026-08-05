@@ -1,6 +1,12 @@
 /** The pair on stage, cropped from the photograph behind the main event. */
 const ORGANIZERS_IMAGE = '/jarjestajat.jpg';
 
+/** The two hosts, using the bundled marks so this needs no database read. */
+const ORGANIZERS = [
+  { name: 'Roskapäivä', logo: '/favicon.png', url: 'https://roskapaiva.fi/' },
+  { name: 'Cleaning Angels', logo: '/cleaning-angels.png', url: 'https://www.cleaningangels.fi/' },
+];
+
 /**
  * Closing bands of the Roskapäivä '26 page: the two organisers and the
  * thank-you. The community quote moved up to sit right after the hero.
@@ -38,6 +44,28 @@ export default function ClosingSection() {
                   eino@roskapaiva.com
                 </a>
               </p>
+
+              <div className="reveal delay-3 mt-9 flex flex-wrap items-center gap-x-10 gap-y-5 border-t border-cream/10 pt-7">
+                {ORGANIZERS.map((o) => (
+                  <a
+                    key={o.name}
+                    href={o.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-3"
+                  >
+                    <img
+                      src={o.logo}
+                      alt={o.name}
+                      loading="lazy"
+                      className="h-14 w-auto max-w-[150px] shrink-0 object-contain object-left"
+                    />
+                    <span className="text-xs font-semibold uppercase tracking-wider text-cream/70 transition group-hover:text-cream">
+                      {o.name}
+                    </span>
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>

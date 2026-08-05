@@ -28,7 +28,7 @@ export default function SignupModal({ open, onClose }: Props) {
       className={`modal-overlay ${open ? 'active' : ''}`}
       role="dialog"
       aria-modal="true"
-      aria-label="Ilmoita oma tapahtumasi"
+      aria-label="Ilmoita osallistumisesi"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}

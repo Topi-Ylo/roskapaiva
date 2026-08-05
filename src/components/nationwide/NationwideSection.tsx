@@ -141,16 +141,15 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
                 onClick={onSignup}
                 className="reveal delay-3 mt-6 rounded-full bg-amber px-7 py-3 text-xs font-semibold uppercase tracking-widest text-forest-night transition hover:bg-amber-light"
               >
-                Ilmoita oma tapahtumasi
+                Ilmoita osallistumisesi
               </button>
             </div>
           </div>
 
-          <div className="reveal mt-14 grid grid-cols-2 divide-cream/15 border-y border-cream/15 sm:grid-cols-4 sm:divide-x">
+          <div className="reveal mt-14 grid grid-cols-1 divide-cream/15 border-y border-cream/15 sm:grid-cols-3 sm:divide-x">
             <Stat value={stats.events} label="Tapahtumaa" />
             <Stat value={stats.cities} label="Paikkakuntaa" />
             <Stat value={stats.hours} suffix=" h" label="Talkootunteja" />
-            <Stat value={stats.wasteKg} suffix=" kg" label="Roskaa kerätty" />
           </div>
         </div>
       </section>

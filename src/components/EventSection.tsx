@@ -20,9 +20,30 @@ const SPONSOR_ROWS: { tier: SponsorTier; label: string }[] = [
   { tier: 'exhibitor', label: 'Näytteilleasettajat' },
 ];
 
-function SponsorLogo({ sponsor, big }: { sponsor: EventSponsor; big?: boolean }) {
+/**
+ * Logo sizing per tier. Wide marks are limited by max-width rather than
+ * height: Partioaitta is roughly 9:1, so its rendered height is set by the
+ * width cap, and raising the height class alone does nothing.
+ */
+const LOGO_SIZE: Record<SponsorTier, string> = {
+  main: 'h-12 max-w-[190px] md:h-16',
+  // Järjestäjät and näytteilleasettajat run 50% larger: their marks are wide,
+  // so the width cap was setting the height and they read undersized.
+  organizer: 'h-[3.375rem] max-w-[150px] md:h-[3.75rem]',
+  exhibitor: 'h-[3.375rem] max-w-[150px] md:h-[3.75rem]',
+  support: 'h-9 max-w-[100px] md:h-10',
+};
+
+function SponsorLogo({
+  sponsor,
+  tier,
+}: {
+  sponsor: EventSponsor;
+  tier: SponsorTier;
+}) {
   const [failed, setFailed] = useState(false);
   const showLogo = Boolean(sponsor.logo_url) && !failed;
+  const big = tier === 'main';
 
   const inner = (
     <>
@@ -39,11 +60,7 @@ function SponsorLogo({ sponsor, big }: { sponsor: EventSponsor; big?: boolean })
                 ? 'invert(1)'
                 : undefined,
           }}
-          className={
-            big
-              ? 'h-12 w-auto max-w-[190px] object-contain object-left md:h-16'
-              : 'h-9 w-auto max-w-[100px] shrink-0 object-contain object-left md:h-10'
-          }
+          className={`w-auto shrink-0 object-contain object-left ${LOGO_SIZE[tier]}`}
         />
       )}
       {(!big || !showLogo) && (
@@ -133,7 +150,7 @@ export default function EventSection({ onSignup }: { onSignup: () => void }) {
               <p className="reveal delay-2 mt-5 max-w-xl text-sm leading-relaxed text-cream/75 md:text-base">
                 Roskapäivä ei ole vain yksi tapahtuma yhdessä kaupungissa. Se on päivä, jona kuka
                 tahansa voi järjestää oman siivoustalkoonsa, lähteä roskaretkelle kaverin kanssa tai
-                vain pitää huolta omasta pihastaan. Ilmoita oma tapahtumasi, niin se näkyy
+                vain pitää huolta omasta pihastaan. Ilmoita osallistumisesi, niin se näkyy
                 valtakunnallisella kartalla.
               </p>
 
@@ -143,7 +160,7 @@ export default function EventSection({ onSignup }: { onSignup: () => void }) {
                   onClick={onSignup}
                   className="rounded-full bg-amber px-7 py-3 text-xs font-semibold uppercase tracking-widest text-forest-night transition hover:bg-amber-light"
                 >
-                  Ilmoita oma tapahtumasi
+                  Ilmoita osallistumisesi
                 </button>
                 <a
                   href="#kartta"
@@ -221,7 +238,7 @@ export default function EventSection({ onSignup }: { onSignup: () => void }) {
                   </p>
                   <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
                     {row.items.map((s) => (
-                      <SponsorLogo key={s.id ?? s.name} sponsor={s} big={row.tier === 'main'} />
+                      <SponsorLogo key={s.id ?? s.name} sponsor={s} tier={row.tier} />
                     ))}
                   </div>
                 </div>
