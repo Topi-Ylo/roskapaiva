@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import EventSection from '../components/EventSection';
+import CommunityQuoteSection from '../components/CommunityQuoteSection';
 import MainEventSection from '../components/MainEventSection';
 import NationwideSection from '../components/nationwide/NationwideSection';
 import SignupModal from '../components/nationwide/SignupModal';
@@ -16,6 +17,7 @@ export default function EventPage() {
     <>
       {/* Valtakunnallinen päivä edellä, päätapahtuma toisena */}
       <EventSection onSignup={openSignup} />
+      <CommunityQuoteSection />
       <MainEventSection />
       <NationwideSection onSignup={openSignup} />
       <ClosingSection />
