@@ -7,6 +7,7 @@ import {
   GhostButton,
   PrimaryButton,
   inputClass,
+  selectClass,
   textareaClass,
 } from '../../components/admin/admin-ui';
 
@@ -268,7 +269,7 @@ export default function EmailAdmin() {
           <select
             value={audience}
             onChange={(e) => setAudience(e.target.value as Audience)}
-            className={`${inputClass} max-w-xs`}
+            className={`${selectClass} max-w-xs`}
           >
             <option value="approved">Vain julkaistut tapahtumat</option>
             <option value="all">Kaikki ilmoittajat</option>

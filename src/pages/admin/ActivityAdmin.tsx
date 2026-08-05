@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { AdminPageHeader, GhostButton, inputClass } from '../../components/admin/admin-ui';
+import { AdminPageHeader, GhostButton, selectClass } from '../../components/admin/admin-ui';
 
 interface AuditRow {
   id: number;
@@ -75,14 +75,14 @@ export default function ActivityAdmin() {
         <div className="grid gap-3 md:grid-cols-[1fr,1fr,auto]">
           <div>
             <span className="text-xs uppercase tracking-widest text-cream/55">Taulu</span>
-            <select value={filterTable} onChange={(e) => { setFilterTable(e.target.value); setPage(0); }} className={`${inputClass} mt-1`}>
+            <select value={filterTable} onChange={(e) => { setFilterTable(e.target.value); setPage(0); }} className={`${selectClass} mt-1`}>
               <option value="">Kaikki</option>
               {tableOptions.map((t) => <option key={t} value={t}>{t}</option>)}
             </select>
           </div>
           <div>
             <span className="text-xs uppercase tracking-widest text-cream/55">Toiminta</span>
-            <select value={filterAction} onChange={(e) => { setFilterAction(e.target.value); setPage(0); }} className={`${inputClass} mt-1`}>
+            <select value={filterAction} onChange={(e) => { setFilterAction(e.target.value); setPage(0); }} className={`${selectClass} mt-1`}>
               {ACTIONS.map((a) => <option key={a || 'all'} value={a}>{a || 'Kaikki'}</option>)}
             </select>
           </div>

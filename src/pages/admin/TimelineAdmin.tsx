@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { supabase } from '../../lib/supabase';
 import {
   AdminPageHeader, DangerButton, Field, GhostButton, PrimaryButton,
-  inputClass, textareaClass,
+  inputClass, selectClass, textareaClass,
 } from '../../components/admin/admin-ui';
 import ImagePickerField from '../../components/admin/ImagePickerField';
 
@@ -112,7 +112,7 @@ export default function TimelineAdmin() {
           <Field label="Järjestys"><input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} className={inputClass} /></Field>
           <ImagePickerField label="Kuva" value={form.image_url} onChange={(url) => setForm({ ...form, image_url: url })} />
           <div className="md:col-span-2"><Field label="Kuvaus" hint="Näytetään vain kun korttia on klikattu modaalissa"><textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className={textareaClass} /></Field></div>
-          <Field label="Kuvan kohdistus" hint="bento-ruudukon sisällä"><select value={form.object_position} onChange={(e) => setForm({ ...form, object_position: e.target.value })} className={inputClass}><option value="center">center</option><option value="top">top</option><option value="bottom">bottom</option></select></Field>
+          <Field label="Kuvan kohdistus" hint="bento-ruudukon sisällä"><select value={form.object_position} onChange={(e) => setForm({ ...form, object_position: e.target.value })} className={selectClass}><option value="center">center</option><option value="top">top</option><option value="bottom">bottom</option></select></Field>
           <div className="space-y-2 self-end">
             <label className="flex items-center gap-3"><input type="checkbox" checked={form.is_large} onChange={(e) => setForm({ ...form, is_large: e.target.checked })} className="h-4 w-4 accent-amber" /><span className="text-sm text-cream/80">Tall (1×2)</span></label>
             <label className="flex items-center gap-3"><input type="checkbox" checked={form.is_wide} onChange={(e) => setForm({ ...form, is_wide: e.target.checked })} className="h-4 w-4 accent-amber" /><span className="text-sm text-cream/80">Wide (2×1)</span></label>

@@ -45,6 +45,10 @@ export const inputClass =
 
 export const textareaClass = inputClass + ' min-h-[100px] resize-y';
 
+/** Same box as inputClass; see .admin-select in index.css for why a
+ *  <select> needs its appearance reset to match. */
+export const selectClass = inputClass + ' admin-select cursor-pointer';
+
 export function PrimaryButton({
   children,
   ...props

@@ -324,3 +324,16 @@ body.modal-open { overflow: hidden; }
   .partner-marquee { animation: none; }
 }
 
+
+/* Native <select> keeps its own intrinsic height and ignores vertical padding,
+   so admin dropdowns rendered shorter than the inputs beside them. Resetting
+   appearance makes the select use the same box as an input; that also removes
+   the platform chevron, so one is supplied here. */
+.admin-select {
+  -webkit-appearance: none;
+  appearance: none;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3 6l5 5 5-5' stroke='%23F4F1E8' stroke-opacity='0.55' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+}

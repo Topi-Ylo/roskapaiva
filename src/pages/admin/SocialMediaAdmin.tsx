@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { supabase } from '../../lib/supabase';
 import {
   AdminPageHeader, DangerButton, Field, GhostButton, PrimaryButton,
-  inputClass, textareaClass,
+  inputClass, selectClass, textareaClass,
 } from '../../components/admin/admin-ui';
 import ImagePickerField from '../../components/admin/ImagePickerField';
 
@@ -105,12 +105,12 @@ export default function SocialMediaAdmin() {
           <Field label="Brändi / Otsikko"><input required value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })} className={inputClass} placeholder="Siisti toukokuu" /></Field>
           <Field label="Alusta"><input required value={form.platform} onChange={(e) => setForm({ ...form, platform: e.target.value })} className={inputClass} placeholder="Some-yhteistyö" /></Field>
           <Field label="Videon tyyppi">
-            <select value={form.video_type} onChange={(e) => setForm({ ...form, video_type: e.target.value as 'youtube' | 'vimeo' | 'mp4' })} className={inputClass}>
+            <select value={form.video_type} onChange={(e) => setForm({ ...form, video_type: e.target.value as 'youtube' | 'vimeo' | 'mp4' })} className={selectClass}>
               <option value="vimeo">Vimeo</option><option value="youtube">YouTube</option><option value="mp4">MP4 (suora URL)</option>
             </select>
           </Field>
           <Field label="Kuvasuhde">
-            <select value={form.aspect} onChange={(e) => setForm({ ...form, aspect: e.target.value as '9/16' | '16/9' })} className={inputClass}>
+            <select value={form.aspect} onChange={(e) => setForm({ ...form, aspect: e.target.value as '9/16' | '16/9' })} className={selectClass}>
               <option value="9/16">9:16 (pysty)</option><option value="16/9">16:9 (vaaka)</option>
             </select>
           </Field>

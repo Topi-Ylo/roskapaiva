@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { supabase } from '../../lib/supabase';
 import {
   AdminPageHeader, DangerButton, Field, GhostButton, PrimaryButton,
-  inputClass, textareaClass,
+  inputClass, selectClass, textareaClass,
 } from '../../components/admin/admin-ui';
 import ImagePickerField from '../../components/admin/ImagePickerField';
 
@@ -146,7 +146,7 @@ export default function MediaPostsAdmin() {
         <p className="font-display text-xl text-cream">{editingId ? 'Muokkaa julkaisua' : 'Uusi julkaisu'}</p>
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           <Field label="Kategoria">
-            <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value as Category })} className={inputClass}>
+            <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value as Category })} className={selectClass}>
               <option value="tv">TV ja video</option><option value="press">Lehdistö</option><option value="podcast">Podcast</option>
             </select>
           </Field>

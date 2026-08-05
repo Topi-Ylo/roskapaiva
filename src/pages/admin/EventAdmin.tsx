@@ -7,6 +7,7 @@ import {
   GhostButton,
   PrimaryButton,
   inputClass,
+  selectClass,
   textareaClass,
 } from '../../components/admin/admin-ui';
 import ImagePickerField from '../../components/admin/ImagePickerField';
@@ -646,7 +647,7 @@ function CreditsManager() {
             <select
               value={form.category}
               onChange={(e) => setForm({ ...form, category: e.target.value as CreditCategory })}
-              className={inputClass}
+              className={selectClass}
             >
               {CREDIT_CATEGORIES.map((c) => (
                 <option key={c.value} value={c.value}>
@@ -927,7 +928,7 @@ function SponsorsManager() {
             <select
               value={form.tier}
               onChange={(e) => setForm({ ...form, tier: e.target.value as SponsorTier })}
-              className={inputClass}
+              className={selectClass}
             >
               {SPONSOR_TIERS.map((t) => (
                 <option key={t.value} value={t.value}>

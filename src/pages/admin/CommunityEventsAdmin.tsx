@@ -7,6 +7,7 @@ import {
   GhostButton,
   PrimaryButton,
   inputClass,
+  selectClass,
   textareaClass,
 } from '../../components/admin/admin-ui';
 import ImagePickerField from '../../components/admin/ImagePickerField';
@@ -249,7 +250,7 @@ export default function CommunityEventsAdmin() {
               required
               value={form.city}
               onChange={(e) => setForm({ ...form, city: e.target.value })}
-              className={inputClass}
+              className={selectClass}
             >
               <option value="" disabled>
                 Valitse
@@ -282,7 +283,7 @@ export default function CommunityEventsAdmin() {
             <select
               value={form.duration_minutes}
               onChange={(e) => setForm({ ...form, duration_minutes: Number(e.target.value) })}
-              className={inputClass}
+              className={selectClass}
             >
               {DURATION_OPTIONS.map((d) => (
                 <option key={d.value} value={d.value}>
