@@ -25,14 +25,24 @@ const SPONSOR_ROWS: { tier: SponsorTier; label: string }[] = [
  * height: Partioaitta is roughly 9:1, so its rendered height is set by the
  * width cap, and raising the height class alone does nothing.
  */
-const LOGO_SIZE: Record<SponsorTier, string> = {
-  main: 'h-12 max-w-[190px] md:h-16',
+const LOGO_SIZE: Record<SponsorTier, { cls: string; maxW: number }> = {
+  main: { cls: 'h-12 md:h-16', maxW: 190 },
   // Järjestäjät: the cap is wide enough that HEIGHT decides the size, so the
   // 6.4:1 Cleaning Angels mark is not squashed by a width limit the way it was
   // at max-w-150, where it came out 23 px against Seiffi's 34 px.
-  organizer: 'h-9 max-w-[240px]',
-  exhibitor: 'h-[3.375rem] max-w-[150px] md:h-[3.75rem]',
-  support: 'h-9 max-w-[100px] md:h-10',
+  organizer: { cls: 'h-9', maxW: 240 },
+  exhibitor: { cls: 'h-[3.375rem] md:h-[3.75rem]', maxW: 150 },
+  support: { cls: 'h-9 md:h-10', maxW: 100 },
+};
+
+/**
+ * Per-logo nudges where the artwork itself needs one, on top of the tier size.
+ * Keyed by tier as well as name because Partioaitta appears twice, and only
+ * the näytteilleasettajat instance is meant to change.
+ */
+const LOGO_SCALE: Record<string, number> = {
+  'exhibitor:Seiffi': 0.8,
+  'exhibitor:Partioaitta': 1.25,
 };
 
 function SponsorLogo({
@@ -45,6 +55,8 @@ function SponsorLogo({
   const [failed, setFailed] = useState(false);
   const showLogo = Boolean(sponsor.logo_url) && !failed;
   const big = tier === 'main';
+  const { cls: sizeCls, maxW } = LOGO_SIZE[tier];
+  const scale = LOGO_SCALE[`${tier}:${sponsor.name}`] ?? 1;
 
   const inner = (
     <>
@@ -55,13 +67,14 @@ function SponsorLogo({
           loading="lazy"
           onError={() => setFailed(true)}
           style={{
+            maxWidth: `${Math.round(maxW * scale)}px`,
             filter: big
               ? 'brightness(0) invert(1) drop-shadow(0 0 6px rgba(127, 212, 163, 0.55)) drop-shadow(0 0 18px rgba(127, 212, 163, 0.3))'
               : sponsor.invert_logo
                 ? 'invert(1)'
                 : undefined,
           }}
-          className={`w-auto shrink-0 object-contain object-left ${LOGO_SIZE[tier]}`}
+          className={`w-auto shrink-0 object-contain object-left ${sizeCls}`}
         />
       )}
       {(!big || !showLogo) && (
