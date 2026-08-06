@@ -3,6 +3,7 @@ import { useTableData } from '../../hooks/useTableData';
 import { useCounter } from '../../hooks/useCounter';
 import FinlandMap from './FinlandMap';
 import {
+  DEFAULT_EVENT_IMAGE,
   FALLBACK_COMMUNITY_EVENTS,
   calcStats,
   formatDuration,
@@ -44,18 +45,12 @@ function EventRow({
           : 'border-transparent hover:border-cream/30 hover:bg-cream/5'
       }`}
     >
-      {event.image_url ? (
-        <img
-          src={event.image_url}
-          alt=""
-          loading="lazy"
-          className="h-16 w-20 shrink-0 rounded object-cover"
-        />
-      ) : (
-        <span className="flex h-16 w-20 shrink-0 items-center justify-center rounded bg-forest-night text-lg font-display text-amber/70">
-          {event.city.slice(0, 2).toUpperCase()}
-        </span>
-      )}
+      <img
+        src={event.image_url || DEFAULT_EVENT_IMAGE}
+        alt=""
+        loading="lazy"
+        className="h-16 w-20 shrink-0 rounded bg-forest-night object-cover"
+      />
       <span className="min-w-0 flex-1">
         <span className="flex flex-wrap items-baseline gap-x-3">
           <span className="font-display text-lg text-cream">{event.city}</span>
@@ -66,7 +61,14 @@ function EventRow({
           )}
           <span className="text-xs text-cream/45">{formatEventDate(event.event_date)}</span>
         </span>
-        <span className="mt-1 block text-sm leading-snug text-cream/75">{event.description}</span>
+        {event.organizer_name && (
+          <span className="mt-0.5 block text-xs text-cream/55">
+            Järjestää {event.organizer_name}
+          </span>
+        )}
+        <span className="mt-1 line-clamp-3 block text-sm leading-snug text-cream/75">
+          {event.description}
+        </span>
         <span className="mt-1.5 flex flex-wrap gap-x-4 text-[11px] uppercase tracking-wider text-cream/40">
           {time && <span>Klo {time}</span>}
           <span>{formatDuration(event.duration_minutes)}</span>
@@ -113,7 +115,9 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
       if (activeCity && e.city !== activeCity) return false;
       if (!q) return true;
       return (
-        e.city.toLowerCase().includes(q) || e.description.toLowerCase().includes(q)
+        e.city.toLowerCase().includes(q) ||
+        e.description.toLowerCase().includes(q) ||
+        (e.organizer_name ?? '').toLowerCase().includes(q)
       );
     });
   }, [events, query, activeCity]);
@@ -165,7 +169,7 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
                   type="search"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Hae paikkakuntaa tai tapahtumaa"
+                  placeholder="Hae paikkakuntaa, järjestäjää tai tapahtumaa"
                   className="min-w-0 flex-1 rounded border border-cream/20 bg-forest-deep px-4 py-2.5 text-sm text-cream placeholder:text-cream/35 focus:border-amber focus:outline-none"
                 />
                 {activeCity && (

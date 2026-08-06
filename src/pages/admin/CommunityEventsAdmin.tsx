@@ -12,7 +12,8 @@ import {
 } from '../../components/admin/admin-ui';
 import ImagePickerField from '../../components/admin/ImagePickerField';
 import {
-  DESCRIPTION_MAX,
+  DESCRIPTION_MAX_WORDS,
+  countWords,
   DURATION_OPTIONS,
   FINNISH_CITIES,
   cityCoords,
@@ -293,13 +294,15 @@ export default function CommunityEventsAdmin() {
             </select>
           </Field>
           <div className="md:col-span-2">
-            <Field label="Kuvaus" hint={`${form.description.length}/${DESCRIPTION_MAX} merkkiä`}>
-              <input
+            <Field
+              label="Kuvaus"
+              hint={`${countWords(form.description)}/${DESCRIPTION_MAX_WORDS} sanaa`}
+            >
+              <textarea
                 required
-                maxLength={DESCRIPTION_MAX}
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
-                className={inputClass}
+                className={textareaClass}
               />
             </Field>
           </div>

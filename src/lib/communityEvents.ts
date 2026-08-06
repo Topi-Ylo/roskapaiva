@@ -13,11 +13,24 @@ export interface CommunityEvent {
   image_url: string | null;
   participants: number | null;
   waste_kg: number | null;
+  /** Who is running it. The organiser's e-mail is never exposed publicly. */
+  organizer_name?: string | null;
   /** The Kallio main event, pinned to the top of the list. */
   featured?: boolean;
 }
 
-export const DESCRIPTION_MAX = 50;
+/** Descriptions are limited by words, which reads better to a volunteer than
+ *  a character count. The database keeps a 2000-character ceiling as a
+ *  backstop; 200 Finnish words fit inside it comfortably. */
+export const DESCRIPTION_MAX_WORDS = 200;
+
+export function countWords(text: string): number {
+  const t = text.trim();
+  return t ? t.split(/\s+/).length : 0;
+}
+
+/** Shown in the list when a sign-up has no photo of its own. */
+export const DEFAULT_EVENT_IMAGE = '/default-event.jpg';
 
 /** Duration options offered in the form, in minutes. */
 export const DURATION_OPTIONS = [
@@ -152,49 +165,49 @@ export function formatDuration(minutes: number): string {
 /** Shown before Supabase is configured, so the section is never empty. */
 export const FALLBACK_COMMUNITY_EVENTS: CommunityEvent[] = [
   {
-    id: 'demo-1', city: 'Helsinki', lat: 60.1699, lng: 24.9384,
+    id: 'demo-1', organizer_name: 'Roskapäivä', city: 'Helsinki', lat: 60.1699, lng: 24.9384,
     event_date: '2026-09-05', start_time: '11:00:00', duration_minutes: 180,
     description: 'Kallion päätapahtuma ja koko korttelin siivous',
     image_url: null, participants: 150, waste_kg: 240, featured: true,
   },
   {
-    id: 'demo-2', city: 'Tampere', lat: 61.4978, lng: 23.761,
+    id: 'demo-2', organizer_name: 'Tampereen ympäristöyhdistys', city: 'Tampere', lat: 61.4978, lng: 23.761,
     event_date: '2026-09-05', start_time: '10:00:00', duration_minutes: 120,
     description: 'Näsijärven rantojen siivoustalkoot', image_url: null,
     participants: 40, waste_kg: 65,
   },
   {
-    id: 'demo-3', city: 'Turku', lat: 60.4518, lng: 22.2666,
+    id: 'demo-3', organizer_name: 'Aurajoen ystävät', city: 'Turku', lat: 60.4518, lng: 22.2666,
     event_date: '2026-09-05', start_time: '12:00:00', duration_minutes: 120,
     description: 'Aurajoen varsi kuntoon yhdessä', image_url: null,
     participants: 25, waste_kg: 38,
   },
   {
-    id: 'demo-4', city: 'Oulu', lat: 65.0121, lng: 25.4651,
+    id: 'demo-4', organizer_name: 'Oulun perhekerho', city: 'Oulu', lat: 65.0121, lng: 25.4651,
     event_date: '2026-09-05', start_time: '11:00:00', duration_minutes: 90,
     description: 'Hupisaarten puistosiivous perheille', image_url: null,
     participants: 30, waste_kg: 22,
   },
   {
-    id: 'demo-5', city: 'Rovaniemi', lat: 66.5039, lng: 25.7294,
+    id: 'demo-5', organizer_name: 'Ounasvaaran retkeilijät', city: 'Rovaniemi', lat: 66.5039, lng: 25.7294,
     event_date: '2026-09-05', start_time: '13:00:00', duration_minutes: 120,
     description: 'Ounasvaaran polkujen roskaretki', image_url: null,
     participants: 18, waste_kg: 14,
   },
   {
-    id: 'demo-6', city: 'Jyväskylä', lat: 62.2426, lng: 25.7473,
+    id: 'demo-6', organizer_name: 'Jyväskylän partiolaiset', city: 'Jyväskylä', lat: 62.2426, lng: 25.7473,
     event_date: '2026-09-05', start_time: '10:30:00', duration_minutes: 120,
     description: 'Jyväsjärven ranta siistiksi', image_url: null,
     participants: 22, waste_kg: 30,
   },
   {
-    id: 'demo-7', city: 'Kuopio', lat: 62.8924, lng: 27.677,
+    id: 'demo-7', organizer_name: 'Kuopion keskustan asukkaat', city: 'Kuopio', lat: 62.8924, lng: 27.677,
     event_date: '2026-09-05', start_time: '11:00:00', duration_minutes: 120,
     description: 'Sataman ja torin siivous', image_url: null,
     participants: 16, waste_kg: 19,
   },
   {
-    id: 'demo-8', city: 'Vaasa', lat: 63.096, lng: 21.6158,
+    id: 'demo-8', organizer_name: 'Vaasan rantaporukka', city: 'Vaasa', lat: 63.096, lng: 21.6158,
     event_date: '2026-09-05', start_time: '12:00:00', duration_minutes: 90,
     description: 'Rantabulevardin roskienkeruu', image_url: null,
     participants: 14, waste_kg: 11,

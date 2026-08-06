@@ -2,7 +2,8 @@ import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { supabase, SUPABASE_CONFIGURED } from '../../lib/supabase';
 import { COMMUNITY_BUCKET, prepareCommunityImage, uploadToStorage } from '../../lib/storage';
 import {
-  DESCRIPTION_MAX,
+  DESCRIPTION_MAX_WORDS,
+  countWords,
   DURATION_OPTIONS,
   FINNISH_CITIES,
   cityCoords,
@@ -81,6 +82,9 @@ export default function EventSignupForm() {
   const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
 
+  const words = countWords(form.description);
+  const overWordLimit = words > DESCRIPTION_MAX_WORDS;
+
   const onUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -110,6 +114,10 @@ export default function EventSignupForm() {
 
     if (!SUPABASE_CONFIGURED || !supabase) {
       setError('Lomake on käytössä vasta julkaistulla sivustolla.');
+      return;
+    }
+    if (overWordLimit) {
+      setError(`Kuvaus saa olla enintään ${DESCRIPTION_MAX_WORDS} sanaa.`);
       return;
     }
 
@@ -272,17 +280,20 @@ export default function EventSignupForm() {
         </label>
 
         <label className="block sm:col-span-2">
-          <Label hint={`${form.description.length}/${DESCRIPTION_MAX}`}>
-            Kuvaus yhdellä lauseella
-          </Label>
-          <input
+          <Label hint={`${words}/${DESCRIPTION_MAX_WORDS} sanaa`}>Kuvaus</Label>
+          <textarea
             required
-            maxLength={DESCRIPTION_MAX}
+            rows={5}
             value={form.description}
             onChange={(e) => set('description', e.target.value)}
-            className={inputCls}
-            placeholder="Esim. Rantojen siivoustalkoot koko perheelle"
+            className={`${inputCls} h-auto min-h-[7rem] resize-y py-3 leading-relaxed`}
+            placeholder="Kerro lyhyesti mitä olette tekemässä, mistä lähdette liikkeelle ja kenelle tapahtuma sopii."
           />
+          {overWordLimit && (
+            <span className="mt-1.5 block text-xs text-amber">
+              Kuvaus on {words - DESCRIPTION_MAX_WORDS} sanaa liian pitkä.
+            </span>
+          )}
         </label>
 
         <div className="sm:col-span-2">
@@ -319,7 +330,7 @@ export default function EventSignupForm() {
       <div className="mt-8 flex flex-wrap items-center gap-5">
         <button
           type="submit"
-          disabled={busy || uploading}
+          disabled={busy || uploading || overWordLimit}
           className="rounded-full bg-amber px-8 py-3.5 text-xs font-semibold uppercase tracking-widest text-forest-night transition hover:bg-amber-light disabled:opacity-50"
         >
           {busy ? 'Lähetetään…' : 'Lähetä ilmoitus'}
