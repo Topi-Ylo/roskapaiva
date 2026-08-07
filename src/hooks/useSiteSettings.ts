@@ -43,7 +43,9 @@ const FALLBACK: SiteSettings = {
   event_program_title: 'Enemmän kuin siivous.',
   event_program_body:
     'Ulkona tapahtuvan siivouksen lomassa nautitaan inspiroivista puheista, livemusiikista, yritysten pop-up-näyttelystä, lasten aktiviteeteista, kahvilasta ja rentoutumisalueesta. Roskapäivä on juhla puhtaamman ympäristön puolesta.',
-  event_headliner: 'Jaakko Kulta',
+  // Rendered on the first paint, before the settings fetch resolves, so it
+  // must never name an unconfirmed act.
+  event_headliner: 'Yllätysesiintyjä - julkistetaan myöhemmin',
   event_headliner_image: null,
 };
 

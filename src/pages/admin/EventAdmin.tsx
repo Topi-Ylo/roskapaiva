@@ -1141,7 +1141,7 @@ function TextsManager() {
                 value={form.event_headliner}
                 onChange={(e) => setForm({ ...form, event_headliner: e.target.value })}
                 className={inputClass}
-                placeholder="Jaakko Kulta"
+                placeholder="Yllätysesiintyjä - julkistetaan myöhemmin"
               />
             </Field>
             <ImagePickerField
