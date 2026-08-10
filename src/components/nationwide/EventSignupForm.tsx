@@ -5,6 +5,7 @@ import {
   CONTACT_OPTIONS,
   DESCRIPTION_MAX_WORDS,
   countWords,
+  normalizeDescription,
   type ContactType,
   DURATION_OPTIONS,
   FINNISH_CITIES,
@@ -143,7 +144,7 @@ export default function EventSignupForm() {
       event_date: form.event_date,
       start_time: form.start_time || null,
       duration_minutes: Number(form.duration_minutes),
-      description: form.description.trim(),
+      description: normalizeDescription(form.description),
       image_url: form.image_url.trim() || null,
       is_public: form.is_public,
       status: 'pending' as const,
@@ -300,11 +301,13 @@ export default function EventSignupForm() {
           <Label hint={`${words}/${DESCRIPTION_MAX_WORDS} sanaa`}>Kuvaus</Label>
           <textarea
             required
-            rows={5}
+            rows={7}
             value={form.description}
             onChange={(e) => set('description', e.target.value)}
             className={`${inputCls} h-auto min-h-[7rem] resize-y py-3 leading-relaxed`}
-            placeholder="Kerro lyhyesti mitä olette tekemässä, mistä lähdette liikkeelle ja kenelle tapahtuma sopii."
+            placeholder={
+              'Kerro lyhyesti mitä olette tekemässä, mistä lähdette liikkeelle ja kenelle tapahtuma sopii.\n\nVoit jakaa tekstin kappaleisiin rivinvaihdoilla – ne säilyvät sellaisenaan.'
+            }
           />
           {overWordLimit && (
             <span className="mt-1.5 block text-xs text-amber">

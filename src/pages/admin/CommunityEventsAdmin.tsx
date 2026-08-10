@@ -469,7 +469,7 @@ export default function CommunityEventsAdmin() {
                       </span>
                     )}
                   </div>
-                  <p className="mt-1 text-sm text-cream/80">{r.description}</p>
+                  <p className="mt-1 whitespace-pre-line text-sm text-cream/80">{r.description}</p>
                   <p className="mt-1 text-xs text-cream/45">
                     {formatEventDate(r.event_date)}
                     {r.start_time ? ` · klo ${formatTime(r.start_time)}` : ''} ·{' '}

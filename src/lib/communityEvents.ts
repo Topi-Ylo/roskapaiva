@@ -51,6 +51,19 @@ export function contactLink(
 
 export const DESCRIPTION_MAX_WORDS = 200;
 
+/**
+ * Sign-ups arrive with the organiser's own line breaks, and at 200 words those
+ * breaks are what makes a description readable rather than one blob. Keep them,
+ * but cap runs of blank lines so a stray paste cannot leave a chasm in the list.
+ */
+export function normalizeDescription(text: string): string {
+  return text
+    .replace(/\r\n?/g, '\n')
+    .replace(/[ \t]+$/gm, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 export function countWords(text: string): number {
   const t = text.trim();
   return t ? t.split(/\s+/).length : 0;

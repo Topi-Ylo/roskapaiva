@@ -11,6 +11,7 @@ import {
   formatDuration,
   formatEventDate,
   formatTime,
+  normalizeDescription,
   type CommunityEvent,
 } from '../../lib/communityEvents';
 
@@ -40,6 +41,12 @@ function EventRow({
   const link = contactLink(event);
   const [expanded, setExpanded] = useState(false);
   const descRef = useRef<HTMLSpanElement>(null);
+  const full = useMemo(() => normalizeDescription(event.description), [event.description]);
+  // The two-line teaser reads better as flowing text. Kept as written, a
+  // description that opens with a short line would spend one of its two lines
+  // on a blank one; the breaks come back the moment it is expanded.
+  const teaser = useMemo(() => full.replace(/\s+/g, ' '), [full]);
+  const hasBreaks = teaser !== full;
   // Only offer the toggle when the text is actually cut off, so short entries
   // do not carry a pointless "Näytä lisää". Measured rather than guessed from
   // length, since the cut-off depends on the column width.
@@ -57,7 +64,12 @@ function EventRow({
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [event.description, expanded]);
+  }, [teaser, expanded]);
+
+  // Line breaks alone justify the toggle: without it the structure the
+  // organiser wrote would be unreachable, even on a description short enough
+  // to fit two lines.
+  const canExpand = isClamped || hasBreaks;
   // The row is a button, so the contact link cannot live inside it: a link
   // nested in a button is invalid and unreachable by keyboard. It sits as a
   // sibling, indented to line up with the text column.
@@ -102,10 +114,10 @@ function EventRow({
           // display:-webkit-box, and a same-specificity `block` silently wins,
           // leaving -webkit-line-clamp set but inert.
           className={`mt-1 text-sm leading-snug text-cream/75 ${
-            expanded ? 'block' : 'line-clamp-2'
+            expanded ? 'block whitespace-pre-line' : 'line-clamp-2'
           }`}
         >
-          {event.description}
+          {expanded ? full : teaser}
         </span>
         <span className="mt-1.5 flex flex-wrap gap-x-4 text-[11px] uppercase tracking-wider text-cream/40">
           {time && <span>Klo {time}</span>}
@@ -114,9 +126,9 @@ function EventRow({
         </span>
       </span>
     </button>
-      {(isClamped || link) && (
+      {(canExpand || link) && (
         <div className="-mt-1 flex flex-wrap items-center gap-x-5 gap-y-2 pb-4 pl-28 pr-4">
-          {isClamped && (
+          {canExpand && (
             <button
               type="button"
               onClick={() => setExpanded((v) => !v)}

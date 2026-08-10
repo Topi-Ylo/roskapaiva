@@ -67,6 +67,15 @@ export function esc(s: string): string {
     .replace(/"/g, '&quot;');
 }
 
+/**
+ * As esc(), but keeps the organiser's line breaks. Uses <br> rather than
+ * white-space:pre-line because Outlook renders with the Word engine, which
+ * ignores the property.
+ */
+export function escMultiline(s: string): string {
+  return esc(s).replace(/\r\n?|\n/g, '<br>');
+}
+
 /** Shared shell so both e-mails look like the site. */
 export function layout(title: string, body: string): string {
   return `<!doctype html><html lang="fi"><body style="margin:0;padding:0;background:#0B160F;">
@@ -92,7 +101,7 @@ export function detailsTable(e: CommunityEventRow): string {
     ['Päivämäärä', formatDate(e.event_date)],
     ['Kellonaika', e.start_time ? `klo ${formatTime(e.start_time)}` : 'ei ilmoitettu'],
     ['Kesto', formatDuration(e.duration_minutes)],
-    ['Kuvaus', esc(e.description)],
+    ['Kuvaus', escMultiline(e.description)],
     ['Ilmoittaja', `${esc(e.organizer_name)} (${esc(e.organizer_email)})`],
   ];
   return `<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:20px 0;border-top:1px solid rgba(244,241,232,0.12);">
