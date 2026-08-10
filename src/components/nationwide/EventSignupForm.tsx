@@ -146,12 +146,18 @@ export default function EventSignupForm() {
       description: form.description.trim(),
       image_url: form.image_url.trim() || null,
       is_public: form.is_public,
-      // Contact details belong to open events only, so a box unticked after
-      // typing something does not quietly publish it.
-      contact_type: form.is_public && form.contact_type ? form.contact_type : null,
-      contact_value:
-        form.is_public && form.contact_type ? form.contact_value.trim() || null : null,
       status: 'pending' as const,
+      // Contact details belong to open events only, so a box unticked after
+      // typing something does not quietly publish it. The keys are omitted
+      // rather than sent as null when unused: PostgREST rejects the whole
+      // insert for an unknown column, so sending them always would let a
+      // pending migration break every sign-up, not just the ones using this.
+      ...(form.is_public && form.contact_type
+        ? {
+            contact_type: form.contact_type,
+            contact_value: form.contact_value.trim() || null,
+          }
+        : {}),
     };
 
     const { error: insertError } = await supabase.from('community_events').insert(payload);
