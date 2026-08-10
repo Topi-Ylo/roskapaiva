@@ -2,8 +2,10 @@ import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { supabase, SUPABASE_CONFIGURED } from '../../lib/supabase';
 import { COMMUNITY_BUCKET, prepareCommunityImage, uploadToStorage } from '../../lib/storage';
 import {
+  CONTACT_OPTIONS,
   DESCRIPTION_MAX_WORDS,
   countWords,
+  type ContactType,
   DURATION_OPTIONS,
   FINNISH_CITIES,
   cityCoords,
@@ -19,6 +21,8 @@ const EMPTY = {
   description: '',
   image_url: '',
   is_public: false,
+  contact_type: '' as '' | ContactType,
+  contact_value: '',
 };
 
 /** crypto.randomUUID needs a secure context; fall back for older browsers. */
@@ -142,6 +146,11 @@ export default function EventSignupForm() {
       description: form.description.trim(),
       image_url: form.image_url.trim() || null,
       is_public: form.is_public,
+      // Contact details belong to open events only, so a box unticked after
+      // typing something does not quietly publish it.
+      contact_type: form.is_public && form.contact_type ? form.contact_type : null,
+      contact_value:
+        form.is_public && form.contact_type ? form.contact_value.trim() || null : null,
       status: 'pending' as const,
     };
 
@@ -316,6 +325,49 @@ export default function EventSignupForm() {
             </span>
           </span>
         </label>
+
+        {form.is_public && (
+          <div className="grid gap-4 sm:col-span-2 sm:grid-cols-2">
+            <label className="block">
+              <Label hint="vapaaehtoinen">Miten mukaan?</Label>
+              <SelectField>
+                <select
+                  value={form.contact_type}
+                  onChange={(e) =>
+                    set('contact_type', e.target.value as '' | ContactType)
+                  }
+                  className={selectCls}
+                >
+                  <option value="">Ei erillistä ilmoittautumista</option>
+                  {CONTACT_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </SelectField>
+            </label>
+
+            {form.contact_type && (
+              <label className="block">
+                <Label hint="näkyy julkisesti">
+                  {CONTACT_OPTIONS.find((o) => o.value === form.contact_type)?.label ?? 'Linkki'}
+                </Label>
+                <input
+                  required
+                  type={form.contact_type === 'email' ? 'email' : 'url'}
+                  maxLength={200}
+                  value={form.contact_value}
+                  onChange={(e) => set('contact_value', e.target.value)}
+                  className={inputCls}
+                  placeholder={
+                    CONTACT_OPTIONS.find((o) => o.value === form.contact_type)?.hint
+                  }
+                />
+              </label>
+            )}
+          </div>
+        )}
 
         <div className="sm:col-span-2">
           <Label hint="vapaaehtoinen, enintään 25 Mt">Kuva</Label>

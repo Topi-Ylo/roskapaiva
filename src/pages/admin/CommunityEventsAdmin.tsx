@@ -12,7 +12,9 @@ import {
 } from '../../components/admin/admin-ui';
 import ImagePickerField from '../../components/admin/ImagePickerField';
 import {
+  CONTACT_OPTIONS,
   DESCRIPTION_MAX_WORDS,
+  type ContactType,
   countWords,
   DURATION_OPTIONS,
   FINNISH_CITIES,
@@ -41,6 +43,8 @@ interface Row {
   waste_kg: number | null;
   admin_note: string | null;
   is_public: boolean;
+  contact_type: ContactType | null;
+  contact_value: string | null;
   created_at: string;
 }
 
@@ -57,6 +61,8 @@ interface FormState {
   waste_kg: string;
   admin_note: string;
   is_public: boolean;
+  contact_type: '' | ContactType;
+  contact_value: string;
 }
 
 const EMPTY: FormState = {
@@ -72,6 +78,8 @@ const EMPTY: FormState = {
   waste_kg: '',
   admin_note: '',
   is_public: false,
+  contact_type: '',
+  contact_value: '',
 };
 
 const STATUS_LABEL: Record<Status, string> = {
@@ -158,6 +166,8 @@ export default function CommunityEventsAdmin() {
       waste_kg: r.waste_kg?.toString() ?? '',
       admin_note: r.admin_note ?? '',
       is_public: r.is_public ?? false,
+      contact_type: r.contact_type ?? '',
+      contact_value: r.contact_value ?? '',
     });
     setError(null);
     formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -185,6 +195,9 @@ export default function CommunityEventsAdmin() {
       waste_kg: form.waste_kg === '' ? null : Number(form.waste_kg),
       admin_note: form.admin_note.trim() || null,
       is_public: form.is_public,
+      contact_type: form.is_public && form.contact_type ? form.contact_type : null,
+      contact_value:
+        form.is_public && form.contact_type ? form.contact_value.trim() || null : null,
     };
 
     const { error } = editingId
@@ -349,6 +362,37 @@ export default function CommunityEventsAdmin() {
               Avoin tapahtuma (muut saavat liittyä mukaan)
             </span>
           </label>
+          {form.is_public && (
+            <>
+              <Field label="Miten mukaan?" hint="Valinnainen, näkyy listassa">
+                <select
+                  value={form.contact_type}
+                  onChange={(e) =>
+                    setForm({ ...form, contact_type: e.target.value as '' | ContactType })
+                  }
+                  className={selectClass}
+                >
+                  <option value="">Ei erillistä ilmoittautumista</option>
+                  {CONTACT_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field label="Osoite tai linkki" hint="Julkinen">
+                <input
+                  type={form.contact_type === 'email' ? 'email' : 'url'}
+                  maxLength={200}
+                  disabled={!form.contact_type}
+                  value={form.contact_value}
+                  onChange={(e) => setForm({ ...form, contact_value: e.target.value })}
+                  className={`${inputClass} disabled:opacity-40`}
+                  placeholder={CONTACT_OPTIONS.find((o) => o.value === form.contact_type)?.hint}
+                />
+              </Field>
+            </>
+          )}
           <div className="md:col-span-2">
             <Field label="Sisäinen muistiinpano" hint="Ei näy sivustolla">
               <textarea

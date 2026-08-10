@@ -19,11 +19,36 @@ export interface CommunityEvent {
   featured?: boolean;
   /** Open for anyone to join, as opposed to someone tidying their own street. */
   is_public?: boolean;
+  /** Optional way to reach an open event. Published only when is_public. */
+  contact_type?: ContactType | null;
+  contact_value?: string | null;
 }
 
 /** Descriptions are limited by words, which reads better to a volunteer than
  *  a character count. The database keeps a 2000-character ceiling as a
  *  backstop; 200 Finnish words fit inside it comfortably. */
+export type ContactType = 'email' | 'website' | 'form';
+
+export const CONTACT_OPTIONS: { value: ContactType; label: string; hint: string }[] = [
+  { value: 'form', label: 'Ilmoittautumislomake', hint: 'https://…' },
+  { value: 'website', label: 'Verkkosivu', hint: 'https://…' },
+  { value: 'email', label: 'Sähköposti', hint: 'nimi@esimerkki.fi' },
+];
+
+/** The link shown in the list, or null when the organiser gave no contact. */
+export function contactLink(
+  e: { is_public?: boolean; contact_type?: ContactType | null; contact_value?: string | null }
+): { href: string; label: string } | null {
+  if (!e.is_public || !e.contact_type || !e.contact_value) return null;
+  const v = e.contact_value.trim();
+  if (!v) return null;
+  if (e.contact_type === 'email') {
+    return { href: `mailto:${v}`, label: 'Ota yhteyttä' };
+  }
+  const href = /^https?:\/\//i.test(v) ? v : `https://${v}`;
+  return { href, label: e.contact_type === 'form' ? 'Ilmoittaudu' : 'Lisätietoja' };
+}
+
 export const DESCRIPTION_MAX_WORDS = 200;
 
 export function countWords(text: string): number {

@@ -4,6 +4,7 @@ import { useCounter } from '../../hooks/useCounter';
 import FinlandMap from './FinlandMap';
 import MapLegend from './MapLegend';
 import {
+  contactLink,
   defaultImageFor,
   FALLBACK_COMMUNITY_EVENTS,
   calcStats,
@@ -36,16 +37,19 @@ function EventRow({
   onSelect: () => void;
 }) {
   const time = formatTime(event.start_time);
+  const link = contactLink(event);
+  // The row is a button, so the contact link cannot live inside it: a link
+  // nested in a button is invalid and unreachable by keyboard. It sits as a
+  // sibling, indented to line up with the text column.
   return (
-    <button
-      type="button"
-      onClick={onSelect}
-      className={`flex w-full gap-4 border-l-2 p-4 text-left transition ${
+    <div
+      className={`border-l-2 transition ${
         active
           ? 'border-amber bg-amber/10'
           : 'border-transparent hover:border-cream/30 hover:bg-cream/5'
       }`}
     >
+    <button type="button" onClick={onSelect} className="flex w-full gap-4 p-4 text-left">
       <img
         src={event.image_url || defaultImageFor(event)}
         alt=""
@@ -82,6 +86,23 @@ function EventRow({
         </span>
       </span>
     </button>
+      {link && (
+        <div className="-mt-1 pb-4 pl-28 pr-4">
+          <a
+            href={link.href}
+            {...(link.href.startsWith('mailto:')
+              ? {}
+              : { target: '_blank', rel: 'noopener noreferrer' })}
+            className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-widest text-amber transition hover:text-amber-light"
+          >
+            {link.label}
+            <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8h10m0 0L8 3m5 5l-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            </svg>
+          </a>
+        </div>
+      )}
+    </div>
   );
 }
 
