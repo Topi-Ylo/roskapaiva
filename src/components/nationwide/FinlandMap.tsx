@@ -20,7 +20,7 @@ interface CityGroup {
 }
 
 /** The Roskapäivä mark as the pin. Cities with several events carry a count. */
-const PIN_IMAGE = '/favicon.png';
+export const PIN_IMAGE = '/favicon.png';
 
 /**
  * Open events invert the mark and take a heavier dark ring, so they read as a

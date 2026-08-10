@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTableData } from '../../hooks/useTableData';
 import { useCounter } from '../../hooks/useCounter';
 import FinlandMap from './FinlandMap';
+import MapLegend from './MapLegend';
 import {
   defaultImageFor,
   FALLBACK_COMMUNITY_EVENTS,
@@ -111,12 +112,24 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
 
   const [query, setQuery] = useState('');
   const [activeCity, setActiveCity] = useState<string | null>(null);
+  // The map key doubles as a filter, so hiding a kind hides it from the list too;
+  // otherwise the list would contradict the map.
+  const [showPublic, setShowPublic] = useState(true);
+  const [showPrivate, setShowPrivate] = useState(true);
 
-  const stats = useMemo(() => calcStats(events), [events]);
+  const publicCount = useMemo(() => events.filter((e) => e.is_public).length, [events]);
+  const privateCount = events.length - publicCount;
+
+  const visible = useMemo(
+    () => events.filter((e) => (e.is_public ? showPublic : showPrivate)),
+    [events, showPublic, showPrivate]
+  );
+
+  const stats = useMemo(() => calcStats(visible), [visible]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return events.filter((e) => {
+    return visible.filter((e) => {
       if (activeCity && e.city !== activeCity) return false;
       if (!q) return true;
       return (
@@ -125,7 +138,7 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
         (e.organizer_name ?? '').toLowerCase().includes(q)
       );
     });
-  }, [events, query, activeCity]);
+  }, [visible, query, activeCity]);
 
   return (
     <>
@@ -215,15 +228,26 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
             {/* Kartta pysyy paikallaan kun listaa selataan */}
             <div className="lg:col-span-7">
               <div className="lg:sticky lg:top-24">
-                <div className="h-[420px] overflow-hidden border border-cream/15 bg-cream-soft lg:h-[625px]">
+                <div className="relative h-[420px] overflow-hidden border border-cream/15 bg-cream-soft lg:h-[625px]">
                   <FinlandMap
-                    events={events}
+                    events={visible}
                     activeCity={activeCity}
                     onSelectCity={setActiveCity}
                   />
+                  <MapLegend
+                    showPublic={showPublic}
+                    showPrivate={showPrivate}
+                    publicCount={publicCount}
+                    privateCount={privateCount}
+                    onToggle={(kind) =>
+                      kind === 'public'
+                        ? setShowPublic((v) => !v)
+                        : setShowPrivate((v) => !v)
+                    }
+                  />
                 </div>
                 <p className="mt-3 text-xs text-cream/35">
-                  Klikkaa karttamerkkiä nähdäksesi paikkakunnan tapahtumat.
+                  Klikkaa karttamerkkiä nähdäksesi paikkakunnan tapahtumat. Selitteestä voit piilottaa tapahtumatyypin.
                 </p>
               </div>
             </div>
