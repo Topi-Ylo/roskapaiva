@@ -17,6 +17,8 @@ export interface CommunityEvent {
   organizer_name?: string | null;
   /** The Kallio main event, pinned to the top of the list. */
   featured?: boolean;
+  /** Open for anyone to join, as opposed to someone tidying their own street. */
+  is_public?: boolean;
 }
 
 /** Descriptions are limited by words, which reads better to a volunteer than
@@ -29,8 +31,15 @@ export function countWords(text: string): number {
   return t ? t.split(/\s+/).length : 0;
 }
 
-/** Shown in the list when a sign-up has no photo of its own. */
+/** Shown in the list when a sign-up has no photo of its own. Open events get
+ *  a group shot, private ones a lone volunteer, so the thumbnail alone hints
+ *  at whether you would be welcome to turn up. */
 export const DEFAULT_EVENT_IMAGE = '/default-event.jpg';
+export const DEFAULT_PUBLIC_EVENT_IMAGE = '/default-public-event.jpg';
+
+export function defaultImageFor(event: { is_public?: boolean }): string {
+  return event.is_public ? DEFAULT_PUBLIC_EVENT_IMAGE : DEFAULT_EVENT_IMAGE;
+}
 
 /** Duration options offered in the form, in minutes. */
 export const DURATION_OPTIONS = [
@@ -165,13 +174,13 @@ export function formatDuration(minutes: number): string {
 /** Shown before Supabase is configured, so the section is never empty. */
 export const FALLBACK_COMMUNITY_EVENTS: CommunityEvent[] = [
   {
-    id: 'demo-1', organizer_name: 'Roskapäivä', city: 'Helsinki', lat: 60.1699, lng: 24.9384,
+    id: 'demo-1', organizer_name: 'Roskapäivä', is_public: true, city: 'Helsinki', lat: 60.1699, lng: 24.9384,
     event_date: '2026-09-05', start_time: '11:00:00', duration_minutes: 180,
     description: 'Kallion päätapahtuma ja koko korttelin siivous',
     image_url: null, participants: 150, waste_kg: 240, featured: true,
   },
   {
-    id: 'demo-2', organizer_name: 'Tampereen ympäristöyhdistys', city: 'Tampere', lat: 61.4978, lng: 23.761,
+    id: 'demo-2', organizer_name: 'Tampereen ympäristöyhdistys', is_public: true, city: 'Tampere', lat: 61.4978, lng: 23.761,
     event_date: '2026-09-05', start_time: '10:00:00', duration_minutes: 120,
     description: 'Näsijärven rantojen siivoustalkoot', image_url: null,
     participants: 40, waste_kg: 65,
@@ -183,7 +192,7 @@ export const FALLBACK_COMMUNITY_EVENTS: CommunityEvent[] = [
     participants: 25, waste_kg: 38,
   },
   {
-    id: 'demo-4', organizer_name: 'Oulun perhekerho', city: 'Oulu', lat: 65.0121, lng: 25.4651,
+    id: 'demo-4', organizer_name: 'Oulun perhekerho', is_public: true, city: 'Oulu', lat: 65.0121, lng: 25.4651,
     event_date: '2026-09-05', start_time: '11:00:00', duration_minutes: 90,
     description: 'Hupisaarten puistosiivous perheille', image_url: null,
     participants: 30, waste_kg: 22,

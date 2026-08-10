@@ -3,7 +3,7 @@ import { useTableData } from '../../hooks/useTableData';
 import { useCounter } from '../../hooks/useCounter';
 import FinlandMap from './FinlandMap';
 import {
-  DEFAULT_EVENT_IMAGE,
+  defaultImageFor,
   FALLBACK_COMMUNITY_EVENTS,
   calcStats,
   formatDuration,
@@ -46,7 +46,7 @@ function EventRow({
       }`}
     >
       <img
-        src={event.image_url || DEFAULT_EVENT_IMAGE}
+        src={event.image_url || defaultImageFor(event)}
         alt=""
         loading="lazy"
         className="h-16 w-20 shrink-0 rounded bg-forest-night object-cover"
@@ -57,6 +57,11 @@ function EventRow({
           {event.featured && (
             <span className="rounded-full bg-amber px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-forest-night">
               Päätapahtuma
+            </span>
+          )}
+          {!event.featured && event.is_public && (
+            <span className="rounded-full bg-emerald-400/90 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-forest-night">
+              Tapahtuma
             </span>
           )}
           <span className="text-xs text-cream/45">{formatEventDate(event.event_date)}</span>

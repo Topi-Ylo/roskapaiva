@@ -18,6 +18,7 @@ const EMPTY = {
   duration_minutes: 120,
   description: '',
   image_url: '',
+  is_public: false,
 };
 
 /** crypto.randomUUID needs a secure context; fall back for older browsers. */
@@ -140,6 +141,7 @@ export default function EventSignupForm() {
       duration_minutes: Number(form.duration_minutes),
       description: form.description.trim(),
       image_url: form.image_url.trim() || null,
+      is_public: form.is_public,
       status: 'pending' as const,
     };
 
@@ -294,6 +296,25 @@ export default function EventSignupForm() {
               Kuvaus on {words - DESCRIPTION_MAX_WORDS} sanaa liian pitkä.
             </span>
           )}
+        </label>
+
+        <label className="flex cursor-pointer items-start gap-3 rounded border border-cream/15 bg-forest-night/40 p-4 sm:col-span-2">
+          <input
+            type="checkbox"
+            checked={form.is_public}
+            onChange={(e) => set('is_public', e.target.checked)}
+            className="mt-0.5 h-4 w-4 shrink-0 accent-amber"
+          />
+          <span>
+            <span className="block text-sm font-semibold text-cream">
+              Tapahtuma on avoin kaikille
+            </span>
+            <span className="mt-1 block text-xs leading-relaxed text-cream/55">
+              Rastita, jos muut saavat tulla mukaan. Avoimet tapahtumat erottuvat
+              kartalla ja listalla, jotta niihin voi liittyä. Jätä tyhjäksi, jos siivoat
+              omalla porukalla.
+            </span>
+          </span>
         </label>
 
         <div className="sm:col-span-2">

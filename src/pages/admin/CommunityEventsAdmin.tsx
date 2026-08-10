@@ -40,6 +40,7 @@ interface Row {
   participants: number | null;
   waste_kg: number | null;
   admin_note: string | null;
+  is_public: boolean;
   created_at: string;
 }
 
@@ -55,6 +56,7 @@ interface FormState {
   participants: string;
   waste_kg: string;
   admin_note: string;
+  is_public: boolean;
 }
 
 const EMPTY: FormState = {
@@ -69,6 +71,7 @@ const EMPTY: FormState = {
   participants: '',
   waste_kg: '',
   admin_note: '',
+  is_public: false,
 };
 
 const STATUS_LABEL: Record<Status, string> = {
@@ -154,6 +157,7 @@ export default function CommunityEventsAdmin() {
       participants: r.participants?.toString() ?? '',
       waste_kg: r.waste_kg?.toString() ?? '',
       admin_note: r.admin_note ?? '',
+      is_public: r.is_public ?? false,
     });
     setError(null);
     formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -180,6 +184,7 @@ export default function CommunityEventsAdmin() {
       participants: form.participants === '' ? null : Number(form.participants),
       waste_kg: form.waste_kg === '' ? null : Number(form.waste_kg),
       admin_note: form.admin_note.trim() || null,
+      is_public: form.is_public,
     };
 
     const { error } = editingId
@@ -333,6 +338,17 @@ export default function CommunityEventsAdmin() {
               />
             </Field>
           </div>
+          <label className="flex items-center gap-3 md:col-span-2">
+            <input
+              type="checkbox"
+              checked={form.is_public}
+              onChange={(e) => setForm({ ...form, is_public: e.target.checked })}
+              className="h-4 w-4 accent-amber"
+            />
+            <span className="text-sm text-cream/80">
+              Avoin tapahtuma (muut saavat liittyä mukaan)
+            </span>
+          </label>
           <div className="md:col-span-2">
             <Field label="Sisäinen muistiinpano" hint="Ei näy sivustolla">
               <textarea
@@ -403,6 +419,11 @@ export default function CommunityEventsAdmin() {
                     >
                       {STATUS_LABEL[r.status]}
                     </span>
+                    {r.is_public && (
+                      <span className="rounded-full bg-emerald-400/90 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-forest-night">
+                        Avoin
+                      </span>
+                    )}
                   </div>
                   <p className="mt-1 text-sm text-cream/80">{r.description}</p>
                   <p className="mt-1 text-xs text-cream/45">

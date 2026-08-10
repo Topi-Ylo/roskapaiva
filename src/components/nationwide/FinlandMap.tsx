@@ -15,23 +15,38 @@ interface CityGroup {
   lat: number;
   lng: number;
   count: number;
+  /** True when at least one event in the city is open to join. */
+  hasPublic: boolean;
 }
 
 /** The Roskapäivä mark as the pin. Cities with several events carry a count. */
 const PIN_IMAGE = '/favicon.png';
 
-function markerIcon(count: number, active: boolean): L.DivIcon {
+/**
+ * Open events invert the mark and take a heavier dark ring, so they read as a
+ * different kind of pin at a glance.
+ *
+ * The invert sits on the <img> and the border on the wrapper deliberately: a
+ * CSS filter applies to the whole element including its border, so putting
+ * both on the image would flip the dark ring to a light one.
+ */
+function markerIcon(count: number, active: boolean, isPublic: boolean): L.DivIcon {
   const size = active ? 46 : 36;
+  const border = active ? '#C9A227' : isPublic ? '#0B160F' : 'rgba(11,22,15,0.5)';
   return L.divIcon({
     className: 'rp-marker',
     html: `<span style="position:relative;display:block;width:${size}px;height:${size}px;">
-      <img src="${PIN_IMAGE}" alt="" style="
-        display:block;width:100%;height:100%;border-radius:9999px;background:#0B160F;
-        border:2px solid ${active ? '#C9A227' : 'rgba(11,22,15,0.5)'};
+      <span style="
+        display:block;width:100%;height:100%;box-sizing:border-box;
+        border-radius:9999px;overflow:hidden;background:#0B160F;
+        border:${isPublic ? 3 : 2}px solid ${border};
         box-shadow:0 2px 8px rgba(11,22,15,0.45)${
           active ? ',0 0 0 7px rgba(201,162,39,0.28)' : ''
         };
         transition:all .2s;">
+        <img src="${PIN_IMAGE}" alt="" style="
+          display:block;width:100%;height:100%;${isPublic ? 'filter:invert(1);' : ''}">
+      </span>
       ${
         count > 1
           ? `<span style="
@@ -58,8 +73,14 @@ export default function FinlandMap({ events, activeCity, onSelectCity }: Props) 
     events.forEach((e) => {
       if (e.lat == null || e.lng == null) return;
       const existing = byCity.get(e.city);
-      if (existing) existing.count += 1;
-      else byCity.set(e.city, { city: e.city, lat: e.lat, lng: e.lng, count: 1 });
+      if (existing) {
+        existing.count += 1;
+        existing.hasPublic ||= Boolean(e.is_public);
+      } else {
+        byCity.set(e.city, {
+          city: e.city, lat: e.lat, lng: e.lng, count: 1, hasPublic: Boolean(e.is_public),
+        });
+      }
     });
     return [...byCity.values()];
   }, [events]);
@@ -99,13 +120,14 @@ export default function FinlandMap({ events, activeCity, onSelectCity }: Props) 
     groups.forEach((g) => {
       const active = activeCity === g.city;
       L.marker([g.lat, g.lng], {
-        icon: markerIcon(g.count, active),
+        icon: markerIcon(g.count, active, g.hasPublic),
         title: g.city,
         riseOnHover: true,
       })
         .on('click', () => onSelectCity(active ? null : g.city))
         .bindTooltip(
-          `<strong>${g.city}</strong><br>${g.count} tapahtuma${g.count === 1 ? '' : 'a'}`,
+          `<strong>${g.city}</strong><br>${g.count} tapahtuma${g.count === 1 ? '' : 'a'}` +
+            (g.hasPublic ? '<br><em>Avoin kaikille</em>' : ''),
           { direction: 'top', offset: [0, -10], className: 'rp-tooltip' }
         )
         .addTo(layer);

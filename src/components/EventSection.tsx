@@ -15,7 +15,7 @@ const EVENT_PHOTO = 'https://i.imgur.com/If6GHtz.jpeg';
 /** Rows of the sponsor band, in the order they appear under the hero. */
 const SPONSOR_ROWS: { tier: SponsorTier; label: string }[] = [
   { tier: 'organizer', label: 'Järjestäjät' },
-  { tier: 'main', label: 'Pääyhteistyökumppani' },
+  { tier: 'main', label: 'Pääyhteistyökumppanit' },
   { tier: 'support', label: 'Tukisponsorit' },
   { tier: 'exhibitor', label: 'Näytteilleasettajat' },
 ];
