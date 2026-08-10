@@ -45,15 +45,29 @@ export default function PetitionSection() {
                 <div className="h-2 w-2 rounded-full bg-amber animate-pulse" />
                 <p className="eyebrow text-amber">Tilanne</p>
               </div>
+              {/* No timetable is promised here: the opening date is not settled,
+                  and a date on the page becomes a broken promise the moment it
+                  passes. */}
               <p className="mt-4 text-base leading-relaxed text-cream/80">
-                Aloite avataan uudelleen lähiviikkoina. Allekirjoitus tehdään valtion virallisessa kansalaisaloite.fi-palvelussa. Kun aloite avautuu, tieto tulee tähän.
+                Aloitetta valmistellaan parhaillaan. Allekirjoitus tehdään valtion virallisessa
+                kansalaisaloite.fi-palvelussa, ja heti kun aloite on auki, linkki löytyy tältä
+                sivulta. Seuraa{' '}
+                <a
+                  href="https://instagram.com/roskapaiva"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-amber transition hover:text-amber-light"
+                >
+                  @roskapaiva
+                </a>
+                , niin kuulet asiasta ensimmäisten joukossa.
               </p>
               <button
                 disabled
                 className="mt-6 inline-flex cursor-not-allowed items-center gap-2 border border-cream/20 bg-cream/5 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-cream/40"
               >
                 Allekirjoita kansalaisaloite.fi:ssä
-                <span className="text-[10px] font-normal opacity-70">(avautuu pian)</span>
+                <span className="text-[10px] font-normal opacity-70">(ei vielä auki)</span>
               </button>
             </div>
           </div>
