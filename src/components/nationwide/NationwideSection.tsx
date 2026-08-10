@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTableData } from '../../hooks/useTableData';
 import { useCounter } from '../../hooks/useCounter';
 import FinlandMap from './FinlandMap';
@@ -38,6 +38,26 @@ function EventRow({
 }) {
   const time = formatTime(event.start_time);
   const link = contactLink(event);
+  const [expanded, setExpanded] = useState(false);
+  const descRef = useRef<HTMLSpanElement>(null);
+  // Only offer the toggle when the text is actually cut off, so short entries
+  // do not carry a pointless "Näytä lisää". Measured rather than guessed from
+  // length, since the cut-off depends on the column width.
+  const [isClamped, setIsClamped] = useState(false);
+
+  useEffect(() => {
+    const el = descRef.current;
+    if (!el) return;
+    const measure = () => {
+      // Skip while expanded: the element then fits by definition, and
+      // remeasuring would hide the control that collapses it again.
+      if (!expanded) setIsClamped(el.scrollHeight > el.clientHeight + 1);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [event.description, expanded]);
   // The row is a button, so the contact link cannot live inside it: a link
   // nested in a button is invalid and unreachable by keyboard. It sits as a
   // sibling, indented to line up with the text column.
@@ -76,7 +96,15 @@ function EventRow({
             Järjestää {event.organizer_name}
           </span>
         )}
-        <span className="mt-1 line-clamp-3 block text-sm leading-snug text-cream/75">
+        <span
+          ref={descRef}
+          // `block` and `line-clamp-2` are mutually exclusive: the clamp needs
+          // display:-webkit-box, and a same-specificity `block` silently wins,
+          // leaving -webkit-line-clamp set but inert.
+          className={`mt-1 text-sm leading-snug text-cream/75 ${
+            expanded ? 'block' : 'line-clamp-2'
+          }`}
+        >
           {event.description}
         </span>
         <span className="mt-1.5 flex flex-wrap gap-x-4 text-[11px] uppercase tracking-wider text-cream/40">
@@ -86,20 +114,32 @@ function EventRow({
         </span>
       </span>
     </button>
-      {link && (
-        <div className="-mt-1 pb-4 pl-28 pr-4">
-          <a
-            href={link.href}
-            {...(link.href.startsWith('mailto:')
-              ? {}
-              : { target: '_blank', rel: 'noopener noreferrer' })}
-            className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-widest text-amber transition hover:text-amber-light"
-          >
-            {link.label}
-            <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M3 8h10m0 0L8 3m5 5l-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-            </svg>
-          </a>
+      {(isClamped || link) && (
+        <div className="-mt-1 flex flex-wrap items-center gap-x-5 gap-y-2 pb-4 pl-28 pr-4">
+          {isClamped && (
+            <button
+              type="button"
+              onClick={() => setExpanded((v) => !v)}
+              aria-expanded={expanded}
+              className="text-[11px] font-semibold uppercase tracking-widest text-cream/55 transition hover:text-cream"
+            >
+              {expanded ? 'Näytä vähemmän' : 'Näytä lisää'}
+            </button>
+          )}
+          {link && (
+            <a
+              href={link.href}
+              {...(link.href.startsWith('mailto:')
+                ? {}
+                : { target: '_blank', rel: 'noopener noreferrer' })}
+              className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-widest text-amber transition hover:text-amber-light"
+            >
+              {link.label}
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8h10m0 0L8 3m5 5l-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              </svg>
+            </a>
+          )}
         </div>
       )}
     </div>
