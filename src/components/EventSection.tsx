@@ -18,6 +18,9 @@ const SPONSOR_ROWS: { tier: SponsorTier; label: string }[] = [
   { tier: 'main', label: 'Pääyhteistyökumppanit' },
   { tier: 'support', label: 'Tukisponsorit' },
   { tier: 'exhibitor', label: 'Näytteilleasettajat' },
+  // Last, and the label carries the credit: the row says what was done, the
+  // logo says by whom.
+  { tier: 'creative', label: 'Verkkosivut ja ilme' },
 ];
 
 /**
@@ -33,6 +36,9 @@ const LOGO_SIZE: Record<SponsorTier, { cls: string; maxW: number }> = {
   organizer: { cls: 'h-9', maxW: 240 },
   exhibitor: { cls: 'h-[3.375rem] md:h-[3.75rem]', maxW: 150 },
   support: { cls: 'h-9 md:h-10', maxW: 100 },
+  // A square mark, so height decides and the width cap only guards a stray
+  // wide upload.
+  creative: { cls: 'h-8 md:h-9', maxW: 120 },
 };
 
 /**

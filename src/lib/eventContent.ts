@@ -20,7 +20,12 @@ export interface EventProgramItem {
   sort_order: number;
 }
 
-export type SponsorTier = 'organizer' | 'main' | 'support' | 'exhibitor';
+/**
+ * 'creative' is a credit rather than a sponsorship — whoever built the thing,
+ * not whoever paid for it. Kept as its own tier so it gets its own row label
+ * and nobody reads it as a paying partner.
+ */
+export type SponsorTier = 'organizer' | 'main' | 'support' | 'exhibitor' | 'creative';
 
 export interface EventSponsor {
   id?: string;

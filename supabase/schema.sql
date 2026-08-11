@@ -242,7 +242,7 @@ create table if not exists public.event_sponsors (
   logo_url    text,
   url         text,
   tier        text not null default 'support'
-                check (tier in ('organizer','main','support','exhibitor')),
+                check (tier in ('organizer','main','support','exhibitor', 'creative')),
   invert_logo boolean not null default false,
   sort_order  int default 0,
   published   boolean default true,
