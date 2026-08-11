@@ -397,11 +397,17 @@ export const MUNICIPALITIES: Municipality[] = [
   { name: 'Vårdö', lat: 60.2422, lng: 20.3744, region: 'Ahvenanmaa' },
 ];
 
-/** Region -> its municipalities, in the order above. Built once. */
+/**
+ * Region -> its municipalities, in the order above and alphabetical within each.
+ * Finnish collation: å, ä and ö sort after z, so Ähtäri is last in
+ * Etelä-Pohjanmaa rather than second.
+ */
 export const MUNICIPALITIES_BY_REGION: { region: string; items: Municipality[] }[] =
   REGIONS.map((region) => ({
     region,
-    items: MUNICIPALITIES.filter((m) => m.region === region),
+    items: MUNICIPALITIES.filter((m) => m.region === region).sort((a, b) =>
+      a.name.localeCompare(b.name, 'fi')
+    ),
   }));
 
 /** Diacritic- and case-insensitive, so "jarvenpaa" finds Järvenpää. */

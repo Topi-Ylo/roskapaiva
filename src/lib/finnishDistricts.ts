@@ -17,8 +17,12 @@ export interface District {
   lng: number;
 }
 
-/** Keyed by the city names used in FINNISH_CITIES, so lookups can be direct. */
-export const CITY_DISTRICTS: Record<string, District[]> = {
+/**
+ * Keyed by the city names used in the municipality list, so lookups are direct.
+ * Written in rough geographic order — sorted for display below, so adding one
+ * anywhere in a block is fine.
+ */
+const RAW_CITY_DISTRICTS: Record<string, District[]> = {
   Helsinki: [
     { name: 'Kallio', lat: 60.1841, lng: 24.9506 },
     { name: 'Sörnäinen', lat: 60.1875, lng: 24.96 },
@@ -249,6 +253,18 @@ export const CITY_DISTRICTS: Record<string, District[]> = {
     { name: 'Nilsiä', lat: 63.2, lng: 28.09 },
   ],
 };
+
+/**
+ * Finnish collation, not the default: å, ä and ö belong after z rather than
+ * beside a and o, so Ähtäri sorts last and not second.
+ */
+const byName = (a: District, b: District) => a.name.localeCompare(b.name, 'fi');
+
+/** Sorted once at module load, so the dropdown is alphabetical and
+ *  districtsFor stays a plain lookup. */
+export const CITY_DISTRICTS: Record<string, District[]> = Object.fromEntries(
+  Object.entries(RAW_CITY_DISTRICTS).map(([city, list]) => [city, [...list].sort(byName)])
+);
 
 /** Empty for every municipality outside the eight, which is the signal the
  *  form uses to hide the district option and offer only city or address. */
