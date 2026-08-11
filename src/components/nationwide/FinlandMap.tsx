@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { CommunityEvent } from '../../lib/communityEvents';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { groupPins } from '../../lib/mapPins';
 
 /** Tooltips are built as an HTML string, so organiser names must be escaped. */
@@ -68,6 +69,13 @@ export default function FinlandMap({ events, activeCity, onSelectCity }: Props) 
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
   const [zoom, setZoom] = useState(5);
+  /**
+   * Where a finger last landed. Only used to keep that one label open, because
+   * a finger cannot hover — with a mouse the tooltip behaves normally and
+   * pinning it would leave labels stuck open all over the map.
+   */
+  const [tappedKey, setTappedKey] = useState<string | null>(null);
+  const canHover = useMediaQuery('(hover: hover) and (pointer: fine)');
 
   // Zoomed out, everything in a municipality collapses to one pin so the south
   // coast stays readable; zoomed in, each position stands on its own.
@@ -114,7 +122,10 @@ export default function FinlandMap({ events, activeCity, onSelectCity }: Props) 
         title: p.city,
         riseOnHover: true,
       })
-        .on('click', () => onSelectCity(active ? null : p.city))
+        .on('click', () => {
+          setTappedKey(active ? null : p.key);
+          onSelectCity(active ? null : p.city);
+        })
         .bindTooltip(
           `<strong>${p.city}</strong><br>${p.count} tapahtuma${p.count === 1 ? '' : 'a'}` +
             // Naming the organiser is the point: without it every pin reads as
@@ -125,21 +136,23 @@ export default function FinlandMap({ events, activeCity, onSelectCity }: Props) 
             direction: 'top',
             offset: [0, -10],
             className: 'rp-tooltip',
-            // The selected pin keeps its label. A tooltip is otherwise a hover
-            // affordance, and a finger cannot hover: tapping selected the city
-            // and redrew the markers, so on a phone the label never appeared.
-            permanent: active,
+            // Pinned open only on touch, and only for the pin actually tapped.
+            // Keying it to the city instead left every pin in that city showing
+            // its label at once, and on a mouse it fought the hover it was
+            // meant to stand in for.
+            permanent: !canHover && p.key === tappedKey,
           }
         )
         .addTo(layer);
     });
-  }, [pins, activeCity, onSelectCity]);
+  }, [pins, activeCity, onSelectCity, tappedKey, canHover]);
 
   // Fly to the selected city so map and list stay in step.
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
     if (!activeCity) {
+      setTappedKey(null);
       map.flyTo([64.6, 26.0], 5, { duration: 0.6 });
       return;
     }
