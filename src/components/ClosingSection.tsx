@@ -25,10 +25,13 @@ const FALLBACK_ORGANIZERS: EventSponsor[] = [
  */
 export default function ClosingSection() {
   const { open: openInfo } = useInfoModal();
-  const { data } = useTableData<EventSponsor>('event_sponsors');
-  const sponsors = data ?? FALLBACK_SPONSORS;
+  const { data, loading } = useTableData<EventSponsor>('event_sponsors');
+  // Same distinction as the hero band: while the fetch is in flight the answer
+  // is "not yet", not "unreachable". Falling back during load flashed the
+  // bundled marks on every visit.
+  const sponsors = loading ? [] : (data ?? FALLBACK_SPONSORS);
   const organizers = sponsors.filter((s) => s.tier === 'organizer');
-  const hosts = organizers.length > 0 ? organizers : FALLBACK_ORGANIZERS;
+  const hosts = loading ? [] : organizers.length > 0 ? organizers : FALLBACK_ORGANIZERS;
 
   return (
     <>

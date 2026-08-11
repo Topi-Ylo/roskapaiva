@@ -113,8 +113,13 @@ function SponsorLogo({
 }
 
 export default function EventSection({ onSignup }: { onSignup: () => void }) {
-  const { data: sponsorData } = useTableData<EventSponsor>('event_sponsors');
-  const sponsors = sponsorData ?? FALLBACK_SPONSORS;
+  const { data: sponsorData, loading: sponsorsLoading } = useTableData<EventSponsor>('event_sponsors');
+  // null means two different things and they must not be conflated: still
+  // fetching, or Supabase unreachable. Treating "not here yet" as "unreachable"
+  // rendered the bundled logos on every single page load, so whoever arrived
+  // during the fetch saw two tiers and a Cleaning Angels monogram that is not
+  // the real mark. An empty band for a moment is better than the wrong one.
+  const sponsors = sponsorsLoading ? [] : (sponsorData ?? FALLBACK_SPONSORS);
   const settings = useSiteSettings();
 
   const tierOf = (s: EventSponsor) => s.tier ?? 'support';
