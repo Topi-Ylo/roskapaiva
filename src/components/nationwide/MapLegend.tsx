@@ -57,7 +57,7 @@ export default function MapLegend({
           onClick={() => onToggle(r.kind)}
           aria-pressed={r.on}
           title={r.on ? `Piilota: ${r.label}` : `Näytä: ${r.label}`}
-          className={`flex w-full items-center gap-2.5 rounded px-2 py-1.5 text-left transition hover:bg-forest-night/5 ${
+          className={`flex min-h-[44px] w-full items-center gap-2.5 rounded px-2 py-1.5 text-left transition hover:bg-forest-night/5 sm:min-h-0 ${
             r.on ? '' : 'opacity-40'
           }`}
         >

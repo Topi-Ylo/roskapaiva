@@ -36,7 +36,7 @@ function CopyButton({ text }: { text: string }) {
   };
 
   return (
-    <button onClick={copy} className="mt-6 inline-flex items-center gap-2 self-start text-xs font-semibold uppercase tracking-widest text-amber transition hover:text-amber-light">
+    <button onClick={copy} className="mt-6 inline-flex min-h-[44px] items-center gap-2 self-start text-xs font-semibold uppercase tracking-widest text-amber transition hover:text-amber-light sm:min-h-0">
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
         <rect x="3" y="3" width="9" height="9" rx="1" stroke="currentColor" strokeWidth="1.5" />
         <path d="M5 3V2a1 1 0 011-1h7a1 1 0 011 1v9a1 1 0 01-1 1h-1" stroke="currentColor" strokeWidth="1.5" />
@@ -115,11 +115,11 @@ export default function MediaKorttiSection() {
               <div className="mt-6 flex-1 space-y-3">
                 <div>
                   <p className="eyebrow text-cream/45">Sähköposti</p>
-                  <a href="mailto:eino@roskapaiva.com" className="font-display mt-1 block text-xl text-amber transition hover:text-amber-light">eino@roskapaiva.com</a>
+                  <a href="mailto:eino@roskapaiva.com" className="font-display mt-1 block py-3 text-xl text-amber sm:py-0 transition hover:text-amber-light">eino@roskapaiva.com</a>
                 </div>
                 <div>
                   <p className="eyebrow text-cream/45">Puhelin</p>
-                  <a href="tel:+358456732109" className="font-display mt-1 block text-xl text-amber transition hover:text-amber-light">+358 45 673 2109</a>
+                  <a href="tel:+358456732109" className="font-display mt-1 block py-3 text-xl text-amber sm:py-0 transition hover:text-amber-light">+358 45 673 2109</a>
                 </div>
               </div>
             </div>
@@ -133,7 +133,7 @@ export default function MediaKorttiSection() {
               </div>
               <button
                 onClick={() => setOpen(true)}
-                className="ghost-cta inline-flex items-center gap-3 self-start rounded-full px-7 py-3 text-xs font-semibold uppercase tracking-widest text-cream md:self-auto"
+                className="ghost-cta inline-flex items-center gap-3 self-start rounded-full px-7 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest text-cream md:self-auto"
               >
                 Avaa koko mediakortti
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -175,7 +175,7 @@ export default function MediaKorttiSection() {
                 rel={settings.press_zip_url ? 'noopener noreferrer' : undefined}
                 onClick={(e) => { if (!settings.press_zip_url) e.preventDefault(); }}
                 aria-disabled={!settings.press_zip_url}
-                className={`inline-flex items-center gap-3 self-start bg-amber px-6 py-3 text-xs font-bold uppercase tracking-widest text-forest-night transition hover:bg-amber-light sm:self-auto ${settings.press_zip_url ? '' : 'cursor-not-allowed opacity-50'}`}
+                className={`inline-flex items-center gap-3 self-start bg-amber px-6 py-4 text-xs font-bold uppercase sm:py-3 tracking-widest text-forest-night transition hover:bg-amber-light sm:self-auto ${settings.press_zip_url ? '' : 'cursor-not-allowed opacity-50'}`}
               >
                 Lataa kuvat (.zip)
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none">

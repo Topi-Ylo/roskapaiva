@@ -106,7 +106,7 @@ export default function EventDetailModal({ event, onClose }: Props) {
                   <Link
                     to={link}
                     onClick={onClose}
-                    className="ghost-cta mt-10 inline-flex items-center gap-2 rounded-full px-7 py-3 text-xs font-semibold uppercase tracking-widest text-cream"
+                    className="ghost-cta mt-10 inline-flex items-center gap-2 rounded-full px-7 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest text-cream"
                   >
                     {linkLabel}
                     <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -118,7 +118,7 @@ export default function EventDetailModal({ event, onClose }: Props) {
                     href={link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="ghost-cta mt-10 inline-flex items-center gap-2 rounded-full px-7 py-3 text-xs font-semibold uppercase tracking-widest text-cream"
+                    className="ghost-cta mt-10 inline-flex items-center gap-2 rounded-full px-7 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest text-cream"
                   >
                     {linkLabel}
                     <svg width="14" height="14" viewBox="0 0 16 16" fill="none">

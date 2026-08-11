@@ -115,7 +115,7 @@ export default function ServiceModal({ open, service, onClose }: Props) {
             <div className="mt-12">
               <a
                 href={mailto}
-                className="inline-flex items-center gap-3 rounded-full bg-amber px-7 py-3 text-xs font-semibold uppercase tracking-widest text-forest-night transition hover:bg-amber-light"
+                className="inline-flex items-center gap-3 rounded-full bg-amber px-7 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest text-forest-night transition hover:bg-amber-light"
               >
                 {service.ctaLabel}
                 <ArrowRight />

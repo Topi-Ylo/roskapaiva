@@ -25,7 +25,7 @@ export default function AnalyticsAdmin() {
             href={`https://analytics.google.com/analytics/web/#/p${GA_ID?.replace(/^G-/, '')}/realtime/overview`}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-amber px-6 py-3 text-xs font-semibold uppercase tracking-widest text-forest-night transition hover:bg-amber-light"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-amber px-6 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest text-forest-night transition hover:bg-amber-light"
           >
             Avaa GA4 hallintapaneeli
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none">

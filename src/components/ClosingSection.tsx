@@ -70,14 +70,14 @@ export default function ClosingSection() {
                     href={o.url ?? undefined}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center gap-3"
+                    className="group flex min-h-[44px] min-w-0 max-w-full flex-wrap items-center gap-x-3 gap-y-1 sm:min-h-0"
                   >
                     {o.logo_url && (
                       <img
                         src={o.logo_url}
                         alt={o.name}
                         loading="lazy"
-                        className="h-9 w-auto max-w-[240px] shrink-0 object-contain object-left"
+                        className="h-9 w-auto max-w-[min(240px,100%)] shrink object-contain object-left"
                       />
                     )}
                     <span className="text-xs font-semibold uppercase tracking-wider text-cream/70 transition group-hover:text-cream">
@@ -102,7 +102,7 @@ export default function ClosingSection() {
           </h2>
 
           <div className="reveal delay-2 mt-8 border-l-2 border-amber/50 bg-cream/[0.03] py-4 pl-5 pr-4">
-            <OrganizerDisclaimer onOpenSafety={() => openInfo('ukk')} />
+            <OrganizerDisclaimer onOpenSafety={() => openInfo('ohjeet')} />
           </div>
 
           <div className="reveal delay-3 mt-10">

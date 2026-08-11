@@ -21,10 +21,19 @@ body {
 
 .eyebrow {
   font-family: 'Inter', sans-serif;
-  font-size: 0.7rem;
+  /* 0.7rem is 11.2px. Uppercase at that size with this much tracking is hard
+     work on a phone, so it starts a shade larger and tightens on wider
+     screens where the label sits in a calmer layout. */
+  font-size: 0.75rem;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.32em;
+  letter-spacing: 0.28em;
+}
+@media (min-width: 640px) {
+  .eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.32em;
+  }
 }
 
 .reveal {
@@ -75,12 +84,18 @@ body {
 
 .tab {
   position: relative;
+  /* The year tabs are a primary control on the story timeline and were 32px
+     tall. Extra top padding on phones, trimmed back where a cursor points. */
+  padding-top: 0.85rem;
   padding-bottom: 0.5rem;
   color: rgba(244, 241, 232, 0.5);
   transition: color 0.3s ease;
   cursor: pointer;
   background: transparent;
   border: none;
+}
+@media (min-width: 640px) {
+  .tab { padding-top: 0; }
 }
 .tab.active { color: #F4F1E8; }
 .tab.active::after {
@@ -336,4 +351,17 @@ body.modal-open { overflow: hidden; }
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3 6l5 5 5-5' stroke='%23F4F1E8' stroke-opacity='0.55' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem center;
+}
+
+/* Leaflet ships 30px zoom buttons. Fine with a cursor, too small for a thumb,
+   and on a phone they are the only way to zoom — scrollWheelZoom is off so the
+   page keeps scrolling when a finger crosses the map. */
+@media (max-width: 639px) {
+  .leaflet-touch .leaflet-bar a,
+  .leaflet-control-zoom a {
+    width: 44px;
+    height: 44px;
+    line-height: 44px;
+    font-size: 20px;
+  }
 }

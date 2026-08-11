@@ -7,7 +7,7 @@ import EventsPage from './pages/EventsPage';
 import KansalaisaloitePage from './pages/KansalaisaloitePage';
 import PalvelutPage from './pages/PalvelutPage';
 import MediaPage from './pages/MediaPage';
-import FaqPage from './pages/FaqPage';
+import SafetyPage from './pages/SafetyPage';
 import InfoModal from './components/InfoModal';
 import { InfoModalProvider } from './lib/infoModal';
 import PrivacyPage from './pages/PrivacyPage';
@@ -121,7 +121,7 @@ function PublicShell() {
         <Route path="/kansalaisaloite" element={<KansalaisaloitePage />} />
         <Route path="/palvelut" element={<PalvelutPage />} />
         <Route path="/medialle" element={<MediaPage />} />
-        <Route path="/ukk" element={<FaqPage />} />
+        <Route path="/turvallisuusohjeet" element={<SafetyPage />} />
         <Route path="/tietosuoja" element={<PrivacyPage />} />
       </Routes>
     </>

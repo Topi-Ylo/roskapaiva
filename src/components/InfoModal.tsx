@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
-import FaqContent from './FaqContent';
+import SafetyContent from './SafetyContent';
 import PrivacyContent from './PrivacyContent';
 import { useInfoModal } from '../lib/infoModal';
 
 /**
- * The FAQ and the privacy notice as an overlay.
+ * The safety guidance and the privacy notice as an overlay.
  *
  * Rendered once at the app root, so any link anywhere opens it without sending
  * the reader away from what they were doing — which matters most on the sign-up
@@ -34,7 +34,7 @@ export default function InfoModal() {
       className={`modal-overlay ${open ? 'active' : ''}`}
       role="dialog"
       aria-modal="true"
-      aria-label={doc === 'tietosuoja' ? 'Tietosuojaseloste' : 'Usein kysytyt kysymykset'}
+      aria-label={doc === 'tietosuoja' ? 'Tietosuojaseloste' : 'Turvallisuus- ja osallistumisohjeet'}
       onClick={(e) => {
         if (e.target === e.currentTarget) close();
       }}
@@ -47,9 +47,8 @@ export default function InfoModal() {
           </svg>
         </button>
         <div className="px-6 py-10 md:px-10">
-          {/* Unmounted while closed, so the FAQ is not fetched on every page
-              load just in case someone opens it. */}
-          {doc === 'ukk' && <FaqContent />}
+          {/* Unmounted while closed: nothing renders or fetches until opened. */}
+          {doc === 'ohjeet' && <SafetyContent />}
           {doc === 'tietosuoja' && <PrivacyContent />}
         </div>
       </div>

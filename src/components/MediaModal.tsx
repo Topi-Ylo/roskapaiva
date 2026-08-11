@@ -191,8 +191,8 @@ export default function MediaModal({ open, onClose }: Props) {
               <p className="eyebrow text-amber">Yhteydenotto</p>
               <h3 className="font-display mt-3 text-2xl text-cream md:text-3xl">Mediakyselyt</h3>
               <div className="mt-4 space-y-2">
-                <a href="mailto:eino@roskapaiva.com" className="font-display block text-2xl text-amber transition hover:text-amber-light">eino@roskapaiva.com</a>
-                <a href="tel:+358456732109" className="font-display block text-2xl text-amber transition hover:text-amber-light">+358 45 673 2109</a>
+                <a href="mailto:eino@roskapaiva.com" className="font-display block py-3 text-2xl text-amber transition hover:text-amber-light sm:py-0">eino@roskapaiva.com</a>
+                <a href="tel:+358456732109" className="font-display block py-3 text-2xl text-amber transition hover:text-amber-light sm:py-0">+358 45 673 2109</a>
               </div>
             </section>
 
@@ -203,7 +203,7 @@ export default function MediaModal({ open, onClose }: Props) {
                 rel={settings.mediakortti_pdf_url ? 'noopener noreferrer' : undefined}
                 onClick={(e) => { if (!settings.mediakortti_pdf_url) e.preventDefault(); }}
                 aria-disabled={!settings.mediakortti_pdf_url}
-                className={`inline-flex items-center gap-2 bg-amber px-6 py-3 text-xs font-bold uppercase tracking-widest text-forest-night transition hover:bg-amber-light ${settings.mediakortti_pdf_url ? '' : 'cursor-not-allowed opacity-50'}`}
+                className={`inline-flex items-center gap-2 bg-amber px-6 py-4 text-xs font-bold uppercase sm:py-3 tracking-widest text-forest-night transition hover:bg-amber-light ${settings.mediakortti_pdf_url ? '' : 'cursor-not-allowed opacity-50'}`}
               >
                 Lataa mediakortti (PDF)
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -216,7 +216,7 @@ export default function MediaModal({ open, onClose }: Props) {
                 rel={settings.press_zip_url ? 'noopener noreferrer' : undefined}
                 onClick={(e) => { if (!settings.press_zip_url) e.preventDefault(); }}
                 aria-disabled={!settings.press_zip_url}
-                className={`inline-flex items-center gap-2 ghost-cta px-6 py-3 text-xs font-semibold uppercase tracking-widest text-cream rounded-none ${settings.press_zip_url ? '' : 'cursor-not-allowed opacity-50'}`}
+                className={`inline-flex items-center gap-2 ghost-cta px-6 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest text-cream rounded-none ${settings.press_zip_url ? '' : 'cursor-not-allowed opacity-50'}`}
               >
                 Lataa lehdistökuvat (.zip)
               </a>

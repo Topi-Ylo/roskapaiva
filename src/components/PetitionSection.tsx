@@ -64,7 +64,7 @@ export default function PetitionSection() {
               </p>
               <button
                 disabled
-                className="mt-6 inline-flex cursor-not-allowed items-center gap-2 border border-cream/20 bg-cream/5 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-cream/40"
+                className="mt-6 inline-flex cursor-not-allowed items-center gap-2 border border-cream/20 bg-cream/5 px-6 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest text-cream/40"
               >
                 Allekirjoita kansalaisaloite.fi:ssä
                 <span className="text-[10px] font-normal opacity-70">(ei vielä auki)</span>

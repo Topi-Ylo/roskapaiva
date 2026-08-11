@@ -66,8 +66,8 @@ export default function FooterSection() {
           <div className="md:col-span-7">
             <p className="eyebrow text-amber">Yhteystiedot</p>
             <div className="mt-6 space-y-2">
-              <a href={`mailto:${settings.contact_email ?? 'eino@roskapaiva.com'}`} className="font-display block text-3xl text-cream transition hover:text-amber md:text-4xl">{settings.contact_email ?? 'eino@roskapaiva.com'}</a>
-              <a href={`tel:${(settings.contact_phone ?? '+358 45 673 2109').replace(/\s/g, '')}`} className="font-display block text-3xl text-cream transition hover:text-amber md:text-4xl">{settings.contact_phone ?? '+358 45 673 2109'}</a>
+              <a href={`mailto:${settings.contact_email ?? 'eino@roskapaiva.com'}`} className="font-display block py-2 text-3xl text-cream transition hover:text-amber sm:py-0 md:text-4xl">{settings.contact_email ?? 'eino@roskapaiva.com'}</a>
+              <a href={`tel:${(settings.contact_phone ?? '+358 45 673 2109').replace(/\s/g, '')}`} className="font-display block py-2 text-3xl text-cream transition hover:text-amber sm:py-0 md:text-4xl">{settings.contact_phone ?? '+358 45 673 2109'}</a>
             </div>
           </div>
 
@@ -123,18 +123,21 @@ export default function FooterSection() {
             />
             <p className="eyebrow">© 2018–2026 Roskapäivä</p>
           </div>
-          <nav className="flex items-center gap-5">
+          <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1">
+            <Link to="/5-9-2026#ukk" className="inline-flex min-h-[44px] items-center transition hover:text-cream sm:min-h-0">
+              Usein kysytyt kysymykset
+            </Link>
             <button
               type="button"
-              onClick={() => openInfo('ukk')}
-              className="transition hover:text-cream"
+              onClick={() => openInfo('ohjeet')}
+              className="inline-flex min-h-[44px] items-center transition hover:text-cream sm:min-h-0"
             >
-              Usein kysytyt kysymykset
+              Turvallisuusohjeet
             </button>
             <button
               type="button"
               onClick={() => openInfo('tietosuoja')}
-              className="transition hover:text-cream"
+              className="inline-flex min-h-[44px] items-center transition hover:text-cream sm:min-h-0"
             >
               Tietosuoja
             </button>

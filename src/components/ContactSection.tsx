@@ -10,9 +10,9 @@ export default function ContactSection() {
             Saat minuun parhaiten yhteyden<br />sähköpostitse tai Instagramin viestillä.
           </h3>
           <div className="mt-10 flex flex-col items-center justify-center gap-x-10 gap-y-3 md:flex-row">
-            <a href={`mailto:${settings.contact_email ?? 'eino@roskapaiva.com'}`} className="font-display text-2xl text-amber transition hover:text-amber-light md:text-3xl">{settings.contact_email ?? 'eino@roskapaiva.com'}</a>
+            <a href={`mailto:${settings.contact_email ?? 'eino@roskapaiva.com'}`} className="font-display inline-flex min-h-[44px] items-center text-2xl text-amber transition hover:text-amber-light sm:min-h-0 md:text-3xl">{settings.contact_email ?? 'eino@roskapaiva.com'}</a>
             <span className="hidden text-cream/30 md:inline">·</span>
-            <a href={`tel:${(settings.contact_phone ?? '+358 45 673 2109').replace(/\s/g, '')}`} className="font-display text-2xl text-amber transition hover:text-amber-light md:text-3xl">{settings.contact_phone ?? '+358 45 673 2109'}</a>
+            <a href={`tel:${(settings.contact_phone ?? '+358 45 673 2109').replace(/\s/g, '')}`} className="font-display inline-flex min-h-[44px] items-center text-2xl text-amber transition hover:text-amber-light sm:min-h-0 md:text-3xl">{settings.contact_phone ?? '+358 45 673 2109'}</a>
           </div>
         </div>
       </div>

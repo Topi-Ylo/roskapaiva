@@ -71,7 +71,7 @@ export default function Nav() {
         }}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <Link to="/" className="flex items-center gap-3">
+          <Link to="/" className="flex min-h-[44px] items-center gap-3 sm:min-h-0">
             <img
               src="https://i.imgur.com/ORj8kKe.png"
               alt="Roskapäivä"
@@ -167,7 +167,7 @@ export default function Nav() {
           <Link
             to="/kansalaisaloite"
             onClick={() => setMenuOpen(false)}
-            className={`mt-8 inline-flex items-center justify-center self-start rounded-full px-7 py-3 text-xs font-semibold uppercase tracking-widest transition ${
+            className={`mt-8 inline-flex items-center justify-center self-start rounded-full px-7 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest transition ${
               isActive('/kansalaisaloite')
                 ? 'bg-amber text-forest-night'
                 : 'ghost-cta text-cream'

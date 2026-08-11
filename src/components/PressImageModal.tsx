@@ -102,7 +102,7 @@ export default function PressImageModal({
               href={img.src}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-amber transition hover:text-amber-light"
+              className="inline-flex min-h-[44px] items-center gap-2 text-amber transition hover:text-amber-light sm:min-h-0"
             >
               Avaa alkuperäinen
               <svg width="12" height="12" viewBox="0 0 16 16" fill="none">

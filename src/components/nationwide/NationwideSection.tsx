@@ -92,12 +92,12 @@ function EventRow({
         <span className="flex flex-wrap items-baseline gap-x-3">
           <span className="font-display text-lg text-cream">{event.city}</span>
           {event.featured && (
-            <span className="rounded-full bg-amber px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-forest-night">
+            <span className="rounded-full bg-amber px-2 py-0.5 text-[11px] font-semibold uppercase tracking-widest text-forest-night sm:text-[10px]">
               Päätapahtuma
             </span>
           )}
           {!event.featured && event.is_public && (
-            <span className="rounded-full bg-emerald-400/90 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-forest-night">
+            <span className="rounded-full bg-emerald-400/90 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-forest-night sm:text-[9px]">
               Tapahtuma
             </span>
           )}
@@ -119,7 +119,7 @@ function EventRow({
         >
           {expanded ? full : teaser}
         </span>
-        <span className="mt-1.5 flex flex-wrap gap-x-4 text-[11px] uppercase tracking-wider text-cream/40">
+        <span className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-xs uppercase tracking-wider text-cream/40 sm:text-[11px]">
           {time && <span>Klo {time}</span>}
           <span>{formatDuration(event.duration_minutes)}</span>
           {event.participants ? <span>{event.participants} osallistujaa</span> : null}
@@ -133,7 +133,7 @@ function EventRow({
               type="button"
               onClick={() => setExpanded((v) => !v)}
               aria-expanded={expanded}
-              className="text-[11px] font-semibold uppercase tracking-widest text-cream/55 transition hover:text-cream"
+              className="inline-flex min-h-[44px] items-center text-xs font-semibold uppercase tracking-widest text-cream/55 transition hover:text-cream sm:min-h-0 sm:text-[11px]"
             >
               {expanded ? 'Näytä vähemmän' : 'Näytä lisää'}
             </button>
@@ -144,7 +144,7 @@ function EventRow({
               {...(link.href.startsWith('mailto:')
                 ? {}
                 : { target: '_blank', rel: 'noopener noreferrer' })}
-              className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-widest text-amber transition hover:text-amber-light"
+              className="inline-flex min-h-[44px] items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-amber transition hover:text-amber-light sm:min-h-0 sm:text-[11px]"
             >
               {link.label}
               <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -234,7 +234,7 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
               <button
                 type="button"
                 onClick={onSignup}
-                className="reveal delay-3 mt-6 rounded-full bg-amber px-7 py-3 text-xs font-semibold uppercase tracking-widest text-forest-night transition hover:bg-amber-light"
+                className="reveal delay-3 mt-6 rounded-full bg-amber px-7 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest text-forest-night transition hover:bg-amber-light"
               >
                 Ilmoita osallistumisesi
               </button>
@@ -260,14 +260,14 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
             {/* Lista, vierii omassa säiliössään */}
-            <div className="lg:col-span-5">
+            <div className="order-2 lg:order-1 lg:col-span-5">
               <div className="flex flex-wrap items-center gap-3">
                 <input
                   type="search"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Hae paikkakuntaa, järjestäjää tai tapahtumaa"
-                  className="min-w-0 flex-1 rounded border border-cream/20 bg-forest-deep px-4 py-2.5 text-sm text-cream placeholder:text-cream/35 focus:border-amber focus:outline-none"
+                  className="min-w-0 flex-1 rounded border border-cream/20 bg-forest-deep px-4 py-3 text-base text-cream placeholder:text-cream/35 focus:border-amber focus:outline-none sm:py-2.5 sm:text-sm"
                 />
                 {activeCity && (
                   <button
@@ -284,7 +284,7 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
                 {filtered.length} tapahtuma{filtered.length === 1 ? '' : 'a'}
               </p>
 
-              <div className="no-scrollbar mt-3 max-h-[420px] divide-y divide-cream/10 overflow-y-auto border border-cream/10 lg:max-h-[560px]">
+              <div className="no-scrollbar mt-3 divide-y divide-cream/10 border border-cream/10 lg:max-h-[560px] lg:overflow-y-auto">
                 {loading && (
                   <p className="p-8 text-center text-sm text-cream/40">Ladataan tapahtumia…</p>
                 )}
@@ -305,9 +305,9 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
             </div>
 
             {/* Kartta pysyy paikallaan kun listaa selataan */}
-            <div className="lg:col-span-7">
+            <div className="order-1 lg:order-2 lg:col-span-7">
               <div className="lg:sticky lg:top-24">
-                <div className="relative h-[420px] overflow-hidden border border-cream/15 bg-cream-soft lg:h-[625px]">
+                <div className="relative h-[62vh] max-h-[560px] min-h-[380px] overflow-hidden border border-cream/15 bg-cream-soft lg:h-[625px] lg:max-h-none">
                   <FinlandMap
                     events={visible}
                     activeCity={activeCity}

@@ -137,7 +137,7 @@ export default function Hero() {
 
             <div className="mt-12 flex items-center gap-8">
               <span
-                className="ghost-cta rounded-full px-7 py-3 text-xs font-semibold uppercase tracking-widest text-cream inline-flex items-center gap-3 cursor-default select-none"
+                className="ghost-cta rounded-full px-7 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest text-cream inline-flex items-center gap-3 cursor-default select-none"
                 aria-hidden="true"
               >
                 Selaa alas

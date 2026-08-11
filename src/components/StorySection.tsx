@@ -133,7 +133,7 @@ export default function StorySection() {
 
               <button
                 onClick={() => setOpen(true)}
-                className="reveal delay-3 ghost-cta mt-10 inline-flex items-center gap-3 rounded-full px-7 py-3 text-xs font-semibold uppercase tracking-widest text-cream"
+                className="reveal delay-3 ghost-cta mt-10 inline-flex items-center gap-3 rounded-full px-7 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest text-cream"
               >
                 Lue koko tarina
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none">

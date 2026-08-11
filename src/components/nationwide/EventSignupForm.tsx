@@ -54,9 +54,11 @@ function newId(): string {
 // this the two dropdowns sit shorter than the text fields beside them.
 const FIELD_H = 'h-12';
 
+// text-base on phones is not a style choice: iOS Safari zooms the whole page
+// when a focused field is under 16px, and does not zoom back out.
 const inputCls =
-  `w-full ${FIELD_H} rounded border border-cream/20 bg-forest-night/60 px-4 text-sm text-cream ` +
-  'placeholder:text-cream/35 focus:border-amber focus:outline-none';
+  `w-full ${FIELD_H} rounded border border-cream/20 bg-forest-night/60 px-4 text-base sm:text-sm ` +
+  'text-cream placeholder:text-cream/35 focus:border-amber focus:outline-none';
 
 // appearance-none drops the platform chevron along with the platform sizing,
 // so the arrow below is drawn back in.
@@ -261,7 +263,7 @@ export default function EventSignupForm() {
         <button
           type="button"
           onClick={() => setDone(false)}
-          className="ghost-cta mt-8 rounded-full px-7 py-3 text-xs font-semibold uppercase tracking-widest text-cream"
+          className="ghost-cta mt-8 rounded-full px-7 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest text-cream"
         >
           Tee uusi ilmoitus
         </button>
@@ -522,7 +524,7 @@ export default function EventSignupForm() {
           <div className="flex flex-wrap items-center gap-4">
             <label className="inline-flex cursor-pointer items-center">
               <input type="file" accept="image/*" onChange={onUpload} className="hidden" />
-              <span className="ghost-cta rounded-full px-6 py-3 text-xs font-semibold uppercase tracking-widest text-cream">
+              <span className="ghost-cta rounded-full px-6 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest text-cream">
                 {uploading ? 'Ladataan…' : 'Valitse kuva'}
               </span>
             </label>
@@ -559,7 +561,7 @@ export default function EventSignupForm() {
             {ORGANIZER_TERMS_TEXT}{' '}
             <button
               type="button"
-              onClick={() => openInfo('ukk')}
+              onClick={() => openInfo('ohjeet')}
               className="text-amber underline hover:text-amber-light"
             >
               Lue turvallisuus- ja osallistumisohjeet
@@ -585,7 +587,7 @@ export default function EventSignupForm() {
         <button
           type="submit"
           disabled={busy || uploading || overWordLimit}
-          className="rounded-full bg-amber px-8 py-3.5 text-xs font-semibold uppercase tracking-widest text-forest-night transition hover:bg-amber-light disabled:opacity-50"
+          className="rounded-full bg-amber px-8 py-4 text-xs font-semibold uppercase sm:py-3.5 tracking-widest text-forest-night transition hover:bg-amber-light disabled:opacity-50"
         >
           {busy ? 'Lähetetään…' : 'Lähetä ilmoitus'}
         </button>

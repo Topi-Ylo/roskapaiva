@@ -197,10 +197,10 @@ export default function PrivacyContent() {
             vastaa omasta tapahtumastaan. Lisätietoja{' '}
             <button
               type="button"
-              onClick={() => open('ukk')}
+              onClick={() => open('ohjeet')}
               className="text-amber underline hover:text-amber-light"
             >
-              usein kysytyissä kysymyksissä
+              turvallisuus- ja osallistumisohjeissa
             </button>
             .
           </p>

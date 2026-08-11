@@ -102,7 +102,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full rounded-full bg-amber px-6 py-3 text-xs font-semibold uppercase tracking-widest text-forest-night transition hover:bg-amber-light disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded-full bg-amber px-6 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest text-forest-night transition hover:bg-amber-light disabled:cursor-not-allowed disabled:opacity-50"
             >
               {submitting ? 'Hetki…' : resetMode ? 'Lähetä linkki' : 'Kirjaudu'}
             </button>

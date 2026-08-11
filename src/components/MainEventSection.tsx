@@ -140,7 +140,7 @@ export default function MainEventSection() {
                 href={settings.instagram_url ?? 'https://instagram.com/roskapaiva'}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ghost-cta rounded-full px-7 py-3 text-xs font-semibold uppercase tracking-widest text-cream"
+                className="ghost-cta rounded-full px-7 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest text-cream"
               >
                 Seuraa @roskapaiva
               </a>
@@ -148,7 +148,7 @@ export default function MainEventSection() {
                 href={CLEANING_ANGELS_INSTAGRAM}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ghost-cta rounded-full px-7 py-3 text-xs font-semibold uppercase tracking-widest text-cream"
+                className="ghost-cta rounded-full px-7 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest text-cream"
               >
                 Seuraa @cleaningangelsfinland
               </a>

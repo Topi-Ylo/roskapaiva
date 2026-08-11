@@ -7,10 +7,10 @@ import { createContext, useCallback, useContext, useMemo, useState } from 'react
  * is the surest way to lose a half-filled sign-up, so they open over the page
  * instead and the form is still there when the overlay closes.
  *
- * The routes stay: /ukk and /tietosuoja are still real pages, so a direct link
- * or a search result lands somewhere sensible.
+ * The routes stay: /turvallisuusohjeet and /tietosuoja are still real pages, so a
+ * direct link or a search result lands somewhere sensible.
  */
-export type InfoDoc = 'ukk' | 'tietosuoja';
+export type InfoDoc = 'ohjeet' | 'tietosuoja';
 
 interface InfoModalValue {
   doc: InfoDoc | null;

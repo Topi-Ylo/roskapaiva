@@ -205,7 +205,7 @@ export default function EventsPage() {
                   key={t}
                   type="button"
                   onClick={() => setFilter(t)}
-                  className={`text-xs font-semibold uppercase tracking-widest transition ${
+                  className={`inline-flex min-h-[44px] items-center text-xs font-semibold uppercase tracking-widest transition sm:min-h-0 ${
                     filter === t
                       ? 'border-b-2 border-amber pb-1 text-cream'
                       : 'text-cream/40 hover:text-cream'

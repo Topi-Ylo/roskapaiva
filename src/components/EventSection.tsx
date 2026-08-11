@@ -67,7 +67,9 @@ function SponsorLogo({
           loading="lazy"
           onError={() => setFailed(true)}
           style={{
-            maxWidth: `${Math.round(maxW * scale)}px`,
+            // min() so a wide mark shrinks on a narrow phone instead of
+            // pushing the row past the viewport.
+            maxWidth: `min(${Math.round(maxW * scale)}px, 100%)`,
             filter: big
               ? 'brightness(0) invert(1) drop-shadow(0 0 6px rgba(127, 212, 163, 0.55)) drop-shadow(0 0 18px rgba(127, 212, 163, 0.3))'
               : sponsor.invert_logo
@@ -91,7 +93,11 @@ function SponsorLogo({
     </>
   );
 
-  const cls = `group flex items-center py-1 ${big ? 'gap-4' : 'gap-2.5'}`;
+  // flex-wrap rather than letting the image shrink: on a 320px screen the
+  // widest mark plus its label does not fit on one line, and dropping the label
+  // underneath keeps the logo at its intended size instead of letterboxing it.
+  const cls =
+    `group flex min-w-0 max-w-full flex-wrap items-center py-1 ${big ? 'gap-x-4 gap-y-1' : 'gap-x-2.5 gap-y-1'}`;
   return sponsor.url ? (
     <a href={sponsor.url} target="_blank" rel="noopener noreferrer" className={cls}>
       {inner}
@@ -172,13 +178,13 @@ export default function EventSection({ onSignup }: { onSignup: () => void }) {
                 <button
                   type="button"
                   onClick={onSignup}
-                  className="rounded-full bg-amber px-7 py-3 text-xs font-semibold uppercase tracking-widest text-forest-night transition hover:bg-amber-light"
+                  className="rounded-full bg-amber px-7 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest text-forest-night transition hover:bg-amber-light"
                 >
                   Ilmoita osallistumisesi
                 </button>
                 <a
                   href="#kartta"
-                  className="ghost-cta rounded-full px-7 py-3 text-xs font-semibold uppercase tracking-widest text-cream"
+                  className="ghost-cta rounded-full px-7 py-4 text-xs font-semibold uppercase sm:py-3 tracking-widest text-cream"
                 >
                   Katso kartta
                 </a>
@@ -221,7 +227,7 @@ export default function EventSection({ onSignup }: { onSignup: () => void }) {
                   )}
                   <a
                     href="#paatapahtuma"
-                    className="inline-flex items-center gap-2 py-1 text-xs font-semibold uppercase tracking-widest text-amber transition hover:text-amber-light"
+                    className="inline-flex min-h-[44px] items-center gap-2 py-1 text-xs font-semibold uppercase tracking-widest text-amber transition hover:text-amber-light sm:min-h-0"
                   >
                     Tutustu päätapahtumaan
                     <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
