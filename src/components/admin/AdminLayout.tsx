@@ -14,6 +14,7 @@ const NAV: NavItem[] = [
   { to: '/admin/event', label: 'Tapahtuma 5.9.' },
   { to: '/admin/events', label: 'Tapahtumat (kalenteri)' },
   { to: '/admin/community-events', label: 'Valtakunnalliset tapahtumat' },
+  { to: '/admin/faq', label: 'Usein kysytyt kysymykset' },
   { to: '/admin/email', label: 'Joukkoposti' },
   { to: '/admin/past-events', label: 'Edelliset tapahtumat' },
   { to: '/admin/timeline', label: 'Aikajana' },

@@ -12,7 +12,13 @@ import {
   LOCATION_OPTIONS,
   type LocationPrecision,
 } from '../../lib/communityEvents';
+import { Link } from 'react-router-dom';
 import { districtsFor } from '../../lib/finnishDistricts';
+import {
+  MARKETING_CONSENT_TEXT,
+  ORGANIZER_TERMS_TEXT,
+  ORGANIZER_TERMS_VERSION,
+} from '../../lib/organizerTerms';
 import { resolveEventPosition } from '../../lib/eventLocation';
 
 const EMPTY = {
@@ -30,6 +36,8 @@ const EMPTY = {
   is_public: false,
   contact_type: '' as '' | ContactType,
   contact_value: '',
+  terms_accepted: false,
+  marketing_consent: false,
 };
 
 /** crypto.randomUUID needs a secure context; fall back for older browsers. */
@@ -138,6 +146,12 @@ export default function EventSignupForm() {
       setError(`Kuvaus saa olla enintään ${DESCRIPTION_MAX_WORDS} sanaa.`);
       return;
     }
+    // Convenience only. The real gate is the restrictive RLS policy from 0028,
+    // which refuses any anonymous insert without a recorded acceptance.
+    if (!form.terms_accepted) {
+      setError('Vahvista järjestäjän vastuu ennen lähettämistä.');
+      return;
+    }
 
     setBusy(true);
 
@@ -175,6 +189,13 @@ export default function EventSignupForm() {
       image_url: form.image_url.trim() || null,
       is_public: form.is_public,
       status: 'pending' as const,
+      // What was agreed, and which wording was agreed to. A bare boolean would
+      // not survive the text being revised.
+      terms_accepted_at: new Date().toISOString(),
+      terms_version: ORGANIZER_TERMS_VERSION,
+      // Null unless actively ticked: consent that was never given is not a
+      // value to store.
+      marketing_consent_at: form.marketing_consent ? new Date().toISOString() : null,
       // Contact details belong to open events only, so a box unticked after
       // typing something does not quietly publish it. The keys are omitted
       // rather than sent as null when unused: PostgREST rejects the whole
@@ -524,6 +545,35 @@ export default function EventSignupForm() {
         </div>
       </div>
 
+      <div className="mt-8 space-y-4 border-t border-cream/10 pt-8">
+        <label className="flex cursor-pointer items-start gap-3 rounded border border-amber/30 bg-amber/5 p-4">
+          <input
+            type="checkbox"
+            required
+            checked={form.terms_accepted}
+            onChange={(e) => set('terms_accepted', e.target.checked)}
+            className="mt-0.5 h-4 w-4 shrink-0 accent-amber"
+          />
+          <span className="text-xs leading-relaxed text-cream/75">
+            {ORGANIZER_TERMS_TEXT}{' '}
+            <Link to="/ukk" target="_blank" className="text-amber underline hover:text-amber-light">
+              Lue turvallisuus- ja osallistumisohjeet
+            </Link>
+            .
+          </span>
+        </label>
+
+        <label className="flex cursor-pointer items-start gap-3 px-1">
+          <input
+            type="checkbox"
+            checked={form.marketing_consent}
+            onChange={(e) => set('marketing_consent', e.target.checked)}
+            className="mt-0.5 h-4 w-4 shrink-0 accent-amber"
+          />
+          <span className="text-xs leading-relaxed text-cream/55">{MARKETING_CONSENT_TEXT}</span>
+        </label>
+      </div>
+
       {error && <p className="mt-5 text-sm text-red-400">{error}</p>}
 
       <div className="mt-8 flex flex-wrap items-center gap-5">
@@ -536,6 +586,11 @@ export default function EventSignupForm() {
         </button>
         <p className="text-xs leading-relaxed text-cream/45">
           Ilmoitus ei sido mihinkään. Eino käy ilmoitukset läpi ennen julkaisua.
+          Käsittelemme yhteystietosi{' '}
+          <Link to="/tietosuoja" target="_blank" className="text-amber underline hover:text-amber-light">
+            tietosuojaselosteen
+          </Link>{' '}
+          mukaisesti.
         </p>
       </div>
     </form>

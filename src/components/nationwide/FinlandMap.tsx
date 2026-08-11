@@ -4,6 +4,15 @@ import 'leaflet/dist/leaflet.css';
 import type { CommunityEvent } from '../../lib/communityEvents';
 import { groupPins } from '../../lib/mapPins';
 
+/** Tooltips are built as an HTML string, so organiser names must be escaped. */
+function escapeHtml(v: string): string {
+  return v
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 /** The Roskapäivä mark as the pin. Cities with several events carry a count. */
 export const PIN_IMAGE = '/favicon.png';
 
@@ -108,6 +117,9 @@ export default function FinlandMap({ events, activeCity, onSelectCity }: Props) 
         .on('click', () => onSelectCity(active ? null : p.city))
         .bindTooltip(
           `<strong>${p.city}</strong><br>${p.count} tapahtuma${p.count === 1 ? '' : 'a'}` +
+            // Naming the organiser is the point: without it every pin reads as
+            // one of Roskapäivä's own events. Escaped - the name is user input.
+            (p.organizer ? `<br>Järjestää ${escapeHtml(p.organizer)}` : '') +
             (p.hasPublic ? '<br><em>Avoin kaikille</em>' : ''),
           { direction: 'top', offset: [0, -10], className: 'rp-tooltip' }
         )

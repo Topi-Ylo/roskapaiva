@@ -121,6 +121,14 @@ export default function FooterSection() {
             />
             <p className="eyebrow">© 2018–2026 Roskapäivä</p>
           </div>
+          <nav className="flex items-center gap-5">
+            <Link to="/ukk" className="transition hover:text-cream">
+              Usein kysytyt kysymykset
+            </Link>
+            <Link to="/tietosuoja" className="transition hover:text-cream">
+              Tietosuoja
+            </Link>
+          </nav>
           <p className="font-quote text-base italic text-cream/55">Tehty Helsingissä.</p>
         </div>
       </div>

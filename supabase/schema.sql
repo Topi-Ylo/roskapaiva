@@ -285,12 +285,31 @@ create table if not exists public.community_events (
                      check (location_precision in ('city','district','address')),
   district         text check (district is null or char_length(district) <= 80),
   address          text check (address is null or char_length(address) <= 200),
+  -- the organiser's declaration, and which wording they agreed to (0028)
+  terms_accepted_at    timestamptz,
+  terms_version        text check (terms_version is null or char_length(terms_version) <= 40),
+  -- separate, optional, never pre-ticked: marketing needs its own consent
+  marketing_consent_at timestamptz,
   created_at       timestamptz default now(),
   updated_at       timestamptz default now()
 );
 
 create index if not exists community_events_status_date_idx
   on public.community_events (status, event_date);
+
+-- Usein kysytyt kysymykset (0029). The code ships a full fallback copy, so this
+-- is intentionally left unseeded; the admin imports it in one click.
+create table if not exists public.faq_items (
+  id          uuid primary key default gen_random_uuid(),
+  question    text not null check (char_length(question) <= 300),
+  answer      text not null check (char_length(answer) <= 4000),
+  sort_order  int default 0,
+  published   boolean default true,
+  created_at  timestamptz default now(),
+  updated_at  timestamptz default now()
+);
+
+create index if not exists faq_items_sort_idx on public.faq_items (sort_order);
 
 -- Singleton settings row, including the '26 page copy (0014/0015)
 create table if not exists public.site_settings (
@@ -379,7 +398,7 @@ begin
     'admins','past_events','timeline_entries','social_media_collabs','media_posts',
     'press_images','partners','services','site_settings','image_library','audit_log',
     'events','event_schedule','event_program','event_credits','event_sponsors',
-    'community_events'
+    'community_events','faq_items'
   ]) loop
     execute format('alter table public.%I enable row level security;', t);
   end loop;
@@ -391,7 +410,7 @@ begin
   for t in select unnest(array[
     'past_events','timeline_entries','social_media_collabs','media_posts',
     'press_images','partners','services','events','event_schedule',
-    'event_program','event_credits','event_sponsors'
+    'event_program','event_credits','event_sponsors','faq_items'
   ]) loop
     execute format('drop policy if exists "public_read_%s" on public.%I;', t, t);
     execute format(
@@ -406,7 +425,7 @@ begin
     'past_events','timeline_entries','social_media_collabs','media_posts',
     'press_images','partners','services','site_settings','image_library',
     'events','event_schedule','event_program','event_credits','event_sponsors',
-    'community_events'
+    'community_events','faq_items'
   ]) loop
     execute format('drop policy if exists "admins_all_%s" on public.%I;', t, t);
     execute format(
@@ -441,6 +460,16 @@ create policy "public_insert_community_events" on public.community_events
 -- the base table would expose organizer_email, approval_token and the private
 -- location columns (0027). INSERT stays, for the public sign-up form.
 revoke select on public.community_events from anon;
+
+-- The declaration is not optional and the browser is not where that is decided.
+-- RESTRICTIVE so it is AND-ed with the permissive insert policy above rather
+-- than widening it. Scoped to anon: an admin adding the main event by hand is
+-- not declaring anything on a third party's behalf (0028).
+drop policy if exists "public_submissions_require_terms" on public.community_events;
+create policy "public_submissions_require_terms" on public.community_events
+  as restrictive
+  for insert to anon
+  with check (terms_accepted_at is not null and terms_version is not null);
 grant select on public.community_events_public to anon, authenticated;
 
 -- Admins table: you can see your own row, admins see all.

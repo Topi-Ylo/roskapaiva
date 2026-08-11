@@ -11,6 +11,7 @@ import {
   layout,
   type CommunityEventRow,
 } from './_shared';
+import { ORGANIZER_TERMS_TEXT } from '../../src/lib/organizerTerms';
 
 /**
  * Called right after a volunteer submits the sign-up form. Sends Eino the
@@ -95,6 +96,12 @@ export const handler: Handler = async (event) => {
         `<p style="margin:0 0 4px;">Hei ${esc(ev.organizer_name)},</p>
          <p style="margin:12px 0 0;">kiitos että järjestät oman Roskapäivä-tapahtuman. Ilmoituksesi on vastaanotettu ja se odottaa hyväksyntää. Kun tapahtuma on hyväksytty, se ilmestyy valtakunnalliselle kartalle osoitteessa roskapaiva.fi.</p>
          ${detailsTable(ev)}
+         <!-- Restating the declaration here is both the evidence trail and the
+              reminder, delivered at the moment the organiser is actually reading. -->
+         <div style="margin:0 0 20px;padding:16px;border-left:3px solid #C9A227;background:rgba(201,162,39,0.07);">
+           <p style="margin:0 0 8px;font:600 11px/1 Inter,Arial,sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:#C9A227;">Vahvistit ilmoittaessasi</p>
+           <p style="margin:0;font:400 13px/1.6 Inter,Arial,sans-serif;color:rgba(244,241,232,0.72);">${esc(ORGANIZER_TERMS_TEXT)}</p>
+         </div>
          <p style="margin:0 0 16px;">Jos tiedoissa on korjattavaa, vastaa tähän viestiin.</p>
          ${button(`${SITE_URL}/5-9-2026#kartta`, 'Katso kartta')}`
       ),

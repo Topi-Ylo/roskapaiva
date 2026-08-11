@@ -7,6 +7,8 @@ import EventsPage from './pages/EventsPage';
 import KansalaisaloitePage from './pages/KansalaisaloitePage';
 import PalvelutPage from './pages/PalvelutPage';
 import MediaPage from './pages/MediaPage';
+import FaqPage from './pages/FaqPage';
+import PrivacyPage from './pages/PrivacyPage';
 import CookieConsent from './components/CookieConsent';
 import PreviewBanner from './components/PreviewBanner';
 import { AuthProvider } from './lib/auth';
@@ -30,6 +32,7 @@ import MediaPostsAdmin from './pages/admin/MediaPostsAdmin';
 import PressImagesAdmin from './pages/admin/PressImagesAdmin';
 import PartnersAdmin from './pages/admin/PartnersAdmin';
 import ServicesAdmin from './pages/admin/ServicesAdmin';
+import FaqAdmin from './pages/admin/FaqAdmin';
 import SettingsAdmin from './pages/admin/SettingsAdmin';
 import UsersAdmin from './pages/admin/UsersAdmin';
 import ImageLibraryAdmin from './pages/admin/ImageLibraryAdmin';
@@ -116,6 +119,8 @@ function PublicShell() {
         <Route path="/kansalaisaloite" element={<KansalaisaloitePage />} />
         <Route path="/palvelut" element={<PalvelutPage />} />
         <Route path="/medialle" element={<MediaPage />} />
+        <Route path="/ukk" element={<FaqPage />} />
+        <Route path="/tietosuoja" element={<PrivacyPage />} />
       </Routes>
     </>
   );
@@ -155,6 +160,7 @@ export default function App() {
                 <Route path="press-images" element={<PressImagesAdmin />} />
                 <Route path="partners" element={<PartnersAdmin />} />
                 <Route path="services" element={<ServicesAdmin />} />
+                <Route path="faq" element={<FaqAdmin />} />
                 <Route path="library" element={<ImageLibraryAdmin />} />
                 <Route path="settings" element={<SettingsAdmin />} />
                 <Route path="users" element={<UsersAdmin />} />

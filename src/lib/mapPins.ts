@@ -8,6 +8,12 @@ export interface Pin {
   count: number;
   /** True when at least one event behind this pin is open to join. */
   hasPublic: boolean;
+  /**
+   * Who is running it — only when this pin is a single event. Merged pins clear
+   * it, because naming one organiser for several events would say something
+   * untrue about the others.
+   */
+  organizer: string | null;
 }
 
 /**
@@ -39,6 +45,7 @@ export function groupPins(events: CommunityEvent[], zoom: number): Pin[] {
     if (existing) {
       existing.count += 1;
       existing.hasPublic ||= Boolean(e.is_public);
+      existing.organizer = null;
       return;
     }
     // A collapsed pin belongs on the municipality centre, not on whichever
@@ -52,6 +59,7 @@ export function groupPins(events: CommunityEvent[], zoom: number): Pin[] {
       lng: centre?.lng ?? e.lng,
       count: 1,
       hasPublic: Boolean(e.is_public),
+      organizer: e.organizer_name ?? null,
     });
   });
   return [...byKey.values()];
