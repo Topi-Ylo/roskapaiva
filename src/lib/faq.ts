@@ -19,7 +19,8 @@ export const FALLBACK_FAQ: FaqItem[] = [
     answer:
       'Kuka tahansa! Voit kerätä yhden roskan, lähteä roskaretkelle ystävien kanssa ' +
       'tai järjestää omat siivoustalkoot esimerkiksi yrityksen, koulun, ' +
-      'yhdistyksen, harrastusryhmän tai muun yhteisön kanssa.',
+      'yhdistyksen, harrastusryhmän tai muun yhteisön kanssa. Voit myös liittyä ' +
+      'mukaan johonkin kartalla näkyvään avoimeen tapahtumaan.',
     sort_order: 0,
   },
   {
@@ -128,9 +129,10 @@ export const FALLBACK_FAQ: FaqItem[] = [
     question: 'Voinko osallistua ilman, että järjestän tapahtumaa?',
     answer:
       'Totta kai. Voit osallistua täysin omatoimisesti vaikka keräämällä yhden ' +
-      'roskan tai lähtemällä pienelle roskaretkelle. Huolehdi omasta ' +
-      'turvallisuudestasi, käytä sopivia välineitä ja noudata paikallisia ' +
-      'jätehuolto-ohjeita.',
+      'roskan tai lähtemällä pienelle roskaretkelle. Voit myös liittyä mukaan ' +
+      'muiden järjestämään avoimeen tapahtumaan: ne näkyvät kartalla omalla ' +
+      'merkillään. Huolehdi omasta turvallisuudestasi, käytä sopivia välineitä ja ' +
+      'noudata paikallisia jätehuolto-ohjeita.',
     sort_order: 12,
   },
 ];
@@ -149,7 +151,7 @@ export const SAFETY_TITLE = 'Roskapäivän turvallinen osallistuminen';
 export const SAFETY_POINTS: string[] = [
   'Kerää vain roskia, jotka pystyt käsittelemään turvallisesti.',
   'Käytä suojakäsineitä tai roskapihtejä.',
-  'Älä käsittele vaarallisia tai tuntemattomia jätteitä äläkä penko kerättyjä roskapusseja.',
+  'Älä käsittele vaarallisia tai tuntemattomia jätteitä äläkä pengo kerättyjä roskapusseja.',
   'Noudata liikennesääntöjä ja paikallisia jätehuolto-ohjeita.',
   'Käytä heijastavaa tai huomioväristä vaatetusta, jos siivoat teiden varsilla.',
   'Jos löydät neuloja, ruiskuja tai muuta vaarallista jätettä, älä koske siihen vaan ilmoita kunnan tai alueen jätehuollon ohjeiden mukaisesti.',
