@@ -1,3 +1,4 @@
+import { MUNICIPALITIES } from './finnishMunicipalities';
 // Nationwide Roskapäivä: types, the city list behind the sign-up dropdown, and
 // the statistics derived from approved events.
 
@@ -108,67 +109,25 @@ export const DURATION_OPTIONS = [
  * lands on the map without a geocoding round-trip. A fixed list also keeps the
  * data clean enough to group and count by city.
  */
-export const FINNISH_CITIES: { name: string; lat: number; lng: number }[] = [
-  { name: 'Helsinki', lat: 60.1699, lng: 24.9384 },
-  { name: 'Espoo', lat: 60.2055, lng: 24.6559 },
-  { name: 'Vantaa', lat: 60.2934, lng: 25.0378 },
-  { name: 'Kauniainen', lat: 60.2118, lng: 24.7288 },
-  { name: 'Tampere', lat: 61.4978, lng: 23.761 },
-  { name: 'Turku', lat: 60.4518, lng: 22.2666 },
-  { name: 'Oulu', lat: 65.0121, lng: 25.4651 },
-  { name: 'Jyväskylä', lat: 62.2426, lng: 25.7473 },
-  { name: 'Lahti', lat: 60.9827, lng: 25.6612 },
-  { name: 'Kuopio', lat: 62.8924, lng: 27.677 },
-  { name: 'Pori', lat: 61.4851, lng: 21.7974 },
-  { name: 'Kouvola', lat: 60.8679, lng: 26.7042 },
-  { name: 'Joensuu', lat: 62.6012, lng: 29.7636 },
-  { name: 'Lappeenranta', lat: 61.0587, lng: 28.1887 },
-  { name: 'Hämeenlinna', lat: 60.9959, lng: 24.4643 },
-  { name: 'Vaasa', lat: 63.096, lng: 21.6158 },
-  { name: 'Seinäjoki', lat: 62.7903, lng: 22.8403 },
-  { name: 'Rovaniemi', lat: 66.5039, lng: 25.7294 },
-  { name: 'Mikkeli', lat: 61.6886, lng: 27.2723 },
-  { name: 'Kotka', lat: 60.4664, lng: 26.9458 },
-  { name: 'Salo', lat: 60.3833, lng: 23.1333 },
-  { name: 'Porvoo', lat: 60.3932, lng: 25.6639 },
-  { name: 'Kokkola', lat: 63.8376, lng: 23.132 },
-  { name: 'Hyvinkää', lat: 60.6306, lng: 24.8598 },
-  { name: 'Nurmijärvi', lat: 60.4642, lng: 24.8072 },
-  { name: 'Järvenpää', lat: 60.4736, lng: 25.09 },
-  { name: 'Rauma', lat: 61.1288, lng: 21.5114 },
-  { name: 'Kajaani', lat: 64.2273, lng: 27.7285 },
-  { name: 'Kerava', lat: 60.4022, lng: 25.1029 },
-  { name: 'Savonlinna', lat: 61.8699, lng: 28.8783 },
-  { name: 'Nokia', lat: 61.4781, lng: 23.5089 },
-  { name: 'Kaarina', lat: 60.4072, lng: 22.3699 },
-  { name: 'Ylöjärvi', lat: 61.5533, lng: 23.5964 },
-  { name: 'Kirkkonummi', lat: 60.1256, lng: 24.4381 },
-  { name: 'Tuusula', lat: 60.4028, lng: 25.0292 },
-  { name: 'Kangasala', lat: 61.4639, lng: 24.0714 },
-  { name: 'Riihimäki', lat: 60.7375, lng: 24.7725 },
-  { name: 'Raisio', lat: 60.4858, lng: 22.1692 },
-  { name: 'Imatra', lat: 61.1719, lng: 28.7561 },
-  { name: 'Sastamala', lat: 61.3406, lng: 22.9086 },
-  { name: 'Raahe', lat: 64.6842, lng: 24.4795 },
-  { name: 'Hamina', lat: 60.5697, lng: 27.1978 },
-  { name: 'Iisalmi', lat: 63.5608, lng: 27.1908 },
-  { name: 'Varkaus', lat: 62.3151, lng: 27.8714 },
-  { name: 'Tornio', lat: 65.8481, lng: 24.1447 },
-  { name: 'Kemi', lat: 65.7362, lng: 24.5637 },
-  { name: 'Kuusamo', lat: 65.9667, lng: 29.1833 },
-  { name: 'Kokemäki', lat: 61.2547, lng: 22.3564 },
-  { name: 'Pietarsaari', lat: 63.6753, lng: 22.7028 },
-  { name: 'Uusikaupunki', lat: 60.8003, lng: 21.4083 },
-  { name: 'Valkeakoski', lat: 61.2642, lng: 24.0314 },
-  { name: 'Lohja', lat: 60.2503, lng: 24.0653 },
-  { name: 'Mariehamn', lat: 60.0971, lng: 19.9349 },
-  { name: 'Inari', lat: 68.9056, lng: 27.0289 },
-  { name: 'Sodankylä', lat: 67.4167, lng: 26.6 },
-  { name: 'Muu paikkakunta', lat: 62.5, lng: 25.5 },
-];
+/**
+ * Every municipality, with coordinates — see finnishMunicipalities.ts, which is
+ * generated from Statistics Finland's official classification. Kept exported
+ * under the old name so existing callers do not care that the list went from
+ * 56 hand-picked towns to all 308.
+ */
+export const FINNISH_CITIES: { name: string; lat: number; lng: number }[] = MUNICIPALITIES.map(
+  ({ name, lat, lng }) => ({ name, lat, lng })
+);
+
+/** Middle of the country, for "Muu paikkakunta" and anything unrecognised. */
+const COUNTRY_CENTRE = { lat: 64.6, lng: 26.0 };
 
 export function cityCoords(name: string) {
-  return FINNISH_CITIES.find((c) => c.name === name) ?? null;
+  const hit = MUNICIPALITIES.find((c) => c.name === name);
+  if (hit) return { lat: hit.lat, lng: hit.lng };
+  // A municipality that has since been merged away, or the deliberate
+  // "somewhere else" option: still place the pin rather than dropping the event.
+  return name ? COUNTRY_CENTRE : null;
 }
 
 export interface EventStats {

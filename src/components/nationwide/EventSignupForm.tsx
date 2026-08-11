@@ -8,11 +8,11 @@ import {
   normalizeDescription,
   type ContactType,
   DURATION_OPTIONS,
-  FINNISH_CITIES,
   LOCATION_OPTIONS,
   type LocationPrecision,
 } from '../../lib/communityEvents';
 import { districtsFor } from '../../lib/finnishDistricts';
+import MunicipalityPicker from './MunicipalityPicker';
 import {
   MARKETING_CONSENT_TEXT,
   ORGANIZER_TERMS_TEXT,
@@ -309,37 +309,24 @@ export default function EventSignupForm() {
 
         <label className="block">
           <Label>Paikkakunta</Label>
-          <SelectField>
-            <select
-              required
-              value={form.city}
-              onChange={(e) => {
+          <MunicipalityPicker
+            value={form.city}
+            required
+            onChange={(city) =>
+              setForm((f) => ({
+                ...f,
+                city,
                 // Districts are per-city, so a previous pick is meaningless
                 // after a change - and the option itself disappears outside
                 // the eight largest cities.
-                const city = e.target.value;
-                setForm((f) => ({
-                  ...f,
-                  city,
-                  district: '',
-                  location_precision:
-                    f.location_precision === 'district' && districtsFor(city).length === 0
-                      ? 'city'
-                      : f.location_precision,
-                }));
-              }}
-              className={selectCls}
-            >
-              <option value="" disabled>
-                Valitse paikkakunta
-              </option>
-              {FINNISH_CITIES.map((c) => (
-                <option key={c.name} value={c.name}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </SelectField>
+                district: '',
+                location_precision:
+                  f.location_precision === 'district' && districtsFor(city).length === 0
+                    ? 'city'
+                    : f.location_precision,
+              }))
+            }
+          />
         </label>
 
         <label className="block">

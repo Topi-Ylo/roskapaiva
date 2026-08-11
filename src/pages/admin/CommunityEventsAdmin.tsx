@@ -17,7 +17,6 @@ import {
   type ContactType,
   countWords,
   DURATION_OPTIONS,
-  FINNISH_CITIES,
   LOCATION_OPTIONS,
   type LocationPrecision,
   formatDuration,
@@ -25,6 +24,7 @@ import {
   formatTime,
 } from '../../lib/communityEvents';
 import { districtsFor } from '../../lib/finnishDistricts';
+import MunicipalityPicker from '../../components/nationwide/MunicipalityPicker';
 import { resolveEventPosition } from '../../lib/eventLocation';
 
 type Status = 'pending' | 'approved' | 'rejected';
@@ -294,11 +294,10 @@ export default function CommunityEventsAdmin() {
             />
           </Field>
           <Field label="Paikkakunta" hint="Määrää sijainnin kartalla">
-            <select
-              required
+            <MunicipalityPicker
               value={form.city}
-              onChange={(e) => {
-                const city = e.target.value;
+              required
+              onChange={(city) =>
                 setForm({
                   ...form,
                   city,
@@ -307,19 +306,9 @@ export default function CommunityEventsAdmin() {
                     form.location_precision === 'district' && districtsFor(city).length === 0
                       ? 'city'
                       : form.location_precision,
-                });
-              }}
-              className={selectClass}
-            >
-              <option value="" disabled>
-                Valitse
-              </option>
-              {FINNISH_CITIES.map((c) => (
-                <option key={c.name} value={c.name}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+                })
+              }
+            />
           </Field>
           <Field label="Sijaintitarkkuus" hint="Ei näy julkisesti">
             <select
