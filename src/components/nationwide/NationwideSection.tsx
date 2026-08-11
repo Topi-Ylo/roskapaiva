@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useTableData } from '../../hooks/useTableData';
 import { useCounter } from '../../hooks/useCounter';
 import FinlandMap from './FinlandMap';
@@ -259,20 +258,6 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
       {/* Lista ja kartta */}
       <section className="relative bg-forest-night py-14 md:py-20">
         <div className="mx-auto max-w-7xl px-6">
-          {/* Aimed at the person thinking of turning up, not the organiser: the
-              declaration on the sign-up form never reaches them. */}
-          <div className="reveal mb-10 border-l-2 border-amber/50 bg-cream/[0.03] py-4 pl-5 pr-4">
-            <p className="text-sm leading-relaxed text-cream/70">
-              Roskapäivä järjestää Helsingin päätapahtuman yhdessä Cleaning Angelsin kanssa.
-              Muut kartan tapahtumat ovat paikallisten järjestäjien itsenäisesti järjestämiä, ja
-              kukin järjestäjä vastaa oman tapahtumansa turvallisuudesta ja käytännön
-              järjestelyistä.{' '}
-              <Link to="/ukk" className="text-amber underline hover:text-amber-light">
-                Lue turvallisuus- ja osallistumisohjeet
-              </Link>
-              .
-            </p>
-          </div>
           <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
             {/* Lista, vierii omassa säiliössään */}
             <div className="lg:col-span-5">

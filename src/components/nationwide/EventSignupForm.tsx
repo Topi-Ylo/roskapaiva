@@ -12,7 +12,6 @@ import {
   LOCATION_OPTIONS,
   type LocationPrecision,
 } from '../../lib/communityEvents';
-import { Link } from 'react-router-dom';
 import { districtsFor } from '../../lib/finnishDistricts';
 import {
   MARKETING_CONSENT_TEXT,
@@ -20,6 +19,7 @@ import {
   ORGANIZER_TERMS_VERSION,
 } from '../../lib/organizerTerms';
 import { resolveEventPosition } from '../../lib/eventLocation';
+import { useInfoModal } from '../../lib/infoModal';
 
 const EMPTY = {
   organizer_name: '',
@@ -93,6 +93,7 @@ function Label({ children, hint }: { children: string; hint?: string }) {
 }
 
 export default function EventSignupForm() {
+  const { open: openInfo } = useInfoModal();
   const [form, setForm] = useState({ ...EMPTY });
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -556,9 +557,13 @@ export default function EventSignupForm() {
           />
           <span className="text-xs leading-relaxed text-cream/75">
             {ORGANIZER_TERMS_TEXT}{' '}
-            <Link to="/ukk" target="_blank" className="text-amber underline hover:text-amber-light">
+            <button
+              type="button"
+              onClick={() => openInfo('ukk')}
+              className="text-amber underline hover:text-amber-light"
+            >
               Lue turvallisuus- ja osallistumisohjeet
-            </Link>
+            </button>
             .
           </span>
         </label>
@@ -587,9 +592,13 @@ export default function EventSignupForm() {
         <p className="text-xs leading-relaxed text-cream/45">
           Ilmoitus ei sido mihinkään. Eino käy ilmoitukset läpi ennen julkaisua.
           Käsittelemme yhteystietosi{' '}
-          <Link to="/tietosuoja" target="_blank" className="text-amber underline hover:text-amber-light">
+          <button
+            type="button"
+            onClick={() => openInfo('tietosuoja')}
+            className="text-amber underline hover:text-amber-light"
+          >
             tietosuojaselosteen
-          </Link>{' '}
+          </button>{' '}
           mukaisesti.
         </p>
       </div>

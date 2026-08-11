@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
+import { useInfoModal } from '../lib/infoModal';
 import { useSiteSettings } from '../hooks/useSiteSettings';
 export default function FooterSection() {
+  const { open: openInfo } = useInfoModal();
   const settings = useSiteSettings();
   return (
     <section id="mukaan" className="relative overflow-hidden">
@@ -122,12 +124,20 @@ export default function FooterSection() {
             <p className="eyebrow">© 2018–2026 Roskapäivä</p>
           </div>
           <nav className="flex items-center gap-5">
-            <Link to="/ukk" className="transition hover:text-cream">
+            <button
+              type="button"
+              onClick={() => openInfo('ukk')}
+              className="transition hover:text-cream"
+            >
               Usein kysytyt kysymykset
-            </Link>
-            <Link to="/tietosuoja" className="transition hover:text-cream">
+            </button>
+            <button
+              type="button"
+              onClick={() => openInfo('tietosuoja')}
+              className="transition hover:text-cream"
+            >
               Tietosuoja
-            </Link>
+            </button>
           </nav>
           <p className="font-quote text-base italic text-cream/55">Tehty Helsingissä.</p>
         </div>

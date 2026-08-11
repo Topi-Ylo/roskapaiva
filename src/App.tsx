@@ -8,6 +8,8 @@ import KansalaisaloitePage from './pages/KansalaisaloitePage';
 import PalvelutPage from './pages/PalvelutPage';
 import MediaPage from './pages/MediaPage';
 import FaqPage from './pages/FaqPage';
+import InfoModal from './components/InfoModal';
+import { InfoModalProvider } from './lib/infoModal';
 import PrivacyPage from './pages/PrivacyPage';
 import CookieConsent from './components/CookieConsent';
 import PreviewBanner from './components/PreviewBanner';
@@ -132,6 +134,7 @@ export default function App() {
       <ConsentProvider>
         <AuthProvider>
           <PreviewProvider>
+          <InfoModalProvider>
           <BrowserRouter>
             <ScrollToTop />
             <RevealObserver />
@@ -171,9 +174,11 @@ export default function App() {
               {/* Public site (catch-all) */}
               <Route path="*" element={<PublicShell />} />
             </Routes>
+            <InfoModal />
             <CookieConsent />
             <PreviewBanner />
           </BrowserRouter>
+          </InfoModalProvider>
           </PreviewProvider>
         </AuthProvider>
       </ConsentProvider>

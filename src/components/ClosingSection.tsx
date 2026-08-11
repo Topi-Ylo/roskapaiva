@@ -1,4 +1,6 @@
 import { useTableData } from '../hooks/useTableData';
+import FaqAccordion, { OrganizerDisclaimer } from './FaqAccordion';
+import { useInfoModal } from '../lib/infoModal';
 import { FALLBACK_SPONSORS, type EventSponsor } from '../lib/eventContent';
 
 /** The pair on stage, cropped from the photograph behind the main event. */
@@ -22,6 +24,7 @@ const FALLBACK_ORGANIZERS: EventSponsor[] = [
  * thank-you. The community quote moved up to sit right after the hero.
  */
 export default function ClosingSection() {
+  const { open: openInfo } = useInfoModal();
   const { data } = useTableData<EventSponsor>('event_sponsors');
   const sponsors = data ?? FALLBACK_SPONSORS;
   const organizers = sponsors.filter((s) => s.tier === 'organizer');
@@ -84,6 +87,26 @@ export default function ClosingSection() {
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Between Järjestäjät and Kiitos: right after the page has said who
+          Roskapäivä is, which is the moment the distinction between "us" and
+          "everyone else on the map" actually needs making. */}
+      <section id="ukk" className="relative bg-forest-night py-20 md:py-28">
+        <div className="mx-auto max-w-4xl px-6">
+          <p className="reveal eyebrow text-amber">Usein kysytyt kysymykset</p>
+          <h2 className="reveal delay-1 font-display mt-6 text-4xl leading-tight text-cream md:text-5xl">
+            Kysyttävää osallistumisesta?
+          </h2>
+
+          <div className="reveal delay-2 mt-8 border-l-2 border-amber/50 bg-cream/[0.03] py-4 pl-5 pr-4">
+            <OrganizerDisclaimer onOpenSafety={() => openInfo('ukk')} />
+          </div>
+
+          <div className="reveal delay-3 mt-10">
+            <FaqAccordion />
           </div>
         </div>
       </section>

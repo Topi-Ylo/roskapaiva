@@ -12,6 +12,20 @@ import {
   type CommunityEventRow,
 } from './_shared';
 import { ORGANIZER_TERMS_TEXT } from '../../src/lib/organizerTerms';
+import { SAFETY_POINTS, SAFETY_TITLE } from '../../src/lib/faq';
+
+/** The safety card. It is no longer shown anywhere on the site, so this and the
+ *  guidance overlay behind the sign-up form are where an organiser meets it. */
+function safetyCard(): string {
+  const items = SAFETY_POINTS.map(
+    (p) =>
+      `<li style="margin:0 0 8px;padding-left:2px;">${esc(p)}</li>`
+  ).join('');
+  return `<div style="margin:0 0 20px;padding:18px 20px;border:1px solid rgba(201,162,39,0.28);background:rgba(201,162,39,0.06);">
+    <p style="margin:0 0 12px;font:600 11px/1 Inter,Arial,sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:#C9A227;">${esc(SAFETY_TITLE)}</p>
+    <ul style="margin:0;padding:0 0 0 18px;font:400 13px/1.6 Inter,Arial,sans-serif;color:rgba(244,241,232,0.78);">${items}</ul>
+  </div>`;
+}
 
 /**
  * Called right after a volunteer submits the sign-up form. Sends Eino the
@@ -102,6 +116,7 @@ export const handler: Handler = async (event) => {
            <p style="margin:0 0 8px;font:600 11px/1 Inter,Arial,sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:#C9A227;">Vahvistit ilmoittaessasi</p>
            <p style="margin:0;font:400 13px/1.6 Inter,Arial,sans-serif;color:rgba(244,241,232,0.72);">${esc(ORGANIZER_TERMS_TEXT)}</p>
          </div>
+         ${safetyCard()}
          <p style="margin:0 0 16px;">Jos tiedoissa on korjattavaa, vastaa tähän viestiin.</p>
          ${button(`${SITE_URL}/5-9-2026#kartta`, 'Katso kartta')}`
       ),
