@@ -146,7 +146,19 @@ export default function FooterSection() {
               Tietosuoja
             </button>
           </nav>
-          <p className="font-quote text-base italic text-cream/55">Tehty Helsingissä.</p>
+          <p className="font-quote text-base italic text-cream/55">
+            Tehty Helsingissä –{' '}
+            <a
+              href="https://wihmo.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              // Padding on an inline anchor grows the hit area without changing
+              // the line box, which matters on the last line of the footer.
+              className="py-2 transition hover:text-amber"
+            >
+              Wihmo Productions
+            </a>
+          </p>
         </div>
       </div>
     </section>

@@ -172,7 +172,10 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  /* Above Leaflet, whose own panes and controls run to z-index 1000 — at 100
+     the map drew straight over the sign-up form. Also above the nav (50), the
+     mobile drawer (45) and the cookie notice (60). */
+  z-index: 1100;
   background: rgba(11, 22, 15, 0.92);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);

@@ -67,16 +67,21 @@ function SponsorLogo({
           loading="lazy"
           onError={() => setFailed(true)}
           style={{
-            // min() so a wide mark shrinks on a narrow phone instead of
-            // pushing the row past the viewport.
-            maxWidth: `min(${Math.round(maxW * scale)}px, 100%)`,
+            // A definite length, not min(…, 100%). A percentage in max-width is
+            // indefinite while the browser works out intrinsic widths, so the
+            // flex item was sized from the uncapped aspect-derived width and
+            // only the image got clamped — leaving hundreds of pixels of slack
+            // that pushed the next logo across the row.
+            maxWidth: `${Math.round(maxW * scale)}px`,
             filter: big
               ? 'brightness(0) invert(1) drop-shadow(0 0 6px rgba(127, 212, 163, 0.55)) drop-shadow(0 0 18px rgba(127, 212, 163, 0.3))'
               : sponsor.invert_logo
                 ? 'invert(1)'
                 : undefined,
           }}
-          className={`w-auto shrink-0 object-contain object-left ${sizeCls}`}
+          // Shrinkable rather than shrink-0: on a narrow phone the row can
+          // squeeze the mark instead of overflowing the screen.
+          className={`w-auto min-w-0 shrink object-contain object-left ${sizeCls}`}
         />
       )}
       {(!big || !showLogo) && (
