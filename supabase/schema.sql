@@ -261,7 +261,8 @@ create table if not exists public.community_events (
   event_date       date not null,
   start_time       time,
   duration_minutes int  not null default 120,
-  description      text not null check (char_length(description) <= 50),
+  -- 200 words of Finnish fit comfortably inside this (0023)
+  description      text not null check (char_length(description) <= 2000),
   image_url        text,
   status           text not null default 'pending'
                      check (status in ('pending','approved','rejected')),
@@ -269,6 +270,21 @@ create table if not exists public.community_events (
   participants     int,
   waste_kg         numeric(10,1),
   admin_note       text,
+  featured         boolean not null default false,
+  -- open for anyone to join, as opposed to tidying your own street (0024)
+  is_public        boolean not null default false,
+  -- how to reach an open event; published only when is_public (0025)
+  contact_type     text
+                     check (contact_type is null
+                            or contact_type in ('email','website','form')),
+  contact_value    text check (contact_value is null
+                               or char_length(contact_value) <= 200),
+  -- where the pin goes (0026). district and address are deliberately absent
+  -- from community_events_public: only the resolved lat/lng is published.
+  location_precision text not null default 'city'
+                     check (location_precision in ('city','district','address')),
+  district         text check (district is null or char_length(district) <= 80),
+  address          text check (address is null or char_length(address) <= 200),
   created_at       timestamptz default now(),
   updated_at       timestamptz default now()
 );
@@ -314,10 +330,17 @@ create table if not exists public.image_library (
 
 -- Public projection of community events: approved rows only, and never the
 -- organiser's contact details or the approval token.
+-- security_invoker is deliberately off (0027): anon has no SELECT on the base
+-- table, so this view is the only way in and must not run as the caller. Its
+-- WHERE clause is the row filter and its column list is the column filter.
 create or replace view public.community_events_public
-with (security_invoker = true) as
+with (security_invoker = false) as
   select id, city, lat, lng, event_date, start_time, duration_minutes,
-         description, image_url, participants, waste_kg
+         description, image_url, participants, waste_kg, featured,
+         organizer_name, is_public,
+         -- only surfaced for open events; a private clean-up publishes nothing
+         case when is_public then contact_type  end as contact_type,
+         case when is_public then contact_value end as contact_value
   from public.community_events
   where status = 'approved';
 
@@ -409,11 +432,15 @@ create policy "public_insert_community_events" on public.community_events
     status = 'pending'
     and participants is null
     and waste_kg is null
-    and char_length(description) <= 50
+    and char_length(description) <= 2000
     and char_length(organizer_name) between 2 and 80
     and char_length(organizer_email) between 5 and 120
   );
 
+-- anon reaches community_events only through the view above; direct SELECT on
+-- the base table would expose organizer_email, approval_token and the private
+-- location columns (0027). INSERT stays, for the public sign-up form.
+revoke select on public.community_events from anon;
 grant select on public.community_events_public to anon, authenticated;
 
 -- Admins table: you can see your own row, admins see all.

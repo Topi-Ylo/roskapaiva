@@ -24,6 +24,19 @@ export interface CommunityEvent {
   contact_value?: string | null;
 }
 
+/**
+ * How precisely the organiser placed themselves on the map. Only the resolved
+ * lat/lng is published: the district name and the street address stay in the
+ * base table, out of community_events_public.
+ */
+export type LocationPrecision = 'city' | 'district' | 'address';
+
+export const LOCATION_OPTIONS: { value: LocationPrecision; label: string; hint: string }[] = [
+  { value: 'city', label: 'Vain paikkakunta', hint: 'Merkki asetetaan paikkakunnan keskustaan.' },
+  { value: 'district', label: 'Kaupunginosa', hint: 'Merkki asetetaan kaupunginosan kohdalle.' },
+  { value: 'address', label: 'Tarkka osoite', hint: 'Merkki asetetaan juuri tähän osoitteeseen.' },
+];
+
 /** Descriptions are limited by words, which reads better to a volunteer than
  *  a character count. The database keeps a 2000-character ceiling as a
  *  backstop; 200 Finnish words fit inside it comfortably. */

@@ -18,11 +18,14 @@ import {
   countWords,
   DURATION_OPTIONS,
   FINNISH_CITIES,
-  cityCoords,
+  LOCATION_OPTIONS,
+  type LocationPrecision,
   formatDuration,
   formatEventDate,
   formatTime,
 } from '../../lib/communityEvents';
+import { districtsFor } from '../../lib/finnishDistricts';
+import { resolveEventPosition } from '../../lib/eventLocation';
 
 type Status = 'pending' | 'approved' | 'rejected';
 
@@ -43,6 +46,9 @@ interface Row {
   waste_kg: number | null;
   admin_note: string | null;
   is_public: boolean;
+  location_precision: LocationPrecision | null;
+  district: string | null;
+  address: string | null;
   contact_type: ContactType | null;
   contact_value: string | null;
   created_at: string;
@@ -63,6 +69,9 @@ interface FormState {
   is_public: boolean;
   contact_type: '' | ContactType;
   contact_value: string;
+  location_precision: LocationPrecision;
+  district: string;
+  address: string;
 }
 
 const EMPTY: FormState = {
@@ -80,6 +89,9 @@ const EMPTY: FormState = {
   is_public: false,
   contact_type: '',
   contact_value: '',
+  location_precision: 'city',
+  district: '',
+  address: '',
 };
 
 const STATUS_LABEL: Record<Status, string> = {
@@ -168,6 +180,9 @@ export default function CommunityEventsAdmin() {
       is_public: r.is_public ?? false,
       contact_type: r.contact_type ?? '',
       contact_value: r.contact_value ?? '',
+      location_precision: r.location_precision ?? 'city',
+      district: r.district ?? '',
+      address: r.address ?? '',
     });
     setError(null);
     formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -179,13 +194,27 @@ export default function CommunityEventsAdmin() {
     setBusy(true);
     setError(null);
 
-    const coords = cityCoords(form.city);
+    const placed = await resolveEventPosition({
+      city: form.city,
+      precision: form.location_precision,
+      district: form.district,
+      address: form.address,
+    });
+    if (placed.notFound) {
+      setBusy(false);
+      setError('Osoitetta ei löytynyt kartalta. Tarkista osoite tai vaihda sijaintitarkkuutta.');
+      return;
+    }
+
     const payload = {
       organizer_name: form.organizer_name.trim(),
       organizer_email: form.organizer_email.trim(),
       city: form.city,
-      lat: coords?.lat ?? null,
-      lng: coords?.lng ?? null,
+      lat: placed.lat,
+      lng: placed.lng,
+      location_precision: placed.precision,
+      district: form.location_precision === 'district' ? form.district || null : null,
+      address: form.location_precision === 'address' ? form.address.trim() || null : null,
       event_date: form.event_date,
       start_time: form.start_time || null,
       duration_minutes: Number(form.duration_minutes) || 120,
@@ -268,7 +297,18 @@ export default function CommunityEventsAdmin() {
             <select
               required
               value={form.city}
-              onChange={(e) => setForm({ ...form, city: e.target.value })}
+              onChange={(e) => {
+                const city = e.target.value;
+                setForm({
+                  ...form,
+                  city,
+                  district: '',
+                  location_precision:
+                    form.location_precision === 'district' && districtsFor(city).length === 0
+                      ? 'city'
+                      : form.location_precision,
+                });
+              }}
               className={selectClass}
             >
               <option value="" disabled>
@@ -281,6 +321,53 @@ export default function CommunityEventsAdmin() {
               ))}
             </select>
           </Field>
+          <Field label="Sijaintitarkkuus" hint="Ei näy julkisesti">
+            <select
+              value={form.location_precision}
+              onChange={(e) =>
+                setForm({ ...form, location_precision: e.target.value as LocationPrecision })
+              }
+              className={selectClass}
+            >
+              {LOCATION_OPTIONS.filter(
+                (o) => o.value !== 'district' || districtsFor(form.city).length > 0
+              ).map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+          {form.location_precision === 'district' && districtsFor(form.city).length > 0 && (
+            <Field label="Kaupunginosa">
+              <select
+                required
+                value={form.district}
+                onChange={(e) => setForm({ ...form, district: e.target.value })}
+                className={selectClass}
+              >
+                <option value="" disabled>
+                  Valitse
+                </option>
+                {districtsFor(form.city).map((d) => (
+                  <option key={d.name} value={d.name}>
+                    {d.name}
+                  </option>
+                ))}
+              </select>
+            </Field>
+          )}
+          {form.location_precision === 'address' && (
+            <Field label="Osoite" hint="Haetaan kartalta tallennettaessa">
+              <input
+                required
+                value={form.address}
+                onChange={(e) => setForm({ ...form, address: e.target.value })}
+                className={inputClass}
+                placeholder="Esim. Aleksanterinkatu 9"
+              />
+            </Field>
+          )}
           <Field label="Päivämäärä">
             <input
               required
@@ -475,6 +562,16 @@ export default function CommunityEventsAdmin() {
                     {r.start_time ? ` · klo ${formatTime(r.start_time)}` : ''} ·{' '}
                     {formatDuration(r.duration_minutes)}
                   </p>
+                  {/* Where the pin sits. Private to the admin: neither value is
+                      in community_events_public. */}
+                  {(r.district || r.address) && (
+                    <p className="mt-1 text-xs text-cream/40">
+                      Kartalla: {r.district || r.address}
+                      {r.location_precision === 'city' && r.address
+                        ? ' (osoitetta ei löytynyt – merkki keskustassa)'
+                        : ''}
+                    </p>
+                  )}
                   <p className="mt-1 text-xs text-cream/40">
                     {r.organizer_name} · {r.organizer_email}
                     {r.participants ? ` · ${r.participants} osallistujaa` : ''}

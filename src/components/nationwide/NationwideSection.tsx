@@ -320,7 +320,9 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
                   />
                 </div>
                 <p className="mt-3 text-xs text-cream/35">
-                  Klikkaa karttamerkkiä nähdäksesi paikkakunnan tapahtumat. Selitteestä voit piilottaa tapahtumatyypin.
+                  Klikkaa karttamerkkiä nähdäksesi paikkakunnan tapahtumat. Zoomaa lähemmäs, niin
+                  saman paikkakunnan tapahtumat erottuvat omiin sijainteihinsa. Selitteestä voit
+                  piilottaa tapahtumatyypin.
                 </p>
               </div>
             </div>

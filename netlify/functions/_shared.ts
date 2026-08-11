@@ -33,6 +33,10 @@ export interface CommunityEventRow {
   image_url: string | null;
   status: string;
   approval_token: string;
+  /** Where the pin was placed. Never published - shown here only so Eino can
+   *  check the placement before approving. */
+  district: string | null;
+  address: string | null;
 }
 
 const MONTHS_FI = [
@@ -98,6 +102,11 @@ export function layout(title: string, body: string): string {
 export function detailsTable(e: CommunityEventRow): string {
   const rows: [string, string][] = [
     ['Paikkakunta', esc(e.city)],
+    // Only listed when the organiser narrowed it down; a plain municipality
+    // sign-up would just repeat the row above.
+    ...((e.district || e.address)
+      ? ([['Kartalla', esc(e.district || e.address || '')]] as [string, string][])
+      : []),
     ['Päivämäärä', formatDate(e.event_date)],
     ['Kellonaika', e.start_time ? `klo ${formatTime(e.start_time)}` : 'ei ilmoitettu'],
     ['Kesto', formatDuration(e.duration_minutes)],

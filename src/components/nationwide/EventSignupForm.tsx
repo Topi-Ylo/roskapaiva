@@ -9,13 +9,19 @@ import {
   type ContactType,
   DURATION_OPTIONS,
   FINNISH_CITIES,
-  cityCoords,
+  LOCATION_OPTIONS,
+  type LocationPrecision,
 } from '../../lib/communityEvents';
+import { districtsFor } from '../../lib/finnishDistricts';
+import { resolveEventPosition } from '../../lib/eventLocation';
 
 const EMPTY = {
   organizer_name: '',
   organizer_email: '',
   city: '',
+  location_precision: 'city' as LocationPrecision,
+  district: '',
+  address: '',
   event_date: '2026-09-05',
   start_time: '11:00',
   duration_minutes: 120,
@@ -91,6 +97,12 @@ export default function EventSignupForm() {
   const words = countWords(form.description);
   const overWordLimit = words > DESCRIPTION_MAX_WORDS;
 
+  // Empty outside the eight largest cities, which is what hides the district
+  // option and leaves those organisers with municipality or address.
+  const districts = districtsFor(form.city);
+  const locationHint =
+    LOCATION_OPTIONS.find((o) => o.value === form.location_precision)?.hint ?? '';
+
   const onUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -128,7 +140,22 @@ export default function EventSignupForm() {
     }
 
     setBusy(true);
-    const coords = cityCoords(form.city);
+
+    const placed = await resolveEventPosition({
+      city: form.city,
+      precision: form.location_precision,
+      district: form.district,
+      address: form.address,
+    });
+    if (placed.notFound) {
+      setBusy(false);
+      setError(
+        'Osoitetta ei löytynyt kartalta. Tarkista osoite tai valitse sijainniksi kaupunginosa tai paikkakunta.'
+      );
+      return;
+    }
+    const { lat, lng, precision } = placed;
+
     // The id is generated here rather than read back after the insert. Asking
     // Postgres to return the new row requires a SELECT policy that matches it,
     // and the only public one covers approved rows; a freshly inserted pending
@@ -139,8 +166,8 @@ export default function EventSignupForm() {
       organizer_name: form.organizer_name.trim(),
       organizer_email: form.organizer_email.trim(),
       city: form.city,
-      lat: coords?.lat ?? null,
-      lng: coords?.lng ?? null,
+      lat,
+      lng,
       event_date: form.event_date,
       start_time: form.start_time || null,
       duration_minutes: Number(form.duration_minutes),
@@ -157,6 +184,20 @@ export default function EventSignupForm() {
         ? {
             contact_type: form.contact_type,
             contact_value: form.contact_value.trim() || null,
+          }
+        : {}),
+      // Neither of these is ever published - community_events_public lists its
+      // columns explicitly and leaves them out. They are kept so the admin can
+      // see and correct where a pin was placed. Omitted entirely at city
+      // precision, which is the column default.
+      // location_precision records where the pin actually ended up, which can be
+      // coarser than asked when the geocoder was unreachable. The typed address
+      // is kept regardless so the admin can retry rather than lose it.
+      ...(form.location_precision !== 'city'
+        ? {
+            location_precision: precision,
+            district: form.location_precision === 'district' ? form.district : null,
+            address: form.location_precision === 'address' ? form.address.trim() : null,
           }
         : {}),
     };
@@ -243,7 +284,21 @@ export default function EventSignupForm() {
             <select
               required
               value={form.city}
-              onChange={(e) => set('city', e.target.value)}
+              onChange={(e) => {
+                // Districts are per-city, so a previous pick is meaningless
+                // after a change - and the option itself disappears outside
+                // the eight largest cities.
+                const city = e.target.value;
+                setForm((f) => ({
+                  ...f,
+                  city,
+                  district: '',
+                  location_precision:
+                    f.location_precision === 'district' && districtsFor(city).length === 0
+                      ? 'city'
+                      : f.location_precision,
+                }));
+              }}
               className={selectCls}
             >
               <option value="" disabled>
@@ -257,6 +312,68 @@ export default function EventSignupForm() {
             </select>
           </SelectField>
         </label>
+
+        <label className="block">
+          <Label hint="Ei näy ilmoituksessa">Sijainti kartalla</Label>
+          <SelectField>
+            <select
+              value={form.location_precision}
+              onChange={(e) => set('location_precision', e.target.value as LocationPrecision)}
+              className={selectCls}
+            >
+              {LOCATION_OPTIONS.filter(
+                (o) => o.value !== 'district' || districts.length > 0
+              ).map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </SelectField>
+        </label>
+
+        {form.location_precision === 'district' && districts.length > 0 && (
+          <label className="block sm:col-span-2">
+            <Label>Kaupunginosa</Label>
+            <SelectField>
+              <select
+                required
+                value={form.district}
+                onChange={(e) => set('district', e.target.value)}
+                className={selectCls}
+              >
+                <option value="" disabled>
+                  Valitse kaupunginosa
+                </option>
+                {districts.map((d) => (
+                  <option key={d.name} value={d.name}>
+                    {d.name}
+                  </option>
+                ))}
+              </select>
+            </SelectField>
+          </label>
+        )}
+
+        {form.location_precision === 'address' && (
+          <label className="block sm:col-span-2">
+            <Label>Osoite</Label>
+            <input
+              required
+              value={form.address}
+              onChange={(e) => set('address', e.target.value)}
+              className={inputCls}
+              placeholder="Esim. Aleksanterinkatu 9"
+            />
+          </label>
+        )}
+
+        <p className="text-xs leading-relaxed text-cream/45 sm:col-span-2">
+          {locationHint}{' '}
+          {form.location_precision === 'address'
+            ? 'Osoitetta ei julkaista, mutta karttamerkki osuu siihen tarkasti.'
+            : 'Kaupunginosaa tai osoitetta ei näytetä missään – ne vaikuttavat vain karttamerkin paikkaan.'}
+        </p>
 
         <label className="block">
           <Label>Päivämäärä</Label>

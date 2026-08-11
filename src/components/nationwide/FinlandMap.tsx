@@ -1,7 +1,11 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { CommunityEvent } from '../../lib/communityEvents';
+import { groupPins } from '../../lib/mapPins';
+
+/** The Roskapäivä mark as the pin. Cities with several events carry a count. */
+export const PIN_IMAGE = '/favicon.png';
 
 interface Props {
   events: CommunityEvent[];
@@ -9,18 +13,6 @@ interface Props {
   activeCity: string | null;
   onSelectCity: (city: string | null) => void;
 }
-
-interface CityGroup {
-  city: string;
-  lat: number;
-  lng: number;
-  count: number;
-  /** True when at least one event in the city is open to join. */
-  hasPublic: boolean;
-}
-
-/** The Roskapäivä mark as the pin. Cities with several events carry a count. */
-export const PIN_IMAGE = '/favicon.png';
 
 /**
  * Open events invert the mark and take a heavier dark ring, so they read as a
@@ -66,24 +58,11 @@ export default function FinlandMap({ events, activeCity, onSelectCity }: Props) 
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
+  const [zoom, setZoom] = useState(5);
 
-  // One marker per city, so ten Helsinki events do not stack into one blob.
-  const groups = useMemo<CityGroup[]>(() => {
-    const byCity = new Map<string, CityGroup>();
-    events.forEach((e) => {
-      if (e.lat == null || e.lng == null) return;
-      const existing = byCity.get(e.city);
-      if (existing) {
-        existing.count += 1;
-        existing.hasPublic ||= Boolean(e.is_public);
-      } else {
-        byCity.set(e.city, {
-          city: e.city, lat: e.lat, lng: e.lng, count: 1, hasPublic: Boolean(e.is_public),
-        });
-      }
-    });
-    return [...byCity.values()];
-  }, [events]);
+  // Zoomed out, everything in a municipality collapses to one pin so the south
+  // coast stays readable; zoomed in, each position stands on its own.
+  const pins = useMemo(() => groupPins(events, zoom), [events, zoom]);
 
   // Create the map once.
   useEffect(() => {
@@ -102,6 +81,8 @@ export default function FinlandMap({ events, activeCity, onSelectCity }: Props) 
       subdomains: 'abcd',
     }).addTo(map);
     layerRef.current = L.layerGroup().addTo(map);
+    map.on('zoomend', () => setZoom(map.getZoom()));
+    setZoom(map.getZoom());
     mapRef.current = map;
 
     return () => {
@@ -117,22 +98,22 @@ export default function FinlandMap({ events, activeCity, onSelectCity }: Props) 
     if (!layer) return;
     layer.clearLayers();
 
-    groups.forEach((g) => {
-      const active = activeCity === g.city;
-      L.marker([g.lat, g.lng], {
-        icon: markerIcon(g.count, active, g.hasPublic),
-        title: g.city,
+    pins.forEach((p) => {
+      const active = activeCity === p.city;
+      L.marker([p.lat, p.lng], {
+        icon: markerIcon(p.count, active, p.hasPublic),
+        title: p.city,
         riseOnHover: true,
       })
-        .on('click', () => onSelectCity(active ? null : g.city))
+        .on('click', () => onSelectCity(active ? null : p.city))
         .bindTooltip(
-          `<strong>${g.city}</strong><br>${g.count} tapahtuma${g.count === 1 ? '' : 'a'}` +
-            (g.hasPublic ? '<br><em>Avoin kaikille</em>' : ''),
+          `<strong>${p.city}</strong><br>${p.count} tapahtuma${p.count === 1 ? '' : 'a'}` +
+            (p.hasPublic ? '<br><em>Avoin kaikille</em>' : ''),
           { direction: 'top', offset: [0, -10], className: 'rp-tooltip' }
         )
         .addTo(layer);
     });
-  }, [groups, activeCity, onSelectCity]);
+  }, [pins, activeCity, onSelectCity]);
 
   // Fly to the selected city so map and list stay in step.
   useEffect(() => {
@@ -142,9 +123,24 @@ export default function FinlandMap({ events, activeCity, onSelectCity }: Props) 
       map.flyTo([64.6, 26.0], 5, { duration: 0.6 });
       return;
     }
-    const g = groups.find((x) => x.city === activeCity);
-    if (g) map.flyTo([g.lat, g.lng], 9, { duration: 0.7 });
-  }, [activeCity, groups]);
+    const points = events
+      .filter((e) => e.city === activeCity && e.lat != null && e.lng != null)
+      .map((e) => [e.lat as number, e.lng as number] as [number, number]);
+    if (!points.length) return;
+
+    // Frame the whole municipality when its events are spread across districts,
+    // so picking "Helsinki" reveals the separate pins rather than one stack.
+    const distinct = new Set(points.map((p) => p.join(','))).size;
+    if (distinct > 1) {
+      map.flyToBounds(L.latLngBounds(points), {
+        padding: [60, 60],
+        maxZoom: 13,
+        duration: 0.7,
+      });
+    } else {
+      map.flyTo(points[0], 12, { duration: 0.7 });
+    }
+  }, [activeCity, events]);
 
   return (
     <div
