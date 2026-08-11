@@ -64,6 +64,11 @@ const inputCls =
 // so the arrow below is drawn back in.
 const selectCls = `${inputCls} cursor-pointer appearance-none pr-10`;
 
+// Safari gives date and time inputs an intrinsic width of their own, wider than
+// the grid cell they sit in, so they bulged past the fields above them.
+// appearance-none drops that sizing; min-w-0 lets the cell win.
+const dateTimeCls = `${inputCls} min-w-0 appearance-none`;
+
 /** Wraps a <select> so it can carry its own chevron. */
 function SelectField({ children }: { children: React.ReactNode }) {
   return (
@@ -406,7 +411,7 @@ export default function EventSignupForm() {
             type="date"
             value={form.event_date}
             onChange={(e) => set('event_date', e.target.value)}
-            className={inputCls}
+            className={dateTimeCls}
           />
         </label>
 
@@ -417,7 +422,7 @@ export default function EventSignupForm() {
             type="time"
             value={form.start_time}
             onChange={(e) => set('start_time', e.target.value)}
-            className={inputCls}
+            className={dateTimeCls}
           />
         </label>
 

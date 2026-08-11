@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTableData } from '../../hooks/useTableData';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useCounter } from '../../hooks/useCounter';
 import FinlandMap from './FinlandMap';
 import MapLegend from './MapLegend';
@@ -18,12 +19,22 @@ import {
 function Stat({ value, suffix, label }: { value: number; suffix?: string; label: string }) {
   const { ref, value: shown } = useCounter(value);
   return (
-    <div ref={ref} className="px-4 py-5 text-center sm:px-6">
-      <p className="mega-stat stat-roller text-4xl text-amber md:text-5xl">
+    // min-w-0 because a grid column will not shrink below its content, and
+    // "Talkootunteja" at the eyebrow's 0.28em tracking is wider than a third of
+    // a phone. The tracking relaxes back on wider screens.
+    <div ref={ref} className="min-w-0 px-2 py-5 text-center sm:px-6">
+      {/* Three across even on the narrowest phone: the numbers are the point of
+          this band, and stacked they read as three unrelated facts. */}
+      <p className="mega-stat stat-roller text-2xl text-amber sm:text-4xl md:text-5xl">
         {shown.toLocaleString('fi-FI')}
         {suffix ?? ''}
       </p>
-      <p className="eyebrow mt-2 text-cream/50">{label}</p>
+      {/* Not the .eyebrow class here: it is plain CSS, so it outranks Tailwind
+          utilities on source order and neither the smaller size nor the tighter
+          tracking would take. Spelled out so the label fits a third of a phone. */}
+      <p className="mt-2 font-medium uppercase leading-tight text-cream/50 text-[0.6rem] tracking-[0.06em] sm:text-[0.7rem] sm:tracking-[0.32em]">
+        {label}
+      </p>
     </div>
   );
 }
@@ -89,7 +100,7 @@ function EventRow({
         className="h-16 w-20 shrink-0 rounded bg-forest-night object-cover"
       />
       <span className="min-w-0 flex-1">
-        <span className="flex flex-wrap items-baseline gap-x-3">
+        <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <span className="font-display text-lg text-cream">{event.city}</span>
           {event.featured && (
             <span className="rounded-full bg-amber px-2 py-0.5 text-[11px] font-semibold uppercase tracking-widest text-forest-night sm:text-[10px]">
@@ -158,6 +169,10 @@ function EventRow({
   );
 }
 
+/** Rows shown before "näytä lisää" on a phone. Enough to show the list has
+ *  breadth, short enough that the page below stays reachable. */
+const MOBILE_PAGE = 6;
+
 export default function NationwideSection({ onSignup }: { onSignup: () => void }) {
   const { data, loading } = useTableData<CommunityEvent>('community_events_public', {
     orderBy: 'event_date',
@@ -185,6 +200,18 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
 
   const [query, setQuery] = useState('');
   const [activeCity, setActiveCity] = useState<string | null>(null);
+
+  /**
+   * On a phone the list is part of the page, not a box inside it — a scrollable
+   * panel nested in a scrollable page steals the finger and never gives it
+   * back. But an unbounded list is worse once there are a hundred events:
+   * nobody scrolls past all of them to reach the FAQ. So it pages instead.
+   *
+   * The desktop layout keeps its own scrolling panel, because there the map
+   * beside it is sticky and the two have to move independently.
+   */
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  const [shownCount, setShownCount] = useState(MOBILE_PAGE);
   // The map key doubles as a filter, so hiding a kind hides it from the list too;
   // otherwise the list would contradict the map.
   const [showPublic, setShowPublic] = useState(true);
@@ -200,6 +227,12 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
 
   const stats = useMemo(() => calcStats(visible), [visible]);
 
+  // Any change to what is being filtered starts the list again from the top,
+  // otherwise a search would open onto page four of the previous one.
+  useEffect(() => {
+    setShownCount(MOBILE_PAGE);
+  }, [query, activeCity, showPublic, showPrivate]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return visible.filter((e) => {
@@ -212,6 +245,10 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
       );
     });
   }, [visible, query, activeCity]);
+
+  // Desktop scrolls its panel and shows everything; the phone pages.
+  const visibleRows = isDesktop ? filtered : filtered.slice(0, shownCount);
+  const hiddenCount = isDesktop ? 0 : filtered.length - visibleRows.length;
 
   return (
     <>
@@ -241,7 +278,7 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
             </div>
           </div>
 
-          <div className="reveal mt-14 grid grid-cols-1 divide-cream/15 border-y border-cream/15 sm:grid-cols-3 sm:divide-x">
+          <div className="reveal mt-14 grid grid-cols-3 divide-x divide-cream/15 border-y border-cream/15">
             <Stat value={stats.events} label="Tapahtumaa" />
             <Stat value={stats.cities} label="Paikkakuntaa" />
             <Stat value={stats.hours} suffix=" h" label="Talkootunteja" />
@@ -293,7 +330,7 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
                     Ei tapahtumia hakuehdoilla.
                   </p>
                 )}
-                {filtered.map((e, i) => (
+                {visibleRows.map((e, i) => (
                   <EventRow
                     key={e.id ?? i}
                     event={e}
@@ -302,6 +339,25 @@ export default function NationwideSection({ onSignup }: { onSignup: () => void }
                   />
                 ))}
               </div>
+
+              {hiddenCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShownCount((n) => n + MOBILE_PAGE * 2)}
+                  className="mt-3 flex min-h-[48px] w-full items-center justify-center border border-cream/15 text-xs font-semibold uppercase tracking-widest text-cream/70 transition hover:border-cream/30 hover:text-cream lg:hidden"
+                >
+                  Näytä lisää ({hiddenCount})
+                </button>
+              )}
+              {!isDesktop && shownCount > MOBILE_PAGE && hiddenCount === 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShownCount(MOBILE_PAGE)}
+                  className="mt-3 flex min-h-[48px] w-full items-center justify-center border border-cream/15 text-xs font-semibold uppercase tracking-widest text-cream/50 transition hover:border-cream/30 hover:text-cream lg:hidden"
+                >
+                  Näytä vähemmän
+                </button>
+              )}
             </div>
 
             {/* Kartta pysyy paikallaan kun listaa selataan */}

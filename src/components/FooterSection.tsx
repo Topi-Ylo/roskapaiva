@@ -12,21 +12,25 @@ export default function FooterSection() {
         backgroundPosition: 'center',
       }} />
 
-      <div className="relative mx-auto max-w-7xl px-6 py-32 md:py-40">
+      <div className="relative mx-auto max-w-7xl px-6 py-20 md:py-40">
         <p className="reveal eyebrow text-amber">Mukaan</p>
-        <h2 className="reveal delay-1 font-display mt-6 text-5xl text-cream md:text-6xl lg:text-7xl">Vaikutetaan<br />yhdessä.</h2>
+        <h2 className="reveal delay-1 font-display mt-5 text-4xl text-cream sm:text-5xl md:text-6xl lg:text-7xl">Vaikutetaan<br />yhdessä.</h2>
 
-        <div className="mt-20 grid gap-px bg-cream/10 md:grid-cols-3">
+        {/* Three tall cards stacked make the footer longer than the page above
+              it on a phone. Below md they collapse into compact rows: the number
+              and the title on one line, the arrow doing the work the spelled-out
+              link does on desktop. */}
+        <div className="mt-10 grid gap-px bg-cream/10 md:mt-20 md:grid-cols-3">
           <a
             href={settings.instagram_url ?? 'https://instagram.com/roskapaiva'}
             target="_blank"
             rel="noopener noreferrer"
-            className="reveal delay-2 group block bg-forest-night/80 p-10 transition hover:bg-forest-night md:p-12"
+            className="reveal delay-2 group flex items-center gap-4 bg-forest-night/80 p-5 transition hover:bg-forest-night md:block md:p-12"
           >
-            <p className="font-display text-5xl text-amber">01</p>
-            <h3 className="font-display mt-4 text-2xl text-cream md:text-3xl">Seuraa<br />Instagramissa</h3>
-            <span className="mt-8 inline-flex items-center gap-2 text-cream transition group-hover:text-amber">
-              <span className="font-display text-xl">@roskapaiva</span>
+            <p className="font-display shrink-0 text-2xl text-amber md:text-5xl">01</p>
+            <h3 className="font-display min-w-0 flex-1 text-lg leading-tight text-cream md:mt-4 md:text-2xl lg:text-3xl">Seuraa<br />Instagramissa</h3>
+            <span className="inline-flex shrink-0 items-center gap-2 text-cream/80 transition group-hover:text-amber md:mt-8">
+              <span className="hidden font-display text-xl md:inline">@roskapaiva</span>
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                 <path d="M3 8h10m0 0L8 3m5 5l-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
@@ -35,12 +39,12 @@ export default function FooterSection() {
 
           <Link
             to="/5-9-2026"
-            className="reveal delay-3 group block bg-forest-night/80 p-10 transition hover:bg-forest-night md:p-12"
+            className="reveal delay-3 group flex items-center gap-4 bg-forest-night/80 p-5 transition hover:bg-forest-night md:block md:p-12"
           >
-            <p className="font-display text-5xl text-amber">02</p>
-            <h3 className="font-display mt-4 text-2xl text-cream md:text-3xl">Roskapäivä<br />{settings.next_event_date ?? '5.9.2026'}</h3>
-            <span className="mt-8 inline-flex items-center gap-2 text-cream/80 transition group-hover:text-amber">
-              <span className="font-display text-xl">Tapahtuman sivu</span>
+            <p className="font-display shrink-0 text-2xl text-amber md:text-5xl">02</p>
+            <h3 className="font-display min-w-0 flex-1 text-lg leading-tight text-cream md:mt-4 md:text-2xl lg:text-3xl">Roskapäivä<br />{settings.next_event_date ?? '5.9.2026'}</h3>
+            <span className="inline-flex shrink-0 items-center gap-2 text-cream/80 transition group-hover:text-amber md:mt-8">
+              <span className="hidden font-display text-xl md:inline">Tapahtuman sivu</span>
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                 <path d="M3 8h10m0 0L8 3m5 5l-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
@@ -49,12 +53,12 @@ export default function FooterSection() {
 
           <Link
             to="/kansalaisaloite"
-            className="reveal delay-4 group block bg-forest-night/80 p-10 transition hover:bg-forest-night md:p-12"
+            className="reveal delay-4 group flex items-center gap-4 bg-forest-night/80 p-5 transition hover:bg-forest-night md:block md:p-12"
           >
-            <p className="font-display text-5xl text-amber">03</p>
-            <h3 className="font-display mt-4 text-2xl text-cream md:text-3xl">Allekirjoita<br />kansalaisaloite</h3>
-            <span className="mt-8 inline-flex items-center gap-2 text-cream/80 transition group-hover:text-amber">
-              <span className="font-display text-xl">Lue lisää</span>
+            <p className="font-display shrink-0 text-2xl text-amber md:text-5xl">03</p>
+            <h3 className="font-display min-w-0 flex-1 text-lg leading-tight text-cream md:mt-4 md:text-2xl lg:text-3xl">Allekirjoita<br />kansalaisaloite</h3>
+            <span className="inline-flex shrink-0 items-center gap-2 text-cream/80 transition group-hover:text-amber md:mt-8">
+              <span className="hidden font-display text-xl md:inline">Lue lisää</span>
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                 <path d="M3 8h10m0 0L8 3m5 5l-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>

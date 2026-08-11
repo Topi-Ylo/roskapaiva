@@ -46,7 +46,7 @@ export default function InfoModal() {
             <line x1="6" y1="18" x2="18" y2="6" />
           </svg>
         </button>
-        <div className="px-6 py-10 md:px-10">
+        <div className="px-5 pb-[max(2.5rem,calc(env(safe-area-inset-bottom)+1.5rem))] pt-10 sm:px-6 md:px-10">
           {/* Unmounted while closed: nothing renders or fetches until opened. */}
           {doc === 'ohjeet' && <SafetyContent />}
           {doc === 'tietosuoja' && <PrivacyContent />}

@@ -121,7 +121,15 @@ export default function FinlandMap({ events, activeCity, onSelectCity }: Props) 
             // one of Roskapäivä's own events. Escaped - the name is user input.
             (p.organizer ? `<br>Järjestää ${escapeHtml(p.organizer)}` : '') +
             (p.hasPublic ? '<br><em>Avoin kaikille</em>' : ''),
-          { direction: 'top', offset: [0, -10], className: 'rp-tooltip' }
+          {
+            direction: 'top',
+            offset: [0, -10],
+            className: 'rp-tooltip',
+            // The selected pin keeps its label. A tooltip is otherwise a hover
+            // affordance, and a finger cannot hover: tapping selected the city
+            // and redrew the markers, so on a phone the label never appeared.
+            permanent: active,
+          }
         )
         .addTo(layer);
     });

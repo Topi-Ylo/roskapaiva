@@ -41,7 +41,7 @@ export default function SignupModal({ open, onClose }: Props) {
           </svg>
         </button>
 
-        <div className="p-8 md:p-12">
+        <div className="px-5 pb-[max(2.5rem,calc(env(safe-area-inset-bottom)+1.5rem))] pt-8 sm:p-8 md:p-12">
           <p className="eyebrow text-amber">Ilmoita osallistumisesi</p>
           <h2 className="font-display mt-5 text-3xl text-cream md:text-4xl">
             Miten sinä osallistut?
