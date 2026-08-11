@@ -25,10 +25,18 @@ const DAILY_CAP = 100;
 
 type Audience = 'approved' | 'all';
 
+/**
+ * A thank-you to people who ran an event rests on legitimate interest; news
+ * about next year is direct marketing and needs consent. Keeping them apart is
+ * what lets the thank-you reach everyone without the marketing doing the same.
+ */
+type CampaignKind = 'event' | 'marketing';
+
 interface Organizer {
   organizer_email: string;
   organizer_name: string;
   status: string;
+  marketing_consent_at: string | null;
 }
 
 interface Campaign {
@@ -36,6 +44,7 @@ interface Campaign {
   subject: string;
   body: string;
   audience: Audience;
+  kind: CampaignKind;
   status: string;
   created_at: string;
 }
@@ -58,6 +67,8 @@ export default function EmailAdmin() {
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
   const [audience, setAudience] = useState<Audience>('approved');
+  const [kind, setKind] = useState<CampaignKind>('event');
+  const [optOuts, setOptOuts] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
@@ -68,14 +79,19 @@ export default function EmailAdmin() {
     if (!supabase) return;
     setLoading(true);
 
-    const [{ data: evs }, { data: cs }, { data: remaining }, { data: sends }] = await Promise.all([
-      supabase.from('community_events').select('organizer_email, organizer_name, status'),
+    const [{ data: evs }, { data: cs }, { data: remaining }, { data: sends }, { data: outs }] =
+      await Promise.all([
+      supabase
+        .from('community_events')
+        .select('organizer_email, organizer_name, status, marketing_consent_at'),
       supabase.from('email_campaigns').select('*').order('created_at', { ascending: false }),
       supabase.rpc('email_daily_remaining'),
       supabase.from('email_sends').select('campaign_id, status'),
+      supabase.from('email_optouts').select('email'),
     ]);
 
     setOrganizers((evs ?? []) as Organizer[]);
+    setOptOuts(new Set(((outs ?? []) as { email: string }[]).map((o) => o.email.toLowerCase())));
     setCampaigns((cs ?? []) as Campaign[]);
     setDailyRemaining(remaining == null ? null : Number(remaining));
 
@@ -96,16 +112,24 @@ export default function EmailAdmin() {
 
   /** Unique addresses for the chosen audience, newest name wins. */
   const recipients = useMemo(() => {
-    const pool = audience === 'approved'
+    const base = audience === 'approved'
       ? organizers.filter((o) => o.status === 'approved')
       : organizers;
+    // Consent for marketing, and never anyone who has opted out. The sender
+    // re-checks opt-outs at send time too, since a campaign prepared today may
+    // go out tomorrow.
+    const pool = base.filter(
+      (o) =>
+        (kind === 'event' || o.marketing_consent_at) &&
+        !optOuts.has((o.organizer_email ?? '').trim().toLowerCase())
+    );
     const byEmail = new Map<string, string>();
     pool.forEach((o) => {
       const email = (o.organizer_email ?? '').trim().toLowerCase();
       if (email) byEmail.set(email, o.organizer_name);
     });
     return [...byEmail.entries()].map(([email, name]) => ({ email, name }));
-  }, [organizers, audience]);
+  }, [organizers, audience, kind, optOuts]);
 
   const overDailyCap = recipients.length > DAILY_CAP;
   const overRemaining = dailyRemaining !== null && recipients.length > dailyRemaining;
@@ -141,6 +165,7 @@ export default function EmailAdmin() {
           subject: subject.trim(),
           body: body.trim(),
           audience,
+          kind,
           created_by: session.session?.user.id ?? null,
         })
         .select('id')
@@ -267,6 +292,14 @@ export default function EmailAdmin() {
 
         <div className="mt-5 flex flex-wrap items-center gap-3">
           <select
+            value={kind}
+            onChange={(e) => setKind(e.target.value as CampaignKind)}
+            className={`${selectClass} max-w-xs`}
+          >
+            <option value="event">Tapahtumaviesti (kiitos, ohjeet)</option>
+            <option value="marketing">Tiedote / markkinointi</option>
+          </select>
+          <select
             value={audience}
             onChange={(e) => setAudience(e.target.value as Audience)}
             className={`${selectClass} max-w-xs`}
@@ -278,6 +311,9 @@ export default function EmailAdmin() {
             {showList ? 'Piilota lista' : 'Näytä lista'}
           </GhostButton>
           <GhostButton onClick={copyList}>Kopioi osoitteet</GhostButton>
+          {optOuts.size > 0 && (
+            <span className="text-sm text-cream/45">{optOuts.size} poistunut listalta</span>
+          )}
           <span className="text-sm text-cream/55">
             Päivän kiintiötä jäljellä:{' '}
             <span className={dailyRemaining === 0 ? 'text-red-400' : 'text-cream'}>

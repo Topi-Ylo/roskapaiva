@@ -6,6 +6,12 @@
 [functions]
   node_bundler = "esbuild"
 
+# Retention is a promise in the privacy notice, so it runs on a clock rather
+# than when someone remembers. The rules live in the database; this only calls
+# them. 03:15 UTC keeps it away from the daily e-mail window.
+[functions."purge-personal-data"]
+  schedule = "15 3 * * *"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

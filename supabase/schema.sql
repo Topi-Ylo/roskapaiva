@@ -254,7 +254,7 @@ create table if not exists public.event_sponsors (
 create table if not exists public.community_events (
   id               uuid primary key default gen_random_uuid(),
   organizer_name   text not null,
-  organizer_email  text not null,
+  organizer_email  text,   -- nullable so retention can anonymise it (0030)
   city             text not null,
   lat              double precision,
   lng              double precision,
@@ -310,6 +310,14 @@ create table if not exists public.faq_items (
 );
 
 create index if not exists faq_items_sort_idx on public.faq_items (sort_order);
+
+-- Opt-outs, keyed by address: unsubscribing once must cover every event that
+-- person signed up (0030).
+create table if not exists public.email_optouts (
+  email      text primary key,
+  source     text,
+  created_at timestamptz default now()
+);
 
 -- Singleton settings row, including the '26 page copy (0014/0015)
 create table if not exists public.site_settings (
@@ -460,6 +468,14 @@ create policy "public_insert_community_events" on public.community_events
 -- the base table would expose organizer_email, approval_token and the private
 -- location columns (0027). INSERT stays, for the public sign-up form.
 revoke select on public.community_events from anon;
+
+-- Name the roles. Supabase's default privileges grant EXECUTE on new public
+-- functions to anon and authenticated by name, so revoking from PUBLIC alone
+-- leaves a SECURITY DEFINER function callable with the key in the site bundle
+-- (0030/0031).
+revoke all on function public.purge_expired_personal_data() from public, anon, authenticated;
+revoke execute on function public.email_daily_remaining() from public, anon;
+grant execute on function public.email_daily_remaining() to authenticated;
 
 -- The declaration is not optional and the browser is not where that is decided.
 -- RESTRICTIVE so it is AND-ed with the permissive insert policy above rather

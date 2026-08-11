@@ -1,6 +1,6 @@
 import type { Handler } from '@netlify/functions';
 import { Resend } from 'resend';
-import { FROM_EMAIL, adminClient, esc, layout } from './_shared';
+import { FROM_EMAIL, SITE_URL, adminClient, esc, layout } from './_shared';
 
 /**
  * Sends one slice of a bulk campaign, then reports what is left.
@@ -23,6 +23,15 @@ const BATCH_SIZE = 20;
 const PACE_MS = 250;
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** Visible opt-out, in the body as well as the header: mail clients honour the
+ *  header, people look for the link. */
+function unsubscribeFooter(url: string): string {
+  return `<p style="margin:28px 0 0;padding-top:16px;border-top:1px solid rgba(244,241,232,0.12);font:400 12px/1.5 Inter,Arial,sans-serif;color:rgba(244,241,232,0.4);">
+    Saat tämän viestin, koska ilmoitit tapahtuman Roskapäivän kartalle.
+    <a href="${url}" style="color:rgba(244,241,232,0.6);">Poistu postituslistalta</a>.
+  </p>`;
+}
 
 /** Plain text from the admin, rendered into the site's e-mail shell. */
 function renderBody(body: string, name: string | null): string {
@@ -112,12 +121,33 @@ export const handler: Handler = async (event) => {
     const take = Math.min(BATCH_SIZE, allowance);
     const { data: batch } = await supabase
       .from('email_sends')
-      .select('id, email, recipient_name')
+      .select('id, email, recipient_name, unsubscribe_token')
       .eq('campaign_id', campaignId)
       .eq('status', 'pending')
       .limit(take);
 
-    const rows = batch ?? [];
+    let rows = batch ?? [];
+
+    // Opt-outs are honoured at send time, not at audience-build time. A campaign
+    // prepared last week must not mail someone who unsubscribed yesterday.
+    if (rows.length) {
+      const { data: optedOut } = await supabase
+        .from('email_optouts')
+        .select('email')
+        .in('email', rows.map((r) => r.email.toLowerCase()));
+      const blocked = new Set((optedOut ?? []).map((o: { email: string }) => o.email));
+      const skipped = rows.filter((r) => blocked.has(r.email.toLowerCase()));
+      if (skipped.length) {
+        // Marked failed rather than left pending, so the campaign can finish
+        // instead of retrying an address that will never be mailed.
+        await supabase
+          .from('email_sends')
+          .update({ status: 'failed', error: 'Vastaanottaja on poistunut postituslistalta' })
+          .in('id', skipped.map((r) => r.id));
+        rows = rows.filter((r) => !blocked.has(r.email.toLowerCase()));
+      }
+    }
+
     if (rows.length === 0) {
       await supabase.from('email_campaigns').update({ status: 'sent' }).eq('id', campaignId);
       return {
@@ -135,11 +165,22 @@ export const handler: Handler = async (event) => {
     for (const [i, row] of rows.entries()) {
       if (i > 0) await sleep(PACE_MS);
       try {
+        const unsubscribeUrl =
+          `${SITE_URL}/.netlify/functions/unsubscribe?t=${row.unsubscribe_token}`;
         await resend.emails.send({
           from: FROM_EMAIL,
           to: row.email,
           subject: campaign.subject,
-          html: layout(esc(campaign.subject), renderBody(campaign.body, row.recipient_name)),
+          html: layout(
+            esc(campaign.subject),
+            renderBody(campaign.body, row.recipient_name) + unsubscribeFooter(unsubscribeUrl)
+          ),
+          headers: {
+            // Lets Gmail and Outlook show their own one-click unsubscribe, which
+            // is what keeps bulk mail out of the spam folder.
+            'List-Unsubscribe': `<${unsubscribeUrl}>`,
+            'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+          },
         });
         await supabase
           .from('email_sends')
